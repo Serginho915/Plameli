@@ -1,0 +1,43 @@
+@import "variables";
+
+@mixin flex-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+@mixin flex-between {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+@mixin glass-effect {
+  background: var(--glass-bg);
+  backdrop-filter: $glass-blur;
+  border: $glass-border;
+  border-radius: $border-radius;
+}
+
+@mixin accent-text {
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-secondary) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  display: inline-block;
+}
+
+@mixin hover-lift {
+  transition: $transition-base;
+  &:hover {
+    transform: translateY(-5px);
+    border-color: var(--accent);
+  }
+}
+
+@mixin responsive($breakpoint) {
+  @if $breakpoint == "md" {
+    @media (max-width: 768px) { @content; }
+  } @else if $breakpoint == "lg" {
+    @media (max-width: 1024px) { @content; }
+  }
+}

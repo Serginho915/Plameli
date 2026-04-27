@@ -1,0 +1,47 @@
+export const translations = {
+  en: {
+    welcome: "Welcome to Plameli",
+    description: "Your modern solution for web development.",
+    home: "Home",
+    about: "About",
+    slug_page: "Dynamic Slug Page",
+    slug_content: "Content for slug: ",
+    no_content: "No content found for this slug.",
+    switch_lang: "Switch Language",
+    nav_home: "Home",
+    nav_about: "About",
+    nav_contact: "Contact",
+    footer_copy: "All rights reserved.",
+  },
+  ru: {
+    welcome: "Добро пожаловать в Plameli",
+    description: "Ваше современное решение для веб-разработки.",
+    home: "Главная",
+    about: "О нас",
+    slug_page: "Динамическая страница",
+    slug_content: "Контент для слага: ",
+    no_content: "Контент для этого слага не найден.",
+    switch_lang: "Сменить язык",
+    nav_home: "Главная",
+    nav_about: "О нас",
+    nav_contact: "Контакты",
+    footer_copy: "Все права защищены.",
+  },
+  bg: {
+    welcome: "Добре дошли в Plameli",
+    description: "Вашето модерно решение за уеб разработка.",
+    home: "Начало",
+    about: "За нас",
+    slug_page: "Динамична страница",
+    slug_content: "Съдържание за слаг: ",
+    no_content: "Няма намерено съдържание за този слаг.",
+    switch_lang: "Смяна на език",
+    nav_home: "Начало",
+    nav_about: "За нас",
+    nav_contact: "Контакти",
+    footer_copy: "Всички права запазени.",
+  },
+} as const;
+
+export type Language = keyof typeof translations;
+export type TranslationKeys = keyof typeof translations['en'];
