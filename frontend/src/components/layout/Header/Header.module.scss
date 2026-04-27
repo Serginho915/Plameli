@@ -2,34 +2,4 @@
 @import "../../../styles/mixins";
 
 .header {
-  position: sticky;
-  top: 0;
-  z-index: 100;
-  padding: 1rem $container-padding;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-  @include glass-effect;
-  border-radius: 0;
-
-  .content {
-    max-width: $max-width;
-    margin: 0 auto;
-    @include flex-between;
-
-    .logo {
-      font-size: 1.5rem;
-      font-weight: 900;
-      letter-spacing: -0.05em;
-      color: var(--accent);
-    }
-
-    .nav {
-      display: flex;
-      gap: 2rem;
-      font-weight: 500;
-
-      a:hover {
-        color: var(--accent);
-      }
-    }
-  }
 }
