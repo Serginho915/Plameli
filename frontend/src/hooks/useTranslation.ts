@@ -1,0 +1,18 @@
+'use client';
+
+import { useLanguage } from '../context/LanguageContext';
+import { Language } from '../types/language';
+
+export type ComponentTranslations<T extends Record<string, string> = Record<string, string>> = Record<Language, T>;
+
+export function useTranslation<T extends Record<string, string>>(localTranslations?: ComponentTranslations<T>) {
+  const { language, setLanguage } = useLanguage();
+
+  // If localTranslations is provided, return the dictionary for the current language
+  // Fallback to 'bg' if the current language dictionary is not available
+  const t = localTranslations 
+    ? (localTranslations[language] || localTranslations['bg']) 
+    : ({} as T);
+
+  return { t, language, setLanguage };
+}

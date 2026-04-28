@@ -1,0 +1,33 @@
+@import "@/styles/variables";
+@import "@/styles/mixins";
+
+
+.navList{
+    display: flex;
+}
+
+.navItem{
+    font-family: $font-secondary;
+    text-transform: uppercase;
+    color: $text-body-grey;
+    padding: 8px 12px;
+}
+
+.navLink {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    text-decoration: none;
+    color: inherit;
+}
+
+.arrow {
+    display: inline-block;
+    width: 0;
+    height: 0;
+    border-left: 4.5px solid transparent;
+    border-right: 4.5px solid transparent;
+    border-top: 4.5px solid currentColor;
+    transition: transform 0.2s ease;
+}
+

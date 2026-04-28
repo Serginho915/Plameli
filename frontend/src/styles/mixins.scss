@@ -1,0 +1,112 @@
+@import "variables";
+
+// --- Breakpoints ---
+$breakpoints: (
+  "mobile": 320px,
+  "mobile-large": 480px,
+  "tablet": 768px,
+  "laptop": 1200px,
+  "desktop": 1440px
+);
+
+// --- Responsive Mixins ---
+
+// Mobile-first (Min-width)
+@mixin up($breakpoint) {
+  @if map-has-key($breakpoints, $breakpoint) {
+    @media (min-width: map-get($breakpoints, $breakpoint)) {
+      @content;
+    }
+  }
+
+  @else {
+    @media (min-width: $breakpoint) {
+      @content;
+    }
+  }
+}
+
+// Desktop-first / Mobile overrides (Max-width)
+@mixin down($breakpoint) {
+  @if map-has-key($breakpoints, $breakpoint) {
+    @media (max-width: map-get($breakpoints, $breakpoint)) {
+      @content;
+    }
+  }
+
+  @else {
+    @media (max-width: $breakpoint) {
+      @content;
+    }
+  }
+}
+
+// Alias for existing codebase usage
+@mixin responsive($breakpoint) {
+  @include down($breakpoint) {
+    @content;
+  }
+}
+
+// Between two breakpoints
+@mixin between($lower, $upper) {
+  @if map-has-key($breakpoints, $lower) and map-has-key($breakpoints, $upper) {
+    @media (min-width: map-get($breakpoints, $lower)) and (max-width: map-get($breakpoints, $upper)) {
+      @content;
+    }
+  }
+
+  @else {
+    @media (min-width: $lower) and (max-width: $upper) {
+      @content;
+    }
+  }
+}
+
+// --- Utility Mixins ---
+
+@mixin flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@mixin flex-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+@mixin accent-text {
+  color: var(--accent);
+  background: linear-gradient(45deg, var(--accent), var(--accent-secondary));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-weight: 800;
+}
+
+@mixin container {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 0 56px;
+  width: 100%;
+
+  @include down("laptop") {
+    padding: 0 36px;
+    max-width: 1200px;
+  }
+
+  @include down("tablet") {
+    padding: 0 28px;
+    max-width: 768px;
+  }
+
+  @include down("mobile-large") {
+    padding: 0 16px;
+    max-width: 480px;
+  }
+  @include down("mobile") {
+    padding: 0 12px;
+    max-width: 320px;
+  }
+}
