@@ -1,30 +1,18 @@
 'use client';
 
 import { useLanguage } from '../context/LanguageContext';
-import { Language } from '../translations';
+import { Language } from '../types/language';
 
-export type ComponentTranslations = {
-  [key in Language]: {
-    [key: string]: string;
-  };
-};
+export type ComponentTranslations<T extends Record<string, string> = Record<string, string>> = Record<Language, T>;
 
-export const useTranslation = (localTranslations?: ComponentTranslations) => {
-  const { language, setLanguage, t: globalT } = useLanguage();
+export function useTranslation<T extends Record<string, string>>(localTranslations?: ComponentTranslations<T>) {
+  const { language, setLanguage } = useLanguage();
 
-  /**
-   * Scoped translation function
-   * Priority: 1. Local language, 2. Local fallback (en), 3. Global translation, 4. Key itself
-   */
-  const t = (key: string): string => {
-    if (localTranslations) {
-      const local = localTranslations[language]?.[key] || localTranslations['en']?.[key];
-      if (local) return local;
-    }
-    
-    // Fallback to global translations (need cast because key is string)
-    return globalT(key as any);
-  };
+  // If localTranslations is provided, return the dictionary for the current language
+  // Fallback to 'bg' if the current language dictionary is not available
+  const t = localTranslations 
+    ? (localTranslations[language] || localTranslations['bg']) 
+    : ({} as T);
 
   return { t, language, setLanguage };
-};
+}

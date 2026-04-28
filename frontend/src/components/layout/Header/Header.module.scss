@@ -1,5 +1,32 @@
-@import "../../../styles/variables";
-@import "../../../styles/mixins";
+@import "@/styles/variables";
+@import "@/styles/mixins";
 
 .header {
+  width: 100%;
+  background: linear-gradient(180deg,
+      rgba(255, 255, 255, 0.9) 37.98%,
+      rgba(255, 255, 255, 0.81) 54.33%,
+      rgba(249, 250, 251, 0.72) 71.15%,
+      rgba(249, 250, 251, 0.45) 83.17%,
+      rgba(242, 244, 247, 0) 99.52%);
+  backdrop-filter: blur(12px);
+  margin-bottom: 31px;
+}
+
+.headerContainer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24px 56px;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
 }

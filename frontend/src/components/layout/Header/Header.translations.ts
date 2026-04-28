@@ -1,11 +1,7 @@
 import { ComponentTranslations } from "@/hooks/useTranslation";
 
 export const translations: ComponentTranslations = {
-  en: {
-    nav_home: "Home",
-    nav_about: "About",
-    nav_contact: "Contact",
-  },
+
   ru: {
     nav_home: "Главная",
     nav_about: "О нас",

@@ -1,31 +1,34 @@
 'use client';
 
+import { usePathname, useRouter } from 'next/navigation';
 import { useTranslation } from '@/hooks/useTranslation';
-import { Language } from '@/translations';
+import { i18n } from '@/i18n-config';
+import styles from './LanguageSwitcher.module.scss';
 
 export const LanguageSwitcher = () => {
-  const { language, setLanguage, t } = useTranslation();
+  const { language } = useTranslation();
+  const pathname = usePathname();
+  const router = useRouter();
 
-  const langs: { code: Language; label: string }[] = [
-    { code: 'en', label: 'English' },
-    { code: 'ru', label: 'Русский' },
-    { code: 'bg', label: 'Български' },
-  ];
+  const toggleLanguage = () => {
+    const nextLanguage = language === 'ru' ? 'bg' : 'ru';
+    
+    if (!pathname) return;
+
+    const segments = pathname.split('/');
+    segments[1] = nextLanguage;
+    
+    const nextPathname = segments.join('/');
+    router.push(nextPathname);
+  };
 
   return (
-    <div className="language-switcher">
-      <span className="switcher-label">{t('switch_lang')}:</span>
-      <div className="switcher-buttons">
-        {langs.map((lang) => (
-          <button
-            key={lang.code}
-            onClick={() => setLanguage(lang.code)}
-            className={`switcher-btn ${language === lang.code ? 'is-active' : ''}`}
-          >
-            {lang.label}
-          </button>
-        ))}
-      </div>
-    </div>
+    <button
+      onClick={toggleLanguage}
+      className={styles.languageSwitcherBtn}
+      style={{ cursor: 'pointer', background: 'transparent', border: 'none', padding: 0, font: 'inherit' }}
+    >
+      {(language || 'bg').toUpperCase()}
+    </button>
   );
 };

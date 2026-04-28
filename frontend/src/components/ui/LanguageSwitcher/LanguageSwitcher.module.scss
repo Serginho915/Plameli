@@ -1,0 +1,15 @@
+@import "@/styles/variables";
+@import "@/styles/mixins";
+
+.languageSwitcherBtn {
+  width: 43px;
+  height: 42px;
+  padding: 8px;
+  color: $text-body-grey;
+  font-family: $font-secondary, sans-serif;
+  border-radius: 16px;
+  border: 1px solid #d0dae7;
+  justify-content: center;
+  align-items: center;
+  background: #fff;
+}

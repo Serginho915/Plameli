@@ -6,11 +6,13 @@ $accent-secondary: #FF8E6E;
 // Text
 $text-primary: #000;
 $text-grey: #697B91;
-$text-black:#2A2A2A
+$text-black: #2A2A2A;
+$text-body-grey: #404E5E;
 
 
 // Typography
 $font-primary: var(--font-oswald), sans-serif;
+$font-secondary: var(--font-source-sans), sans-serif;
 
 // Layout
 $max-width: 1440px;
