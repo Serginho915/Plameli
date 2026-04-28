@@ -1,4 +1,5 @@
 'use client';
+import { useState } from 'react';
 import Link from 'next/link';
 import { Logo } from './Logo/Logo';
 import { Nav } from './Nav/Nav';
@@ -6,9 +7,11 @@ import { LanguageSwitcher } from '@/components/ui/LanguageSwitcher/LanguageSwitc
 import { useTranslation } from '@/hooks/useTranslation';
 import styles from './Header.module.scss';
 import { Button } from '@/components/ui/Button/Button';
+import { Burger } from './Burger/Burger';
 
 export const Header = () => {
   const { language } = useTranslation();
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   return (
     <header className={styles.header}>
@@ -17,14 +20,38 @@ export const Header = () => {
           <Logo />
         </Link>
 
-        <Nav />
+        <div className={styles.navWrapper}>
+          <Nav />
+        </div>
 
         <div className={styles.actions}>
-          <LanguageSwitcher />
-          <Button
-            text='Консультация'>
-            <Link href="#" />
-          </Button>
+          <Burger
+            isOpen={isMenuOpen}
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+            className={styles.burgerBtn}
+          />
+          <div className={styles.langWrapper}>
+            <LanguageSwitcher />
+          </div>
+          <div className={styles.desktopBtn}>
+            <Button
+              text='Консультация'>
+              <Link href="#" />
+            </Button>
+          </div>
+        </div>
+      </div>
+
+      <div className={`${styles.mobileMenu} ${isMenuOpen ? styles.mobileMenuOpen : ''}`}>
+        <div className={styles.mobileMenuContent}>
+          <Nav />
+          <div className={styles.mobileActions}>
+            <LanguageSwitcher />
+            <Button
+              text='Консультация'>
+              <Link href="#" />
+            </Button>
+          </div>
         </div>
       </div>
     </header>

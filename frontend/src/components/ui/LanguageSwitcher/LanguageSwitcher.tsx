@@ -26,7 +26,7 @@ export const LanguageSwitcher = () => {
     <button
       onClick={toggleLanguage}
       className={styles.languageSwitcherBtn}
-      style={{ cursor: 'pointer', background: 'transparent', border: 'none', padding: 0, font: 'inherit' }}
+      // style={{ cursor: 'pointer', , padding: 0, font: 'inherit' }}
     >
       {(language || 'bg').toUpperCase()}
     </button>

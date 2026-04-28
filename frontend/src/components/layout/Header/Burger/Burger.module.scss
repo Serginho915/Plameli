@@ -1,0 +1,40 @@
+@import "@/styles/variables";
+@import "@/styles/mixins";
+
+.burger {
+  width: 43px;
+  height: 42px;
+  border-radius: 16px;
+  border: 1px solid #d0dae7;
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  padding: 0;
+  transition: all 0.3s ease;
+
+  &:hover {
+    border-color: darken(#d0dae7, 10%);
+  }
+}
+
+.line {
+  display: block;
+  width: 18px;
+  height: 2px;
+  background: #8395AC;
+  border-radius: 2px;
+  transition: all 0.3s ease;
+}
+
+.open {
+  .line:first-child {
+    transform: translateY(5px) rotate(45deg);
+  }
+  .line:last-child {
+    transform: translateY(-5px) rotate(-45deg);
+  }
+}

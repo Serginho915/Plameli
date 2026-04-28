@@ -2,10 +2,11 @@
 
 // --- Breakpoints ---
 $breakpoints: (
-  "xs": 320px,
-  "md": 768px,
-  "xl": 1200px,
-  "xxl": 1440px
+  "mobile": 320px,
+  "mobile-large": 480px,
+  "tablet": 768px,
+  "laptop": 1200px,
+  "desktop": 1440px
 );
 
 // --- Responsive Mixins ---
