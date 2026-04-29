@@ -4,10 +4,24 @@ import React from "react";
 import Image from "next/image";
 import { useTranslation } from "@/hooks/useTranslation";
 import { translations } from "./Hero.translations";
+import { StatCard, StatCardData } from "./StatCard/StatCard";
 import styles from "./Hero.module.scss";
 
 export const Hero = () => {
   const { t } = useTranslation(translations);
+
+  const statsData: StatCardData[] = [
+    { type: "stat", value: t.stat1Value, label: t.stat1Label },
+    { type: "stat", value: t.stat2Value, label: t.stat2Label },
+    { type: "stat", value: t.stat3Value, label: t.stat3Label },
+    {
+      type: "site",
+      siteName: t.siteName,
+      siteLink: "https://plameli.com",
+      siteLinkText: t.siteLink,
+      siteLogo: "/images/logo.svg",
+    },
+  ];
 
   return (
     <section className={styles.hero}>
@@ -16,7 +30,7 @@ export const Hero = () => {
         <div className={styles.textBlock}>
           <div className={styles.titles}>
             <h1>{t.title}</h1>
-            <h2>{t.subtitle}</h2>
+            <h2 className={styles.subtitle}>{t.subtitle}</h2>
           </div>
           <p className={styles.description}>{t.description}</p>
 
@@ -43,8 +57,8 @@ export const Hero = () => {
           <Image
             src="/images/Hero/HeroImage.png"
             alt={t.title}
-            width={520}
-            height={560}
+            width={406}
+            height={365}
             className={styles.heroImage}
             priority
           />
@@ -70,44 +84,9 @@ export const Hero = () => {
 
       {/* Stats row */}
       <div className={styles.statsRow}>
-        <div className={styles.statCard}>
-          <span className={styles.statValue}>{t.stat1Value}</span>
-          <p className={styles.statLabel}>{t.stat1Label}</p>
-        </div>
-        <div className={styles.statCard}>
-          <span className={styles.statValue}>{t.stat2Value}</span>
-          <p className={styles.statLabel}>{t.stat2Label}</p>
-        </div>
-        <div className={styles.statCard}>
-          <span className={styles.statValue}>{t.stat3Value}</span>
-          <p className={styles.statLabel}>{t.stat3Label}</p>
-        </div>
-        <div className={`${styles.statCard} ${styles.siteCard}`}>
-          <div className={styles.siteTop}>
-            <Image
-              src="/images/logo.svg"
-              alt="Plameli logo"
-              width={28}
-              height={36}
-              className={styles.siteLogo}
-            />
-            <span className={styles.siteName}>{t.siteName}</span>
-          </div>
-          <a href="https://plameli.com" target="_blank" rel="noopener noreferrer" className={styles.siteLink}>
-            {t.siteLink}
-            <span className={styles.siteLinkIcon}>
-              <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                <path
-                  d="M5 15L15 5M15 5H8M15 5V12"
-                  stroke="#697B91"
-                  strokeWidth="1.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-            </span>
-          </a>
-        </div>
+        {statsData.map((stat, index) => (
+          <StatCard key={index} data={stat} />
+        ))}
       </div>
     </section>
   );

@@ -29,12 +29,13 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 56px;
   max-width: 624px;
   align-items: stretch;
 
-  @include down("tablet") {
-    gap: 16px;
+  @include down("laptop") {
+    gap: 44px;
+    max-width: 589px;
   }
 }
 
@@ -69,7 +70,7 @@
     font-size: 48px;
     font-weight: 400;
     line-height: 1.2;
-    color: $text-grey;
+    color: $text-black;
 
     @include down("laptop") {
       font-size: 40px;
@@ -116,22 +117,23 @@
 // ──────────────────────────
 .forbesBanner {
   display: flex;
-  align-items: center;
+  align-items: flex-end;
   justify-content: space-between;
   gap: 16px;
   background: rgba(255, 255, 255, 0.85);
   backdrop-filter: blur(12px);
   border-radius: 16px;
   padding: 20px 24px;
-  max-width: 420px;
+  max-width: 100%;
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
 
   p {
     font-family: $font-secondary;
-    font-size: 16px;
+    font-size: 24px;
     line-height: 1.5;
     color: $text-primary;
-    font-weight: 500;
+    font-weight: 600;
+    max-width: 433px;
 
     @include down("mobile") {
       font-size: 14px;
@@ -192,7 +194,9 @@
 .imageBlock {
   position: relative;
   flex-shrink: 0;
-  width: 420px;
+  width: 406px;
+  //overflow: hidden; 
+
 
   @include down("laptop") {
     width: 340px;
@@ -200,6 +204,7 @@
 
   @include down("tablet") {
     width: 100%;
+    border-radius: 20px;
   }
 }
 
@@ -207,11 +212,8 @@
   width: 100%;
   height: auto;
   object-fit: cover;
-  border-radius: 24px;
-
-  @include down("tablet") {
-    border-radius: 20px;
-  }
+  display: block;
+    border-radius: 24px;
 }
 
 // ──────────────────────────
@@ -236,129 +238,4 @@
     grid-template-columns: 1fr;
     gap: 10px;
   }
-}
-
-.statCard {
-  background: rgba(255, 255, 255, 0.7);
-  backdrop-filter: blur(10px);
-  border-radius: 20px;
-  padding: 28px 24px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  gap: 12px;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
-
-  @include down("laptop") {
-    padding: 24px 16px;
-    border-radius: 16px;
-  }
-
-  @include down("tablet") {
-    padding: 24px 20px;
-  }
-
-  @include down("mobile") {
-    padding: 20px 16px;
-    border-radius: 14px;
-  }
-}
-
-.statValue {
-  font-family: $font-primary;
-  font-size: 32px;
-  font-weight: 500;
-  color: $text-primary;
-  line-height: 1.2;
-
-  @include down("laptop") {
-    font-size: 28px;
-  }
-
-  @include down("mobile") {
-    font-size: 26px;
-  }
-}
-
-.statLabel {
-  font-family: $font-secondary;
-  font-size: 16px;
-  line-height: 1.4;
-  color: $text-body-grey;
-
-  @include down("laptop") {
-    font-size: 14px;
-  }
-
-  @include down("mobile") {
-    font-size: 14px;
-  }
-}
-
-// ──────────────────────────
-// Site card (plameli.com)
-// ──────────────────────────
-.siteCard {
-  justify-content: space-between;
-}
-
-.siteTop {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.siteLogo {
-  width: 28px;
-  height: auto;
-}
-
-.siteName {
-  font-family: $font-primary;
-  font-size: 20px;
-  font-weight: 500;
-  color: $text-primary;
-
-  @include down("mobile") {
-    font-size: 18px;
-  }
-}
-
-.siteLink {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  font-family: $font-secondary;
-  font-size: 16px;
-  color: $text-body-grey;
-  text-decoration: none;
-  transition: $transition-base;
-
-  &:hover {
-    color: $accent;
-
-    .siteLinkIcon {
-      border-color: $accent;
-      svg path {
-        stroke: $accent;
-      }
-    }
-  }
-
-  @include down("mobile") {
-    font-size: 14px;
-  }
-}
-
-.siteLinkIcon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  border: 1px solid #dce1e8;
-  flex-shrink: 0;
-  transition: $transition-base;
 }
