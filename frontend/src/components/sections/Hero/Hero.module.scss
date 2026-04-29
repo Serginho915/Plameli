@@ -7,14 +7,17 @@
   gap: 32px;
 }
 
+// ──────────────────────────────────────
+// Top section: text + image side-by-side
+// ──────────────────────────────────────
 .top {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
+  align-items: flex-start;
+  gap: 40px;
 
-  // @include down("laptop") {
-  //   gap: 24px;
-  // }
+  @include down("laptop") {
+    gap: 24px;
+  }
 
   @include down("tablet") {
     flex-direction: column;
@@ -30,8 +33,6 @@
   display: flex;
   flex-direction: column;
   gap: 24px;
-  max-width: 624px;
-  align-items: stretch;
 
   @include down("tablet") {
     gap: 16px;
@@ -193,6 +194,8 @@
   position: relative;
   flex-shrink: 0;
   width: 420px;
+  overflow: hidden;
+  border-radius: 24px;
 
   @include down("laptop") {
     width: 340px;
@@ -200,6 +203,7 @@
 
   @include down("tablet") {
     width: 100%;
+    border-radius: 20px;
   }
 }
 
@@ -207,20 +211,20 @@
   width: 100%;
   height: auto;
   object-fit: cover;
-  border-radius: 24px;
-
-  @include down("tablet") {
-    border-radius: 20px;
-  }
+  transform: scale(1.15);
+  display: block;
 }
 
 // ──────────────────────────
-// Stats row
+// Stats row (Semantic List)
 // ──────────────────────────
 .statsRow {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 16px;
+  list-style: none;
+  padding: 0;
+  margin: 0;
 
   @include down("laptop") {
     grid-template-columns: repeat(4, 1fr);
@@ -236,129 +240,11 @@
     grid-template-columns: 1fr;
     gap: 10px;
   }
-}
 
-.statCard {
-  background: rgba(255, 255, 255, 0.7);
-  backdrop-filter: blur(10px);
-  border-radius: 20px;
-  padding: 28px 24px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  gap: 12px;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
-
-  @include down("laptop") {
-    padding: 24px 16px;
-    border-radius: 16px;
+  li {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex; // Ensure li fills the height of the grid row
   }
-
-  @include down("tablet") {
-    padding: 24px 20px;
-  }
-
-  @include down("mobile") {
-    padding: 20px 16px;
-    border-radius: 14px;
-  }
-}
-
-.statValue {
-  font-family: $font-primary;
-  font-size: 32px;
-  font-weight: 500;
-  color: $text-primary;
-  line-height: 1.2;
-
-  @include down("laptop") {
-    font-size: 28px;
-  }
-
-  @include down("mobile") {
-    font-size: 26px;
-  }
-}
-
-.statLabel {
-  font-family: $font-secondary;
-  font-size: 16px;
-  line-height: 1.4;
-  color: $text-body-grey;
-
-  @include down("laptop") {
-    font-size: 14px;
-  }
-
-  @include down("mobile") {
-    font-size: 14px;
-  }
-}
-
-// ──────────────────────────
-// Site card (plameli.com)
-// ──────────────────────────
-.siteCard {
-  justify-content: space-between;
-}
-
-.siteTop {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.siteLogo {
-  width: 28px;
-  height: auto;
-}
-
-.siteName {
-  font-family: $font-primary;
-  font-size: 20px;
-  font-weight: 500;
-  color: $text-primary;
-
-  @include down("mobile") {
-    font-size: 18px;
-  }
-}
-
-.siteLink {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  font-family: $font-secondary;
-  font-size: 16px;
-  color: $text-body-grey;
-  text-decoration: none;
-  transition: $transition-base;
-
-  &:hover {
-    color: $accent;
-
-    .siteLinkIcon {
-      border-color: $accent;
-      svg path {
-        stroke: $accent;
-      }
-    }
-  }
-
-  @include down("mobile") {
-    font-size: 14px;
-  }
-}
-
-.siteLinkIcon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  border: 1px solid #dce1e8;
-  flex-shrink: 0;
-  transition: $transition-base;
 }
