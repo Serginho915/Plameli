@@ -1,5 +1,5 @@
-@import "@/styles/variables";
-@import "@/styles/mixins";
+@import "@/styles/variables.scss";
+@import "@/styles/mixins.scss";
 
 .hero {
   display: flex;
@@ -7,14 +7,17 @@
   gap: 32px;
 }
 
+// ──────────────────────────────────────
+// Top section: text + image side-by-side
+// ──────────────────────────────────────
 .top {
   display: flex;
   align-items: center;
   justify-content: space-between;
 
-  // @include down("laptop") {
-  //   gap: 24px;
-  // }
+  @include down("laptop") {
+    gap: 24px;
+  }
 
   @include down("tablet") {
     flex-direction: column;
@@ -27,15 +30,18 @@
 // ──────────────────────────────
 .textBlock {
   flex: 1;
+  max-width: 624px;
   display: flex;
   flex-direction: column;
-  gap: 56px;
-  max-width: 624px;
   align-items: stretch;
+  gap: 56px;
 
   @include down("laptop") {
     gap: 44px;
-    max-width: 589px;
+  }
+
+  @include down("mobile") {
+    gap: 32px;
   }
 }
 
@@ -117,23 +123,23 @@
 // ──────────────────────────
 .forbesBanner {
   display: flex;
-  align-items: flex-end;
+  align-items: center;
   justify-content: space-between;
-  gap: 16px;
-  background: rgba(255, 255, 255, 0.85);
+  background: #FFFFFF;
   backdrop-filter: blur(12px);
   border-radius: 16px;
   padding: 20px 24px;
   max-width: 100%;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+  width: 100%;
+
+  box-shadow: 0 2px 4px 0 rgba(64, 78, 94, 0.10);
 
   p {
     font-family: $font-secondary;
-    font-size: 24px;
+    font-size: 16px;
     line-height: 1.5;
     color: $text-primary;
-    font-weight: 600;
-    max-width: 433px;
+    font-weight: 500;
 
     @include down("mobile") {
       font-size: 14px;
@@ -155,6 +161,7 @@
 
   &:hover {
     border-color: $accent;
+
     svg path {
       stroke: $accent;
     }
@@ -170,17 +177,33 @@
   }
 }
 
-// Mobile Forbes banner — overlay on image, visible only on mobile
-.forbesBannerMobile {
+// Tablet Forbes banner — absolute overlay inside imageBlock
+.forbesBannerTablet {
   display: none;
 
   @include down("tablet") {
     display: block;
     position: absolute;
-    bottom: 20px;
-    left: 16px;
-    right: 16px;
-    z-index: 2;
+    bottom: 24px;
+    left: 24px;
+    width: calc(100% - 48px);
+    z-index: 10;
+  }
+
+  @include down("mobile-large") {
+    display: none;
+  }
+}
+
+// Mobile Forbes banner — flow element below image
+.forbesBannerMobile {
+  display: none;
+
+  @include down("mobile-large") {
+    display: block;
+    position: relative;
+    width: 100%;
+    //margin-top: 16px;
   }
 
   .forbesBanner {
@@ -193,9 +216,10 @@
 // ──────────────────────────
 .imageBlock {
   position: relative;
-  flex-shrink: 0;
   width: 406px;
-  //overflow: hidden; 
+  height: 365px;
+  overflow: hidden;
+  border-radius: 24px;
 
 
   @include down("laptop") {
@@ -204,25 +228,39 @@
 
   @include down("tablet") {
     width: 100%;
+    height: auto;
     border-radius: 20px;
+  }
+
+  @include down("mobile-large") {
+    overflow: visible;
   }
 }
 
 .heroImage {
   width: 100%;
-  height: auto;
+  height: 100%;
   object-fit: cover;
+  object-position: center top;
   display: block;
-    border-radius: 24px;
+  border-radius: 20px;
+
+  @include down("tablet") {
+    height: auto;
+    object-fit: unset;
+  }
 }
 
 // ──────────────────────────
-// Stats row
+// Stats row (Semantic List)
 // ──────────────────────────
 .statsRow {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 16px;
+  list-style: none;
+  padding: 0;
+  margin: 0;
 
   @include down("laptop") {
     grid-template-columns: repeat(4, 1fr);
@@ -237,5 +275,12 @@
   @include down("mobile") {
     grid-template-columns: 1fr;
     gap: 10px;
+  }
+
+  li {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex; // Ensure li fills the height of the grid row
   }
 }

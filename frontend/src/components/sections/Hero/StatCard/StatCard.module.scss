@@ -2,10 +2,9 @@
 @import "@/styles/mixins";
 
 .statCard {
-  background: rgba(255, 255, 255, 0.7);
-  backdrop-filter: blur(10px);
-  border-radius: 20px;
-  padding: 28px 24px;
+  background: #F3F5F7;;
+  border-radius: 16px;
+  padding: 28px 16px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -13,19 +12,22 @@
   gap: 12px;
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
   width: 100%;
-  height: 100%;
+  height: 284px; 
+
+  @include down("tablet") {
+    height: auto;
+    padding: 16px;
+    padding: 24px 20px;
+  }
 
   @include down("laptop") {
     padding: 24px 16px;
     border-radius: 16px;
   }
 
-  @include down("tablet") {
-    padding: 24px 20px;
-  }
 
   @include down("mobile") {
-    padding: 20px 16px;
+    padding: 16px 20px;
     border-radius: 14px;
   }
 }
@@ -66,6 +68,15 @@
 // ──────────────────────────
 .siteCard {
   justify-content: space-between;
+  background: transparent;
+  box-shadow: none;
+  backdrop-filter: none;
+  border: none;
+  padding: 28px 0; // Adjust padding for transparent card
+
+  @include down("tablet") {
+    padding: 24px 0;
+  }
 }
 
 .siteTop {

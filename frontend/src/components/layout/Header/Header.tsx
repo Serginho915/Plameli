@@ -35,7 +35,9 @@ export const Header = () => {
           </div>
           <div className={styles.desktopBtn}>
             <Button
-              text='Консультация'>
+              text='Консультация'
+              variant='default'
+              className={styles.headerButton}>
               <Link href="#" />
             </Button>
           </div>
@@ -44,11 +46,14 @@ export const Header = () => {
 
       <div className={`${styles.mobileMenu} ${isMenuOpen ? styles.mobileMenuOpen : ''}`}>
         <div className={styles.mobileMenuContent}>
+          <div className={styles.mobileTop}>
+            <LanguageSwitcher variant="mobile" />
+          </div>
           <Nav />
           <div className={styles.mobileActions}>
-            <LanguageSwitcher />
             <Button
-              text='Консультация'>
+              text='Консультация'
+              variant='consultationMobile'>
               <Link href="#" />
             </Button>
           </div>

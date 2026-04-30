@@ -1,24 +1,38 @@
-@import "@/styles/variables";
-@import "@/styles/mixins";
+@import "@/styles/variables.scss";
+@import "@/styles/mixins.scss";
 
 .burger {
+  display: none;
   width: 43px;
   height: 42px;
   border-radius: 16px;
   border: 1px solid #d0dae7;
   background: #fff;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  padding: 0;
+  transition: all 0.3s ease;
+  position: relative;
+  z-index: 101; // Ensure it's above everything
+
+  @include down("tablet") {
+    display: flex;
+  }
+
+  &:hover {
+    border-color: darken(#d0dae7, 10%);
+  }
+}
+
+.iconWrapper {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   gap: 8px;
-  cursor: pointer;
-  padding: 0;
-  transition: all 0.3s ease;
-
-  &:hover {
-    border-color: darken(#d0dae7, 10%);
-  }
+  width: 100%;
+  height: 100%;
 }
 
 .line {
@@ -30,11 +44,16 @@
   transition: all 0.3s ease;
 }
 
+.closeIcon {
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.8); }
+  to { opacity: 1; transform: scale(1); }
+}
+
 .open {
-  .line:first-child {
-    transform: translateY(5px) rotate(45deg);
-  }
-  .line:last-child {
-    transform: translateY(-5px) rotate(-45deg);
-  }
+  // Styles for the open state if needed
+  background: #fff;
 }

@@ -1,134 +1,103 @@
-@import "@/styles/variables";
-@import "@/styles/mixins";
+@import "@/styles/variables.scss";
+@import "@/styles/mixins.scss";
 
 .header {
   width: 100%;
-  background: linear-gradient(180deg,
-      rgba(255, 255, 255, 0.9) 37.98%,
-      rgba(255, 255, 255, 0.81) 54.33%,
-      rgba(249, 250, 251, 0.72) 71.15%,
-      rgba(249, 250, 251, 0.45) 83.17%,
-      rgba(242, 244, 247, 0) 99.52%);
-  backdrop-filter: blur(12px);
-  margin-bottom: 31px;
+  padding: 20px 0;
+  position: relative;
+  z-index: 100;
 }
 
 .headerContainer {
+  @include container;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 24px 56px;
-  position: relative;
-  z-index: 1100;
-
-  @include down("laptop") {
-    padding: 20px 36px;
-  }
-
-  @include down("tablet") {
-    padding: 16px 28px;
-    margin-bottom: 22px;
-  }
-
-  @include down("mobile-large") {
-    padding: 14px 20px;
-    margin-bottom: 18px;
-  }
-
-  @include down("mobile") {
-    padding: 12px;
-  }
-}
-
-.navWrapper {
-  @include down("laptop") {
-    display: none !important;
-  }
 }
 
 .logo {
-  display: flex;
-  align-items: center;
+  flex-shrink: 0;
+}
+
+.navWrapper {
+  @include down("tablet") {
+    display: none;
+  }
 }
 
 .actions {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 24px;
 
-  @include down("laptop") {
+  @include down("tablet") {
     gap: 12px;
   }
 }
 
-.desktopBtn {
-  @include down("laptop") {
-    display: block !important;
-  }
+.langWrapper {
   @include down("mobile-large") {
-    display: none !important;
+    display: none;
   }
 }
 
-.langWrapper {
-  @include down("laptop") {
-    display: block !important;
-  }
+.desktopBtn {
   @include down("mobile-large") {
-    display: none !important;
+    display: none;
+  }
+}
+
+.actions .headerButton {
+  @include down("tablet") {
+    width: 216px;
+    padding: 8px 24px;
+    font-size: 14px;
+    text-transform: none;
+    border-width: 1px;
   }
 }
 
 .burgerBtn {
-  display: none !important;
-
-  @include down("laptop") {
-    display: flex !important;
-  }
+  position: relative;
+  z-index: 101;
 }
 
+// ──────────────────────────
+// Mobile Menu
+// ──────────────────────────
 .mobileMenu {
   position: fixed;
   top: 0;
-  left: 0;
+  right: -100%;
   width: 100%;
   height: 100vh;
-  background: rgba(255, 255, 255, 0.98);
-  backdrop-filter: blur(10px);
-  z-index: 1000;
+  background: #EBEEF2;
+  transition: all 0.4s ease-in-out;
+  z-index: 90;
+  padding: 100px 24px 40px;
   display: flex;
   flex-direction: column;
-  padding: 100px 24px;
-  transform: translateY(-100%);
-  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  visibility: hidden;
 
-  @include down("laptop") {
-    &.mobileMenuOpen {
-      transform: translateY(0);
-      visibility: visible;
-    }
+  &.mobileMenuOpen {
+    right: 0;
   }
 }
 
 .mobileMenuContent {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: 48px;
-
-  nav {
-    ul {
-      flex-direction: column;
-      align-items: center;
-      gap: 24px;
-
-    }
-  }
+  gap: 40px;
+  height: 100%;
 }
+
+.mobileTop {
+  display: flex;
+  justify-content: flex-start;
+}
+
 .mobileActions {
+  margin-top: auto;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 24px;
 }
