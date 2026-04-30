@@ -1,4 +1,4 @@
-import { ComponentTranslations } from "@/hooks/useTranslation";
+import { ComponentTranslations } from "@/hooks/useTranslation.ts";
 
 export const translations = {
   ru: {

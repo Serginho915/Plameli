@@ -2,9 +2,9 @@
 
 import React from "react";
 import Image from "next/image";
-import { useTranslation } from "@/hooks/useTranslation";
-import { translations } from "./Hero.translations";
-import { StatCard, StatCardData } from "./StatCard/StatCard";
+import { useTranslation } from "@/hooks/useTranslation.ts";
+import { translations } from "./Hero.translations.ts";
+import { StatCard, StatCardData } from "./StatCard/StatCard.tsx";
 import styles from "./Hero.module.scss";
 
 export const Hero = () => {
@@ -57,8 +57,8 @@ export const Hero = () => {
           <Image
             src="/images/Hero/HeroImage.png"
             alt={t.title}
-            width={520}
-            height={560}
+            width={406}
+            height={365}
             className={styles.heroImage}
             priority
           />

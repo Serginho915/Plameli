@@ -1,4 +1,4 @@
-import { Hero } from '@/components/sections/Hero/Hero';
+import { Hero } from '@/components/sections/Hero/Hero.tsx';
 
 export default function Home() {
   return (

@@ -1,5 +1,5 @@
-@import "@/styles/variables";
-@import "@/styles/mixins";
+@import "@/styles/variables.scss";
+@import "@/styles/mixins.scss";
 
 .hero {
   display: flex;
@@ -12,8 +12,8 @@
 // ──────────────────────────────────────
 .top {
   display: flex;
-  align-items: flex-start;
-  gap: 40px;
+  align-items: center;
+  justify-content: space-between;
 
   @include down("laptop") {
     gap: 24px;
@@ -30,12 +30,17 @@
 // ──────────────────────────────
 .textBlock {
   flex: 1;
+  max-width: 624px;
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  align-items: stretch;
+  gap: 56px;
 
-  @include down("tablet") {
-    gap: 16px;
+  @include down("laptop") {
+    gap: 44px;
+  }
+  @include down("mobile") {
+     gap: 32px;
   }
 }
 
@@ -70,7 +75,7 @@
     font-size: 48px;
     font-weight: 400;
     line-height: 1.2;
-    color: $text-grey;
+    color: $text-black;
 
     @include down("laptop") {
       font-size: 40px;
@@ -119,13 +124,14 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 16px;
-  background: rgba(255, 255, 255, 0.85);
+  background: #FFFFFF;
   backdrop-filter: blur(12px);
   border-radius: 16px;
   padding: 20px 24px;
-  max-width: 420px;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+  max-width: 100%;
+  width: 100%;
+
+  box-shadow: 0 2px 4px 0 rgba(64, 78, 94, 0.10);
 
   p {
     font-family: $font-secondary;
@@ -193,7 +199,8 @@
 .imageBlock {
   position: relative;
   flex-shrink: 0;
-  width: 420px;
+  width: 406px;
+  height: 365px;
   overflow: hidden;
   border-radius: 24px;
 
@@ -209,9 +216,10 @@
 
 .heroImage {
   width: 100%;
-  height: auto;
+  height: 100%;
   object-fit: cover;
-  transform: scale(1.15);
+  object-position: center top; // Align to top first
+  transform: scale(1.15) translateY(20px); // Scale to hide bars, then translate down to show head
   display: block;
 }
 
