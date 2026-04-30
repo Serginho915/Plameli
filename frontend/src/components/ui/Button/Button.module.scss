@@ -59,9 +59,9 @@
 
 // Mobile specific consultation style if needed, but keeping it separate
 .consultationMobile {
-  border: 2px solid #FF6B4A;
+  border: 2px solid $accent;
   background-color: #FFFFFF;
-  color: #FF6B4A;
+  color: $accent;
   font-style: italic;
   font-size: 32px;
   padding: 16px 40px;
@@ -69,8 +69,10 @@
   text-transform: none;
   font-weight: 500;
 
-  &:hover {
-    background-color: rgba(255, 107, 74, 0.05);
+  &:hover,
+  &:active {
+    background-color: $accent;
+    color: #FFFFFF;
   }
 
   @include down("mobile") {

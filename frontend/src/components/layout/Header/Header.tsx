@@ -55,12 +55,13 @@ export const Header = () => {
             <LanguageSwitcher />
           </div>
           <div className={styles.desktopBtn}>
-            <Button
-              text='Консультация'
-              variant='default'
-              className={styles.headerButton}>
-              <Link href="#" />
-            </Button>
+            <Link href={`/${language}/consultation`}>
+              <Button
+                text='Консультация'
+                variant='default'
+                className={styles.headerButton}
+              />
+            </Link>
           </div>
         </div>
       </div>
@@ -72,11 +73,12 @@ export const Header = () => {
           </div>
           <Nav />
           <div className={styles.mobileActions}>
-            <Button
-              text='Консультация'
-              variant='consultationMobile'>
-              <Link href="#" />
-            </Button>
+            <Link href={`/${language}/consultation`} className={styles.mobileLink}>
+              <Button
+                text='Консультация'
+                variant='consultationMobile'
+              />
+            </Link>
           </div>
         </div>
       </div>
