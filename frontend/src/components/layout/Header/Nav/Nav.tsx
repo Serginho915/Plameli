@@ -2,8 +2,8 @@
 import React from 'react'
 import styles from './Nav.module.scss'
 import Link from 'next/link'
-import { useTranslation } from '@/hooks/useTranslation'
-import { translations } from './translations'
+import { useTranslation } from '@/hooks/useTranslation.ts'
+import { translations } from './translations.ts'
 
 export const Nav = () => {
   const { t, language } = useTranslation(translations);

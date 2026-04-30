@@ -1,7 +1,7 @@
 'use client';
 
-import { useLanguage } from '../context/LanguageContext';
-import { Language } from '../types/language';
+import { useLanguage } from '../context/LanguageContext.tsx';
+import { Language } from '../types/language.ts';
 
 export type ComponentTranslations<T extends Record<string, string> = Record<string, string>> = Record<Language, T>;
 
