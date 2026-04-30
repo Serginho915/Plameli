@@ -47,15 +47,16 @@
   }
 }
 
-.actions .headerButton {
+.headerButton {
   @include down("tablet") {
-    width: 216px;
-    padding: 8px 24px;
+    width: auto;
+    padding: 8px 16px;
     font-size: 14px;
     text-transform: none;
     border-width: 1px;
   }
 }
+
 
 .burgerBtn {
   position: relative;

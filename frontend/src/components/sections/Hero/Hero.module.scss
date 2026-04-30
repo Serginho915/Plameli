@@ -221,7 +221,6 @@
   overflow: hidden;
   border-radius: 24px;
 
-
   @include down("laptop") {
     width: 340px;
   }
@@ -243,14 +242,13 @@
   object-fit: cover;
   object-position: center top;
   display: block;
-  border-radius: 20px;
+  border-radius: 24px;
 
   @include down("tablet") {
     height: auto;
     object-fit: unset;
   }
 }
-
 // ──────────────────────────
 // Stats row (Semantic List)
 // ──────────────────────────

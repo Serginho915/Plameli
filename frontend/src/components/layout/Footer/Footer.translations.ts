@@ -1,9 +1,6 @@
 import { ComponentTranslations } from "@/hooks/useTranslation.ts";
 
 export const translations: ComponentTranslations = {
-  en: {
-    footer_copy: "All rights reserved.",
-  },
   ru: {
     footer_copy: "Все права защищены.",
   },

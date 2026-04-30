@@ -14,7 +14,7 @@
   padding: 0;
   transition: all 0.3s ease;
   position: relative;
-  z-index: 101; // Ensure it's above everything
+  z-index: 101; 
 
   @include down("tablet") {
     display: flex;
