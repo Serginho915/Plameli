@@ -21,6 +21,7 @@ export const metadata: Metadata = {
 };
  
 import { LanguageProvider } from "@/context/LanguageContext.tsx";
+import { UIProvider } from "@/context/UIContext.tsx";
 import { Header } from "@/components/layout/Header/Header.tsx";
 import { Footer } from "@/components/layout/Footer/Footer.tsx";
 import { i18n } from "@/i18n-config.ts";
@@ -44,11 +45,13 @@ export default async function RootLayout({
     <html lang={lang} className={`${oswald.variable} ${sourceSans.variable}`}>
       <body >
         <LanguageProvider initialLang={currentLang}>
-          <Header />
-          <main className='main-flex'>
-            {children}
-          </main>
-          <Footer />
+          <UIProvider>
+            <Header />
+            <main className='main-flex'>
+              {children}
+            </main>
+            <Footer />
+          </UIProvider>
         </LanguageProvider>
       </body>
     </html>
