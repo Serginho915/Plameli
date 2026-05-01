@@ -5,6 +5,15 @@
   display: flex;
   flex-direction: column;
   gap: 32px;
+  margin-top: 32px;
+
+  @include down("tablet") {
+    margin-top: 22px;
+  }
+
+  @include down("mobile") {
+    margin-top: 16px;
+  }
 }
 
 // ──────────────────────────────────────

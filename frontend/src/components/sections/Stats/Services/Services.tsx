@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useParams } from "next/navigation";
@@ -14,21 +14,50 @@ import serviceGreenImg from "../../../../../public/images/Stats/serviceGreen.svg
 export const Services = () => {
   const { t } = useTranslation(translations);
   const { lang } = useParams();
-  
-  // Statuses: null (idle), 'growing' (18x18 grey), 'active' (15x15 green)
-  const [statuses, setStatuses] = useState<string[]>([]);
+  const sectionRef = useRef<HTMLElement>(null);
+  const [isInView, setIsInView] = useState(false);
 
+  // Statuses: "" (idle), 'growing' (18x18 grey), 'active' (22x22 green)
+  const [statuses, setStatuses] = useState<string[]>(() => 
+    t.services ? new Array(t.services.length).fill("") : []
+  );
+
+  // Reset statuses if services count changes (e.g. on language change)
   useEffect(() => {
-    if (t.services && statuses.length === 0) {
+    if (t.services && t.services.length !== statuses.length) {
       setStatuses(new Array(t.services.length).fill(""));
     }
-  }, [t.services, statuses.length]);
+  }, [t.services?.length]);
+
+  // Intersection Observer to detect when section is in view
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsInView(true);
+          observer.unobserve(entry.target); // Trigger only once
+        }
+      },
+      { threshold: 0.2 } // Trigger when 20% of section is visible
+    );
+
+    if (sectionRef.current) {
+      observer.observe(sectionRef.current);
+    }
+
+    return () => {
+      if (sectionRef.current) {
+        observer.unobserve(sectionRef.current);
+      }
+    };
+  }, []);
 
   useEffect(() => {
-    if (!t.services || statuses.length === 0) return;
+    // Only start animation if section is in view and statuses are initialized
+    if (!isInView || !t.services || statuses.length === 0) return;
 
     let currentIndex = 0;
-    const totalInterval = 700; // Time between each icon starting its cycle
+    const totalInterval = 900;
 
     const intervalId = setInterval(() => {
       if (currentIndex >= t.services.length) {
@@ -37,15 +66,13 @@ export const Services = () => {
       }
 
       const indexToProcess = currentIndex;
-      
-      // Stage 1: Shrink to 18x18 (grey)
+
       setStatuses(prev => {
         const next = [...prev];
         next[indexToProcess] = "growing";
         return next;
       });
 
-      // Stage 2: Turn green and shrink to 15x15 after half the interval
       setTimeout(() => {
         setStatuses(prev => {
           const next = [...prev];
@@ -58,10 +85,10 @@ export const Services = () => {
     }, totalInterval);
 
     return () => clearInterval(intervalId);
-  }, [t.services, statuses.length]);
+  }, [isInView, t.services, statuses.length]);
 
   return (
-    <section className={styles.servicesSection}>
+    <section className={styles.servicesSection} ref={sectionRef}>
       <div className={styles.serviceList}>
         <h5>{t.servicesTitle}</h5>
         <div className={styles.contentWrapper}>
@@ -70,7 +97,7 @@ export const Services = () => {
               const status = statuses[index];
               const isActive = status === "active";
               const isGrowing = status === "growing";
-              
+
               return (
                 <li key={index}>
                   <div className={`
