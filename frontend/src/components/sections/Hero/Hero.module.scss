@@ -40,6 +40,10 @@
     gap: 44px;
   }
 
+  @include down("tablet") {
+    align-self: flex-start;
+  }
+
   @include down("mobile") {
     gap: 32px;
   }
@@ -48,6 +52,11 @@
 .titles {
   display: flex;
   flex-direction: column;
+  gap: 12px;
+
+  @include down("laptop") {
+    gap: 8px;
+  }
 
   h1 {
     font-size: 56px;
@@ -98,10 +107,10 @@
 
 .description {
   font-family: $font-secondary;
-  font-size: 18px;
-  line-height: 1.6;
+  font-size: 24px;
+  line-height: 28px;
   color: $text-body-grey;
-  max-width: 420px;
+  max-width: 404px;
 
   @include down("laptop") {
     font-size: 16px;
@@ -109,8 +118,8 @@
   }
 
   @include down("tablet") {
-    max-width: 100%;
-    font-size: 16px;
+    max-width: 444px;
+    font-size: 20px;
   }
 
   @include down("mobile") {
@@ -125,21 +134,30 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: #FFFFFF;
+  background: #ffffff;
   backdrop-filter: blur(12px);
   border-radius: 16px;
   padding: 20px 24px;
-  max-width: 100%;
   width: 100%;
 
-  box-shadow: 0 2px 4px 0 rgba(64, 78, 94, 0.10);
+  // box-shadow: 0 2px 4px 0 rgba(64, 78, 94, 0.10);
+  @include down("tablet") {
+    max-width: 460px;
+    padding: 16px;
+  }
 
   p {
     font-family: $font-secondary;
-    font-size: 16px;
-    line-height: 1.5;
+    font-size: 24px;
+    line-height: 32px;
     color: $text-primary;
     font-weight: 500;
+    max-width: 433px;
+
+    @include down("tablet") {
+      font-size: 20px;
+      line-height: 28px;
+    }
 
     @include down("mobile") {
       font-size: 14px;
@@ -148,25 +166,9 @@
 }
 
 .forbesIcon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  border: 1px solid #dce1e8;
-  transition: $transition-base;
-  cursor: pointer;
-
-  &:hover {
-    border-color: $accent;
-
-    svg path {
-      stroke: $accent;
-    }
-  }
+  align-self: flex-end;
 }
+
 
 // Desktop Forbes banner — visible on desktop, hidden on mobile
 .forbesBannerDesktop {
@@ -184,8 +186,8 @@
   @include down("tablet") {
     display: block;
     position: absolute;
-    bottom: 24px;
-    left: 24px;
+    bottom: 10px;
+    left: 10px;
     width: calc(100% - 48px);
     z-index: 10;
   }
@@ -247,38 +249,5 @@
   @include down("tablet") {
     height: auto;
     object-fit: unset;
-  }
-}
-// ──────────────────────────
-// Stats row (Semantic List)
-// ──────────────────────────
-.statsRow {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 16px;
-  list-style: none;
-  padding: 0;
-  margin: 0;
-
-  @include down("laptop") {
-    grid-template-columns: repeat(4, 1fr);
-    gap: 12px;
-  }
-
-  @include down("tablet") {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 12px;
-  }
-
-  @include down("mobile") {
-    grid-template-columns: 1fr;
-    gap: 10px;
-  }
-
-  li {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    display: flex; // Ensure li fills the height of the grid row
   }
 }

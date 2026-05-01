@@ -1,6 +1,7 @@
 import React from "react";
 import Image from "next/image";
 import styles from "./StatCard.module.scss";
+import { CircleArrowIcon } from "@/components/ui/Icons/CircleArrowIcon/CircleArrowIcon";
 
 export interface StatCardData {
   type: "stat" | "site";
@@ -17,6 +18,8 @@ interface StatCardProps {
 }
 
 export const StatCard: React.FC<StatCardProps> = ({ data }) => {
+  const [isHovered, setIsHovered] = React.useState(false);
+
   if (data.type === "site") {
     return (
       <div className={`${styles.statCard} ${styles.siteCard}`}>
@@ -37,19 +40,11 @@ export const StatCard: React.FC<StatCardProps> = ({ data }) => {
           target="_blank"
           rel="noopener noreferrer"
           className={styles.siteLink}
+          onMouseEnter={() => setIsHovered(true)}
+          onMouseLeave={() => setIsHovered(false)}
         >
           {data.siteLinkText}
-          <span className={styles.siteLinkIcon}>
-            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-              <path
-                d="M5 15L15 5M15 5H8M15 5V12"
-                stroke="#697B91"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-          </span>
+          <CircleArrowIcon isParentHovered={isHovered} />
         </a>
       </div>
     );

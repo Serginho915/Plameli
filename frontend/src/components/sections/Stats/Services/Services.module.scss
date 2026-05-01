@@ -1,0 +1,175 @@
+@import "@/styles/variables.scss";
+@import "@/styles/mixins.scss";
+
+.servicesSection {
+  //padding: 64px 0;
+
+  @include down("tablet") {
+    //padding: 40px 0;
+  }
+}
+
+.serviceList {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  font-family: $font-secondary;
+
+  h5 {
+    font-size: 24px;
+    font-weight: 400;
+    color: #000;
+    font-family: $font-primary;
+    line-height: 28px;
+
+    @include down("tablet") {
+      font-size: 20px;
+      line-height: 24px;
+    }
+  }
+}
+
+.contentWrapper {
+  display: flex;
+  // gap: 64px;
+  align-items: flex-start;
+  justify-content: space-between;
+
+  @include down("laptop") {
+    gap: 40px;
+  }
+
+  @include down("tablet") {
+    flex-direction: column;
+    gap: 48px;
+  }
+}
+
+.services {
+  flex: 1.2;
+  display: flex;
+  flex-direction: column;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  max-width: 588px;
+
+  li {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 20px 0;
+    border-bottom: 1px solid #DCE1E8;
+    transition: $transition-base;
+
+    &:last-child {
+      border-bottom: none;
+    }
+
+    p {
+      font-size: 24px;
+      font-weight: 500;
+      color: $text-black;
+      font-family: $font-primary;
+
+      @include down("tablet") {
+        font-size: 20px;
+      }
+      @include down("mobile") {
+        font-size: 16px;
+      }
+    }
+  }
+}
+
+.serviceIcon {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1px solid #DCE1E8;
+  background-color: #F8FAFC;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: $transition-base;
+
+  img {
+    width: 16px;
+    height: 16px;
+    object-fit: contain;
+  }
+}
+
+.missionTextBlock {
+  width: 100%;
+  padding: 25px 32px 0;
+
+    @include down("mobile-large") {
+      padding: 24px 24px 0;
+    }
+
+    @include down("mobile") {
+      padding: 24px 16px 0;
+    }
+  p {
+    //max-width: 377px;
+    font-size: 20px;
+    line-height: 1.5;
+    color: $text-black;
+    font-weight: 500;
+    font-family: $font-secondary;
+
+    @include down("tablet") {
+      font-size: 20px;
+    }
+
+    @include down("mobile") {
+      font-size: 16px; 
+    }
+  }
+}
+
+.missionBlock {
+  flex: 0.8;
+  max-width: 477px;
+  background: #FFFFFF;
+  border-radius: 20px;
+  //padding: 40px;
+  //box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 48px;
+
+  @include down("tablet") {
+    gap: 24px;
+    align-self: flex-end;
+    max-width: 520px;
+  }
+
+  @include down("mobile-large") {
+    max-width: 100%;;
+  }
+  
+}
+
+.ctaWrapper {
+  width: 100%;
+  display: block;
+}
+
+.ctaButton {
+  width: 100% ;
+  text-transform: none ;
+  font-family: $font-secondary;
+  font-size: 28px;
+  font-style: italic;
+  font-weight: 600;
+  padding: 12px 24px;
+
+  @include down("mobile-large") {
+    font-size: 18px;
+    padding: 14px 20px;
+  }
+}

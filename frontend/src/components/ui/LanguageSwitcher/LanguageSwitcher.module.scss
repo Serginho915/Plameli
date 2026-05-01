@@ -10,17 +10,16 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  font-family: $font-primary;
-  font-size: 14px;
-  font-weight: 500;
-  color: #8395AC;
+  font-family: $font-secondary;
+  font-size: 24px;
+  font-weight: 400;
+  color: #404E5E;
   cursor: pointer;
   transition: all 0.3s ease;
   padding: 0;
 
   &:hover {
     border-color: darken(#d0dae7, 10%);
-    color: #404E5E;
   }
 }
 

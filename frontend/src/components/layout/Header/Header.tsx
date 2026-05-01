@@ -77,6 +77,7 @@ export const Header = () => {
               <Button
                 text='Консультация'
                 variant='consultationMobile'
+                className={styles.headerButton}
               />
             </Link>
           </div>
