@@ -21,13 +21,13 @@ export const Services = () => {
   const [statuses, setStatuses] = useState<string[]>(() => 
     t.services ? new Array(t.services.length).fill("") : []
   );
+  const [prevServicesLength, setPrevServicesLength] = useState(t.services?.length || 0);
 
-  // Reset statuses if services count changes (e.g. on language change)
-  useEffect(() => {
-    if (t.services && t.services.length !== statuses.length) {
-      setStatuses(new Array(t.services.length).fill(""));
-    }
-  }, [t.services?.length]);
+  // Sync statuses if services count changes during render
+  if (t.services && t.services.length !== prevServicesLength) {
+    setPrevServicesLength(t.services.length);
+    setStatuses(new Array(t.services.length).fill(""));
+  }
 
   // Intersection Observer to detect when section is in view
   useEffect(() => {

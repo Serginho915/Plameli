@@ -11,10 +11,12 @@ export const LanguageSwitcher = ({ variant = 'default' }: { variant?: 'default' 
   const pathname = usePathname();
   const router = useRouter();
   const [displayLang, setDisplayLang] = useState(language);
+  const [prevLanguage, setPrevLanguage] = useState(language);
 
-  useEffect(() => {
+  if (language !== prevLanguage) {
+    setPrevLanguage(language);
     setDisplayLang(language);
-  }, [language]);
+  }
 
   const changeLanguage = (newLang: 'ru' | 'bg') => {
     if (language === newLang) return;
