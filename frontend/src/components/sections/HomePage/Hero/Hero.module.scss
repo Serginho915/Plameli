@@ -260,4 +260,8 @@
     height: auto;
     object-fit: unset;
   }
+  @include down("mobile-large") {
+   min-height: 252px;
+   object-fit: cover;
+  }
 }
