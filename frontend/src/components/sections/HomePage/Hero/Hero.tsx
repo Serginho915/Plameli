@@ -5,7 +5,7 @@ import Image from "next/image";
 import { useTranslation } from "@/hooks/useTranslation";
 import { translations } from "./Hero.translations";
 import styles from "./Hero.module.scss";
-import heroImg from "../../../../public/images/Hero/olenaShopova.png";
+import heroImg from "../../../../../public/images/Hero/olenaShopova.png";
 
 import { CircleArrowIcon } from "@/components/ui/Icons/CircleArrowIcon/CircleArrowIcon";
 

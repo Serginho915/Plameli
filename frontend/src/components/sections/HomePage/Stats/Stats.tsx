@@ -5,7 +5,7 @@ import { useTranslation } from "@/hooks/useTranslation";
 import { translations } from "./Stats.translations";
 import { StatCard, StatCardData } from "./StatCard/StatCard";
 import styles from "./Stats.module.scss";
-import serviceImg from "../../../../public/images/Stats/service.svg";
+import serviceImg from "../../../../../public/images/Stats/service.svg";
 import Image from "next/image";
 import { Button } from "@/components/ui/Button/Button";
 import { Services } from "./Services/Services";

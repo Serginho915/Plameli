@@ -8,8 +8,8 @@ import { useTranslation } from "@/hooks/useTranslation";
 import { Button } from "@/components/ui/Button/Button.tsx";
 import { translations } from "./Services.translations";
 import styles from "./Services.module.scss";
-import serviceImg from "../../../../../public/images/Stats/service.svg";
-import serviceGreenImg from "../../../../../public/images/Stats/serviceGreen.svg";
+import serviceImg from "../../../../../../public/images/Stats/service.svg";
+import serviceGreenImg from "../../../../../../public/images/Stats/serviceGreen.svg";
 
 export const Services = () => {
   const { t } = useTranslation(translations);

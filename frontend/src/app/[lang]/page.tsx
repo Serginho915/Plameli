@@ -1,5 +1,5 @@
-import { Hero } from '@/components/sections/Hero/Hero.tsx';
-import { Stats } from '@/components/sections/Stats/Stats.tsx';
+import { Hero } from '@/components/sections/HomePage/Hero/Hero.tsx';
+import { Stats } from '@/components/sections/HomePage/Stats/Stats.tsx';
 
 
 export default function Home() {
