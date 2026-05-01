@@ -2,34 +2,22 @@
 @import "@/styles/mixins";
 
 .statCard {
-  background: #F3F5F7;
+  background: #f3f5f7;
   border-radius: 16px;
-  padding: 28px 16px;
+  padding: 24px 16px;
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
-  gap: 12px;
+  gap: 22px;
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
   width: 100%;
-  height: 284px;
+  // height: 284px;
 
-  @include down("tablet") {
-    height: auto;
-    padding: 24px 20px;
-  }
-
-  @include down("laptop") {
-    padding: 24px 16px;
-    border-radius: 16px;
-  }
-
-  @include down("mobile") {
-    padding: 16px 20px;
-    border-radius: 14px;
+  @include down("mobile-large") {
+    gap: 16px;
   }
 }
-
 .statValue {
   font-family: $font-primary;
   font-size: 32px;
@@ -50,7 +38,7 @@
   font-family: $font-secondary;
   font-size: 24px;
   line-height: 32px;
-  color: #3F3D3D;
+  color: #3f3d3d;
 
   @include down("tablet") {
     font-size: 20px;
