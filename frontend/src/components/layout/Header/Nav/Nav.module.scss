@@ -9,13 +9,18 @@
 
   @include down("tablet") {
     flex-direction: column;
-    align-items: flex-end;
+    align-items: stretch;
     gap: 16px;
+    width: 100%;
   }
 }
 
 .navItem {
   position: relative;
+  
+  @include down("tablet") {
+    width: 100%;
+  }
 }
 
 .navLink {
@@ -70,6 +75,9 @@
 
   @include down("tablet") {
     font-size: 24px;
+    width: 100%;
+    justify-content: flex-end;
+    text-align: right;
   }
 }
 
@@ -99,7 +107,7 @@
   left: 0;
   width: 207px;
   background: #ffffff;
-  border-radius: 16px;
+  //border-radius: 16px;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.10);
   list-style: none;
   padding: 0;
@@ -123,6 +131,7 @@
     opacity: 0;
     transform: translateY(-8px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -147,11 +156,13 @@
   font-weight: 400;
   line-height: 28px;
   text-decoration: none;
-  transition: background-color 0.15s ease, color 0.15s ease;
-  border-radius: 0;
+  background-color: #F3F5F7;
+  border-bottom: 2px solid #D0DAE7;
+  border-radius: 4px;
 
   &:hover {
-    background-color: #F8FAFC;
-    color: $accent;
+    background: #ffffff;
+    color: #000000;
+    border-bottom: 2px solid #2A2A2A;
   }
 }

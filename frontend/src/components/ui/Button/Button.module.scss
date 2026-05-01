@@ -24,7 +24,7 @@
   }
 
   &::before {
-    content: '';
+    content: "";
     position: absolute;
     bottom: 0;
     left: 0;
@@ -37,7 +37,7 @@
 
   &:hover {
     color: #ffffff;
-    
+
     &::before {
       height: 100%;
     }
@@ -76,21 +76,25 @@
 
 .consultationMobile {
   border: 2px solid $accent;
-  background-color: transparent;
+  background-color: #fff;
   color: $accent;
   font-style: italic;
-  font-size: 32px;
-  padding: 16px 40px;
+  font-size: 28px;
+  padding: 8px 24px;
   width: 100%;
   text-transform: none;
-  font-weight: 500;
+  font-style: italic;
+  font-weight: 600;
+  line-height: 32px;
+  letter-spacing: 1px;
+  font-weight: 600;
   position: relative;
   overflow: hidden;
   z-index: 1;
   transition: color 0.4s ease;
 
   &::before {
-    content: '';
+    content: "";
     position: absolute;
     bottom: 0;
     left: 0;
@@ -103,8 +107,8 @@
 
   &:hover,
   &:active {
-    color: #FFFFFF;
-    
+    color: #ffffff;
+
     &::before {
       height: 100%;
     }
