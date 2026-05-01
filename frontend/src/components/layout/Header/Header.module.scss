@@ -55,6 +55,9 @@
   font-size: 28px;
   width: auto;
   padding: 8px 24px;
+  &:hover {
+    color: #ffffff;
+  }
 
   @include down("tablet") {
     width: auto;

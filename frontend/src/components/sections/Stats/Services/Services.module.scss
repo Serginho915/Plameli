@@ -75,6 +75,7 @@
       @include down("tablet") {
         font-size: 20px;
       }
+
       @include down("mobile") {
         font-size: 16px;
       }
@@ -87,17 +88,34 @@
   height: 32px;
   border-radius: 50%;
   border: 1px solid #DCE1E8;
-  background-color: #F8FAFC;
+  background-color: #ffffff;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  transition: $transition-base;
+  transition: all 0.2s ease;
 
   img {
-    width: 16px;
-    height: 16px;
+    width: 22px;
+    height: 22px;
     object-fit: contain;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  &.growing {
+    img {
+      width: 18px;
+      height: 18px;
+    }
+  }
+
+  &.activeIcon {
+
+
+    img {
+      width: 22px;
+      height: 22px;
+    }
   }
 }
 
@@ -105,13 +123,14 @@
   width: 100%;
   padding: 25px 32px 0;
 
-    @include down("mobile-large") {
-      padding: 24px 24px 0;
-    }
+  @include down("mobile-large") {
+    padding: 24px 24px 0;
+  }
 
-    @include down("mobile") {
-      padding: 24px 16px 0;
-    }
+  @include down("mobile") {
+    padding: 24px 16px 0;
+  }
+
   p {
     //max-width: 377px;
     font-size: 20px;
@@ -125,7 +144,7 @@
     }
 
     @include down("mobile") {
-      font-size: 16px; 
+      font-size: 16px;
     }
   }
 }
@@ -149,9 +168,10 @@
   }
 
   @include down("mobile-large") {
-    max-width: 100%;;
+    max-width: 100%;
+    ;
   }
-  
+
 }
 
 .ctaWrapper {
@@ -160,8 +180,8 @@
 }
 
 .ctaButton {
-  width: 100% ;
-  text-transform: none ;
+  width: 100%;
+  text-transform: none;
   font-family: $font-secondary;
   font-size: 28px;
   font-style: italic;
