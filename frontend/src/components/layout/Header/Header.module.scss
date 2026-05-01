@@ -18,6 +18,35 @@
 
 .logo {
   flex-shrink: 0;
+  display: flex;
+  align-items: center;
+
+  img {
+    display: block;
+    width: 43px;
+    height: 57px;
+    transition: all 0.3s ease;
+
+    @include down("laptop") {
+      width: 38px;
+      height: 51px;
+    }
+
+    @include down("tablet") {
+      width: 30px;
+      height: 40px;
+    }
+
+    @include down("mobile-large") {
+      width: 37px;
+      height: 26px;
+    }
+
+    @include down("mobile") {
+      width: 27px;
+      height: 36px;
+    }
+  }
 }
 
 .navWrapper {
@@ -81,11 +110,13 @@
   top: 100%;
   left: 0;
   width: 100%;
-  background: rgba(255, 255, 255, 0.12);
+  border-radius: 0 0 var(--size-spacing-sp-16, 16px)
+    var(--size-spacing-sp-16, 16px);
+  background: linear-gradient(180deg, #fff 0%, rgba(235, 238, 242, 0.3) 100%);
   backdrop-filter: blur(20px);
   transition: all 0.4s ease-in-out;
   z-index: 90;
-  padding: 8px 12px;
+  padding: 12px;
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -103,7 +134,7 @@
 .mobileMenuContent {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 4px;
   height: 100%;
 
   :global(.nav_navList__9n6p5) {
@@ -144,7 +175,7 @@
 .headerButton {
   font-size: 28px;
   font-style: italic;
-  font-weight: 600;
+  font-weight: 400;
   line-height: 32px;
   letter-spacing: 1px;
 

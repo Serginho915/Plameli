@@ -2,8 +2,8 @@
 @import "@/styles/mixins.scss";
 
 .languageSwitcherBtn {
-  width: 43px;
-  height: 42px;
+  width: 37px;
+  height: 36px;
   border-radius: 16px;
   border: 1px solid #d0dae7;
   background: #fff;
@@ -52,18 +52,22 @@
   z-index: 1;
   border: none;
   background: transparent;
-  padding: 8px 12px;
-  font: inherit; // Ensure it uses the parent/specified font
-  font-size: 14px;
-  font-weight: 500;
-  color: #697B91;
-  border-radius: 8px;
+  padding: 6px;
+  font: inherit; 
+  font-size: 20px;
+  line-height: 24px;
+  font-weight: 400;
+  color: #8395AC;
+  border-radius: 12px;
   cursor: pointer;
   transition: all 0.2s ease;
   min-width: 44px;
   text-align: center;
   outline: none;
 
+  @include down("mobile") {
+    font-size: 16px;
+  }
   &.active {
     color: #404E5E;
   }
