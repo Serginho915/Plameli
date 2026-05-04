@@ -4,7 +4,7 @@ import styles from './Button.module.scss';
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   text?: string;
   size?: 'sm' | 'md' | 'lg';
-  variant?: 'default' | 'consultationMobile';
+  variant?: 'default' | 'consultationMobile' | 'outline' | 'filled';
   children?: ReactNode;
 }
 

@@ -1,0 +1,442 @@
+@import "@/styles/variables.scss";
+@import "@/styles/mixins.scss";
+
+.services {
+  display: flex;
+  flex-direction: column;
+  gap: 32px; // Gap between SectionTitle and contentWrapper
+
+  @include down("tablet") {
+    gap: 24px;
+  }
+}
+
+// ====== Card Header ======
+.cardHeader {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+
+  @include down("mobile") {
+    gap: 12px;
+  }
+}
+
+.cardTitle {
+  font-family: $font-secondary;
+  font-size: 32px;
+  font-weight: 500;
+  color: #323131;
+
+  @include down("tablet") {
+    font-size: 24px;
+  }
+
+  @include down("mobile") {
+    font-size: 20px;
+  }
+}
+
+.cardTitleDesktop {
+  display: inline;
+
+  @include down("mobile-large") {
+    display: none;
+  }
+}
+
+.cardTitleMobile {
+  display: none;
+
+  @include down("mobile-large") {
+    display: inline;
+  }
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 8px 12px;
+  color: #fff;
+  font-family: $font-secondary;
+  font-size: 16px;
+  font-weight: 500;
+  border-radius: 54px;
+  line-height: 22px;
+  background: #030213;
+
+  @include down("tablet") {
+    padding: 4px 12px;
+  }
+
+  @include down("mobile-large") {
+    font-size: 16px;
+  }
+
+  @include down("mobile") {
+    padding: 2px 10px;
+    font-size: 12px;
+  }
+
+  @include down("mobile") {
+    font-size: 12px;
+    padding: 3px 12px;
+  }
+}
+
+// ====== Main Content Wrapper ======
+.contentWrapper {
+  border-radius: 20px;
+  background: #fff;
+  box-shadow: 0 2px 12px 0 rgba(81, 99, 120, 0.25);
+  padding: 24px;
+}
+
+.content {
+  display: flex;
+  justify-content: space-between;
+
+  @include down("tablet") {
+    flex-direction: column;
+    gap: 24px;
+  }
+}
+
+// ====== Left Column ======
+.leftColumn {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  max-width: 813px;
+
+  @include down("tablet") {
+    width: 100%;
+  }
+}
+
+// ====== Consultation Card ======
+.consultationCard {
+  display: flex;
+  gap: 8px;
+  padding: 8px;
+  background: #fff;
+  border-radius: 16px;
+  border: 2px solid #d0dae7;
+
+  //   @include down("tablet") {
+  //     gap: 20px;
+  //   }
+
+  //   @include down("mobile-large") {
+  //     flex-direction: column;
+  //     gap: 0;
+  //     padding: 0;
+  //     overflow: hidden;
+  //   }
+}
+
+.cardImage {
+  flex-shrink: 0;
+  width: 309px;
+  height: 309px;
+  border-radius: 16px;
+  overflow: hidden;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  @include down("tablet") {
+    width: 285px;
+    height: 232px;
+  }
+
+  @include down("mobile-large") {
+    width: 100%;
+    height: 184px;
+    border-radius: 12px;
+  }
+}
+
+.cardInfo {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 16px;
+  flex: 1;
+
+  @include down("mobile-large") {
+    padding: 16px;
+  }
+}
+
+.cardDescription {
+  font-family: $font-secondary;
+  font-size: 22px;
+  font-weight: 600;
+  line-height: 28px;
+  color: $text-black;
+
+  @include down("tablet") {
+    font-size: 20px;
+    line-height: 26px;
+  }
+
+  @include down("mobile") {
+    font-size: 18px;
+    line-height: 24px;
+  }
+}
+
+.cardMeta {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.metaRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.metaLabel {
+  font-family: $font-secondary;
+  font-size: 18px;
+  color: $text-grey;
+  min-width: 70px;
+
+  @include down("mobile") {
+    font-size: 16px;
+    min-width: 60px;
+  }
+}
+
+.metaValue {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 16px;
+  border: 1px solid #d0dae7;
+  border-radius: 20px;
+  font-family: $font-secondary;
+  font-size: 16px;
+  font-weight: 600;
+  color: $text-black;
+  white-space: nowrap;
+
+  @include down("mobile") {
+    font-size: 14px;
+    padding: 3px 12px;
+  }
+}
+
+// ====== Process Block ======
+.processBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+
+  @include down("mobile-large") {
+    transition: all 0.4s ease;
+  }
+}
+
+.blockTitle {
+  font-family: $font-primary;
+  font-size: 20px;
+  font-weight: 400;
+  color: $text-grey;
+  text-align: center;
+
+  @include down("mobile") {
+    font-size: 18px;
+  }
+}
+
+.processSteps {
+  display: flex;
+  gap: 12px;
+
+  @include down("mobile-large") {
+    flex-wrap: wrap;
+  }
+}
+
+.processStep {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 8px;
+  padding: 16px 12px;
+  background: #f7f9fb;
+  border-radius: 16px;
+  min-width: 0;
+
+  @include down("mobile-large") {
+    flex: 1 1 calc(50% - 6px);
+  }
+
+  p {
+    font-family: $font-secondary;
+    font-size: 16px;
+    font-weight: 600;
+    color: $text-black;
+    line-height: 20px;
+
+    @include down("mobile") {
+      font-size: 14px;
+      line-height: 18px;
+    }
+  }
+}
+
+.checkIconWrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 10px;
+  height: 10px;
+  padding: 8px;
+  border-radius: 50%;
+  border: 1px solid #516378;
+  flex-shrink: 0;
+  box-sizing: content-box;
+
+  svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+}
+
+// ====== Right Column ======
+.rightColumn {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  flex: 0 0 280px;
+
+  @include down("laptop") {
+    flex: 0 0 240px;
+  }
+
+  @include down("tablet") {
+    flex: none;
+    width: 100%;
+    flex-direction: row;
+    gap: 32px;
+  }
+
+  @include down("mobile-large") {
+    flex-direction: column;
+    gap: 24px;
+    transition: all 0.4s ease;
+  }
+}
+
+// ====== Request Block ======
+.requestBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+
+  @include down("tablet") {
+    flex: 1;
+  }
+}
+
+.requestList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  li {
+    font-family: $font-secondary;
+    font-size: 18px;
+    font-weight: 600;
+    color: $text-black;
+    padding-left: 16px;
+    position: relative;
+
+    &::before {
+      content: "•";
+      position: absolute;
+      left: 0;
+      color: $text-black;
+    }
+
+    @include down("mobile") {
+      font-size: 16px;
+    }
+  }
+}
+
+// ====== Result Block ======
+.resultBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+
+  @include down("tablet") {
+    flex: 1;
+  }
+}
+
+.resultList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  li {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    font-family: $font-secondary;
+    font-size: 18px;
+    font-weight: 600;
+    color: $text-black;
+
+    @include down("mobile") {
+      font-size: 16px;
+    }
+  }
+}
+
+.plusIcon {
+  color: $accent;
+  font-weight: 700;
+  font-size: 20px;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+// ====== Buttons Row ======
+.buttonsRow {
+  display: flex;
+  gap: 24px;
+  margin-top: 24px;
+
+  @include down("tablet") {
+    gap: 16px;
+  }
+
+  @include down("mobile-large") {
+    flex-direction: column;
+    gap: 12px;
+  }
+}
+
+.buttonLink {
+  flex: 1;
+  display: block;
+}
+
+// ====== Hidden State (for mobile detail toggle) ======
+.hidden {
+  display: none;
+}

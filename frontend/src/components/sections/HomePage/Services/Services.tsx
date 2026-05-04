@@ -1,11 +1,150 @@
-import { SectionTitle } from '@/components/ui/SectionTitle/SectionTitle'
-import React from 'react'
+"use client";
 
+import React, { useState, useEffect } from "react";
+import Image from "next/image";
+import Link from "next/link";
+import { useParams } from "next/navigation";
+import { useTranslation } from "@/hooks/useTranslation";
+import { Button } from "@/components/ui/Button/Button";
+import { SectionTitle } from "@/components/ui/SectionTitle/SectionTitle";
+import { translations } from "./Services.translations";
+import { CheckIcon } from "./CheckIcon";
+import styles from "./Services.module.scss";
 
 export const Services = () => {
+  const { t } = useTranslation(translations);
+  const { lang } = useParams();
+  const [showDetails, setShowDetails] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 480);
+    };
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
+
+  const handleDetailsClick = () => {
+    setShowDetails(true);
+  };
+
   return (
-    <section>
-         <SectionTitle text='Our Services' className='services-title' />
+    <section className={styles.services}>
+      <SectionTitle text={t.title} />
+
+      {/* Card Header (Above the block) */}
+      <div className={styles.cardHeader}>
+        <h4 className={styles.cardTitle}>
+          <span className={styles.cardTitleDesktop}>{t.cardTitle}</span>
+          <span className={styles.cardTitleMobile}>{t.cardTitleMobile}</span>
+        </h4>
+        <span className={styles.badge}>{t.badge}</span>
+      </div>
+
+      {/* Main Content (White Box) */}
+      <div className={styles.contentWrapper}>
+        <div className={styles.content}>
+          {/* Left Column: Card + Process */}
+          <div className={styles.leftColumn}>
+            {/* Consultation Card */}
+            <div className={styles.consultationCard}>
+              <div className={styles.cardImage}>
+                <Image
+                  src="/images/Services/consultation.png"
+                  alt={t.cardTitle}
+                  width={309}
+                  height={309}
+                  style={{ objectFit: "cover" }}
+                />
+              </div>
+              <div className={styles.cardInfo}>
+                <h5 className={styles.cardDescription}>{t.description}</h5>
+                <div className={styles.cardMeta}>
+                  <div className={styles.metaRow}>
+                    <span className={styles.metaLabel}>{t.timeLabel}</span>
+                    <span className={styles.metaValue}>{t.timeValue}</span>
+                  </div>
+                  <div className={styles.metaRow}>
+                    <span className={styles.metaLabel}>{t.formatLabel}</span>
+                    <span className={styles.metaValue}>{t.formatValue}</span>
+                  </div>
+                  <div className={styles.metaRow}>
+                    <span className={styles.metaLabel}>{t.priceLabel}</span>
+                    <span className={styles.metaValue}>{t.priceValue}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Process Block */}
+            <div
+              className={`${styles.processBlock} ${isMobile && !showDetails ? styles.hidden : ""}`}
+            >
+              <h6 className={styles.blockTitle}>{t.processTitle}</h6>
+              <div className={styles.processSteps}>
+                {t.processSteps.map((step: string, index: number) => (
+                  <div key={index} className={styles.processStep}>
+                    <CheckIcon />
+                    <p>{step}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Right Column: Request + Result */}
+          <div
+            className={`${styles.rightColumn} ${isMobile && !showDetails ? styles.hidden : ""}`}
+          >
+            {/* Your Request */}
+            <div className={styles.requestBlock}>
+              <h6 className={styles.blockTitle}>{t.requestTitle}</h6>
+              <ul className={styles.requestList}>
+                {t.requestItems.map((item: string, index: number) => (
+                  <li key={index}>{item}</li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Your Result */}
+            <div className={styles.resultBlock}>
+              <h6 className={styles.blockTitle}>{t.resultTitle}</h6>
+              <ul className={styles.resultList}>
+                {t.resultItems.map((item: string, index: number) => (
+                  <li key={index}>
+                    <span className={styles.plusIcon}>+</span>
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        {/* Buttons Row (Inside White Box) */}
+        <div className={styles.buttonsRow}>
+          {isMobile && !showDetails ? (
+            <Button variant="outline" onClick={handleDetailsClick}>
+              {t.details}
+            </Button>
+          ) : (
+            <Link
+              href={`/${lang}/consultation`}
+              className={styles.buttonLink}
+            >
+              <Button variant="outline">{t.learnMore}</Button>
+            </Link>
+          )}
+          <Link
+            href={`/${lang}/consultation#form`}
+            className={styles.buttonLink}
+          >
+            <Button variant="filled">{t.signUp}</Button>
+          </Link>
+        </div>
+      </div>
     </section>
-  )
-}
+  );
+};
