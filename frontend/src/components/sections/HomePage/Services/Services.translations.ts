@@ -10,7 +10,8 @@ export const translations = {
         formatLabel: "Формат",
         formatValue: "Zoom/offline",
         priceLabel: "Цена",
-        priceValue: "от €150",
+        pricePrefix: "от",
+        priceValue: "€150",
         processTitle: "Процесс",
         processSteps: [
             "Анализ текущей ситуации",
@@ -46,7 +47,8 @@ export const translations = {
         formatLabel: "Формат",
         formatValue: "Zoom/offline",
         priceLabel: "Цена",
-        priceValue: "от €150",
+        pricePrefix: "от",
+        priceValue: "€150",
         processTitle: "Процес",
         processSteps: [
             "Анализ на текущата ситуация",

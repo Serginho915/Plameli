@@ -90,15 +90,37 @@
   background: #fff;
   box-shadow: 0 2px 12px 0 rgba(81, 99, 120, 0.25);
   padding: 24px;
+
+  @include down("laptop") {
+    padding: 24px 16px;
+  }
+
+  @include down("tablet") {
+    padding: 16px 12px;
+  }
+
+  @include down("mobile") {
+    padding: 16px 8px;
+  }
 }
 
 .content {
   display: flex;
+  gap: 36px;
   justify-content: space-between;
+  flex-wrap: wrap;
+
+  @include down("laptop") {
+    gap: 24px;
+  }
 
   @include down("tablet") {
     flex-direction: column;
-    gap: 24px;
+    gap: 36px;
+  }
+
+  @include down("mobile") {
+    gap: 16px;
   }
 }
 
@@ -123,23 +145,21 @@
   background: #fff;
   border-radius: 16px;
   border: 2px solid #d0dae7;
+  align-items: stretch;
 
   //   @include down("tablet") {
   //     gap: 20px;
   //   }
 
-  //   @include down("mobile-large") {
-  //     flex-direction: column;
-  //     gap: 0;
-  //     padding: 0;
-  //     overflow: hidden;
-  //   }
+  @include down("mobile-large") {
+    flex-direction: column;
+  }
 }
 
 .cardImage {
-  flex-shrink: 0;
-  width: 309px;
-  height: 309px;
+  //   flex-shrink: 0;
+  max-width: 309px;
+  min-height: 309px;
   border-radius: 16px;
   overflow: hidden;
 
@@ -150,13 +170,13 @@
   }
 
   @include down("tablet") {
-    width: 285px;
-    height: 232px;
+    max-width: 285px;
+    min-height: 232px;
   }
 
   @include down("mobile-large") {
-    width: 100%;
-    height: 184px;
+    max-width: 100%;
+    min-height: 184px;
     border-radius: 12px;
   }
 }
@@ -166,7 +186,10 @@
   flex-direction: column;
   justify-content: space-between;
   gap: 16px;
-  flex: 1;
+  flex: 1 0 0;
+  padding: 24px 32px;
+  border-radius: 12px;
+  background: #ebeef2;
 
   @include down("mobile-large") {
     padding: 16px;
@@ -175,18 +198,24 @@
 
 .cardDescription {
   font-family: $font-secondary;
-  font-size: 22px;
-  font-weight: 600;
-  line-height: 28px;
-  color: $text-black;
+  font-size: 28px;
+  font-weight: 500;
+  line-height: 32px;
+  color: #030213;
 
   @include down("tablet") {
-    font-size: 20px;
+    font-size: 24px;
+    line-height: 28px;
+  }
+
+  @include down("mobile-large") {
+    font-size: 22px;
     line-height: 26px;
+    text-align: center;
   }
 
   @include down("mobile") {
-    font-size: 18px;
+    font-size: 20px;
     line-height: 24px;
   }
 }
@@ -200,36 +229,60 @@
 .metaRow {
   display: flex;
   align-items: center;
-  gap: 12px;
+  justify-content: space-between;
 }
 
 .metaLabel {
   font-family: $font-secondary;
-  font-size: 18px;
-  color: $text-grey;
-  min-width: 70px;
+  font-size: 20px;
+  color: #030213;
+  line-height: 24px;
+  font-weight: 400;
+  //   min-width: 70px;
 
-  @include down("mobile") {
+  @include down("mobile-large") {
     font-size: 16px;
-    min-width: 60px;
+    line-height: 20px;
   }
 }
 
 .metaValue {
   display: inline-flex;
   align-items: center;
-  padding: 4px 16px;
-  border: 1px solid #d0dae7;
-  border-radius: 20px;
+  padding: 0 16px;
+  border: 2px solid #d0dae7;
+  border-radius: 67px;
   font-family: $font-secondary;
-  font-size: 16px;
-  font-weight: 600;
-  color: $text-black;
-  white-space: nowrap;
+  font-size: 24px;
+  font-weight: 500;
+  color: #030213;
+  line-height: 32px;
+  background: #fff;
+  box-shadow: 0 0 1px 0 rgba(0, 0, 0, 0.12);
+
+  @include down("tablet") {
+    font-size: 20px;
+    line-height: 28px;
+  }
 
   @include down("mobile") {
-    font-size: 14px;
-    padding: 3px 12px;
+    font-size: 16px;
+    line-height: 24px;
+  }
+}
+
+.pricePrefix {
+  color: #030213;
+  font-family: $font-secondary;
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 24px;
+  margin-right: 4px;
+
+  @include down("mobile-large") {
+    font-size: 16px;
+    line-height: 20px;
   }
 }
 
@@ -245,52 +298,73 @@
 }
 
 .blockTitle {
-  font-family: $font-primary;
+  font-family: $font-secondary;
   font-size: 20px;
   font-weight: 400;
-  color: $text-grey;
+  color: #0a0a0a;
   text-align: center;
+  line-height: 24px;
 
-  @include down("mobile") {
-    font-size: 18px;
+  @include down("mobile-large") {
+    font-size: 16px;
   }
 }
 
 .processSteps {
   display: flex;
-  gap: 12px;
+  gap: 16px;
+  list-style: none;
+
+  @include between("mobile-large", "tablet") {
+    gap: 12px;
+  }
 
   @include down("mobile-large") {
-    flex-wrap: wrap;
+    flex-direction: column;
+    gap: 8px;
   }
 }
 
 .processStep {
-  flex: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
   gap: 8px;
-  padding: 16px 12px;
-  background: #f7f9fb;
-  border-radius: 16px;
+  padding: 0 6px 16px;
+  background: #ebeef2;
+  border-radius: 12px;
+  flex: 1;
   min-width: 0;
 
   @include down("mobile-large") {
-    flex: 1 1 calc(50% - 6px);
+    flex-direction: row;
+    width: 100%;
+    padding: 8px;
   }
 
   p {
     font-family: $font-secondary;
-    font-size: 16px;
-    font-weight: 600;
-    color: $text-black;
-    line-height: 20px;
+    font-size: 24px;
+    font-weight: 400;
+    color: #000;
+    line-height: 28px;
+    word-break: break-word; // Ensure long words don't overflow
 
-    @include down("mobile") {
-      font-size: 14px;
-      line-height: 18px;
+    @include down("tablet") {
+      font-size: 20px;
+      line-height: 26px;
+    }
+
+    @include down(650px) {
+      font-size: 16px;
+      line-height: 20px;
+    }
+
+    @include down("mobile-large") {
+      font-size: 24px;
+      line-height: 28px;
+      text-align: left;
     }
   }
 }
@@ -304,13 +378,19 @@
   padding: 8px;
   border-radius: 50%;
   border: 1px solid #516378;
+  background-color: #fff;
   flex-shrink: 0;
   box-sizing: content-box;
+  align-self: flex-end;
 
   svg {
     width: 100%;
     height: 100%;
     display: block;
+  }
+
+  @include down("mobile-large") {
+    align-self: center;
   }
 }
 
@@ -318,11 +398,12 @@
 .rightColumn {
   display: flex;
   flex-direction: column;
-  gap: 24px;
-  flex: 0 0 280px;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  //   flex: 0 0 375px;
 
   @include down("laptop") {
-    flex: 0 0 240px;
+    // flex: 0 0 240px;
   }
 
   @include down("tablet") {
@@ -343,23 +424,33 @@
 .requestBlock {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 22px;
 
-  @include down("tablet") {
-    flex: 1;
+  @include down("mobile-large") {
+    gap: 12pz;
   }
 }
 
 .requestList {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 12px;
+  padding: 16px;
+
+
+  @include down("laptop") {
+    padding: 16px 0;
+  }
+
+  @include down ("tablet") {
+    padding: 0 16px 16px;
+  }
 
   li {
     font-family: $font-secondary;
-    font-size: 18px;
-    font-weight: 600;
-    color: $text-black;
+    font-size: 22px;
+    font-weight: 500;
+    color: #0a0a0a;
     padding-left: 16px;
     position: relative;
 
@@ -367,11 +458,13 @@
       content: "•";
       position: absolute;
       left: 0;
-      color: $text-black;
+      color: #0a0a0a;
+      width: 8px;
+      height: 8px;
     }
 
     @include down("mobile") {
-      font-size: 16px;
+      font-size: 24px;
     }
   }
 }
@@ -380,7 +473,7 @@
 .resultBlock {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 22px;
 
   @include down("tablet") {
     flex: 1;
@@ -390,19 +483,28 @@
 .resultList {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 12px;
+  padding: 16px;
+
+  @include down("laptop") {
+    padding: 16px 0;
+  }
+
+  @include down("tablet") {
+    padding: 0 16px 16px;
+  }
 
   li {
     display: flex;
     align-items: flex-start;
     gap: 8px;
     font-family: $font-secondary;
-    font-size: 18px;
-    font-weight: 600;
-    color: $text-black;
+    font-size: 22px;
+    font-weight: 500;
+    color: #0a0a0a;
 
     @include down("mobile") {
-      font-size: 16px;
+      font-size: 24px;
     }
   }
 }
@@ -410,9 +512,10 @@
 .plusIcon {
   color: $accent;
   font-weight: 700;
-  font-size: 20px;
+  font-size: 22px;
   line-height: 1;
   flex-shrink: 0;
+  margin-top: 4px;
 }
 
 // ====== Buttons Row ======
@@ -435,6 +538,8 @@
   flex: 1;
   display: block;
 }
+
+
 
 // ====== Hidden State (for mobile detail toggle) ======
 .hidden {

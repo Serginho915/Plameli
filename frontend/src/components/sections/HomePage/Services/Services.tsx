@@ -61,20 +61,25 @@ export const Services = () => {
               </div>
               <div className={styles.cardInfo}>
                 <h5 className={styles.cardDescription}>{t.description}</h5>
-                <div className={styles.cardMeta}>
-                  <div className={styles.metaRow}>
+                <ul className={styles.cardMeta}>
+                  <li className={styles.metaRow}>
                     <span className={styles.metaLabel}>{t.timeLabel}</span>
                     <span className={styles.metaValue}>{t.timeValue}</span>
-                  </div>
-                  <div className={styles.metaRow}>
+                  </li>
+                  <li className={styles.metaRow}>
                     <span className={styles.metaLabel}>{t.formatLabel}</span>
                     <span className={styles.metaValue}>{t.formatValue}</span>
-                  </div>
-                  <div className={styles.metaRow}>
+                  </li>
+                  <li className={styles.metaRow}>
                     <span className={styles.metaLabel}>{t.priceLabel}</span>
-                    <span className={styles.metaValue}>{t.priceValue}</span>
-                  </div>
-                </div>
+                    <span className={styles.metaValue}>
+                      {t.pricePrefix && (
+                        <span className={styles.pricePrefix}>{t.pricePrefix}</span>
+                      )}
+                      {t.priceValue}
+                    </span>
+                  </li>
+                </ul>
               </div>
             </div>
 
@@ -83,14 +88,14 @@ export const Services = () => {
               className={`${styles.processBlock} ${isMobile && !showDetails ? styles.hidden : ""}`}
             >
               <h6 className={styles.blockTitle}>{t.processTitle}</h6>
-              <div className={styles.processSteps}>
+              <ul className={styles.processSteps}>
                 {t.processSteps.map((step: string, index: number) => (
-                  <div key={index} className={styles.processStep}>
+                  <li key={index} className={styles.processStep}>
                     <CheckIcon />
                     <p>{step}</p>
-                  </div>
+                  </li>
                 ))}
-              </div>
+              </ul>
             </div>
           </div>
 

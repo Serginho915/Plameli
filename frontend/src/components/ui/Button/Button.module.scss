@@ -123,15 +123,16 @@
 .outline {
   border: 2px solid #D0DAE7;
   background-color: #fff;
-  color: $text-black;
-  font-family: $font-primary;
+  color: #516378;
+  font-family: $font-secondary;
   font-style: italic;
-  font-weight: 400;
-  font-size: 28px;
+  font-weight: 600;
+  font-size: 24px;
   padding: 12px 24px;
   width: 100%;
   text-transform: none;
   border-radius: 24px;
+  letter-spacing: 1px;
   position: relative;
   overflow: hidden;
   z-index: 1;
@@ -150,14 +151,14 @@
   }
 
   &:hover {
-    color: $text-black;
+    color: #516378;
     &::before {
       height: 100%;
     }
   }
 
   @include down("tablet") {
-    font-size: 24px;
+    font-size: 22px;
   }
 
   @include down("mobile-large") {
@@ -175,14 +176,15 @@
   border: 2px solid $accent;
   background-color: $accent;
   color: #fff;
-  font-family: $font-primary;
+  font-family: $font-secondary;
   font-style: italic;
-  font-weight: 400;
-  font-size: 28px;
+  font-weight: 600;
+  font-size: 24px;
   padding: 12px 24px;
   width: 100%;
   text-transform: none;
   border-radius: 24px;
+  letter-spacing: 1px;
   position: relative;
   overflow: hidden;
   z-index: 1;
@@ -207,7 +209,7 @@
   }
 
   @include down("tablet") {
-    font-size: 24px;
+    font-size: 22px;
   }
 
   @include down("mobile-large") {
