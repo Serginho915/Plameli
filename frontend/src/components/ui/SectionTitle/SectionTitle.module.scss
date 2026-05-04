@@ -1,0 +1,39 @@
+@import "@/styles/variables.scss";
+@import "@/styles/mixins.scss";
+
+.sectionTitle {
+    position: relative;
+    padding: 24px 0;
+
+    @include down("mobile") {
+        padding: 16px 0;
+    }
+
+    &::before,
+    &::after {
+        content: '';
+        position: absolute;
+        left: 50%;
+        width: 100%;
+        height: 2px;
+        background-color: #D0DAE7;
+        transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        transform: translateX(-50%);
+    }
+
+    &::before {
+        top: 0;
+    }
+
+    &::after {
+        bottom: 0;
+    }
+
+    &:hover {
+
+        &::before,
+        &::after {
+            width: 0;
+        }
+    }
+}

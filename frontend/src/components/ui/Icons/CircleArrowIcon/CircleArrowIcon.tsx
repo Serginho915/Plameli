@@ -1,5 +1,5 @@
 import React from "react";
-import { ArrowUpRightIcon } from "../ArrowUpRightIcon";
+import { ArrowUpRightIcon } from "../ArrowUpRightIcon/ArrowUpRightIcon";
 import styles from "./CircleArrowIcon.module.scss";
 
 interface CircleArrowIconProps {

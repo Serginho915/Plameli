@@ -28,14 +28,34 @@ body {
 }
 h1{
   font-size:56px;
+  @include down("tablet") {
+    font-size: 44px;
+  }
 }
 
 h2{
   font-size: 48px;
+
+  @include down("tablet") {
+    font-size: 36px;
+  }
+
+  
 }
 h3{
   font-size: 44px;
   color: $text-grey;
+  text-align: center;
+
+  @include down("tablet") {
+    font-size: 36px;
+  }
+  @include down("mobile-large") {
+    font-size: 32px;
+  }
+  @include down("mobile") {
+    font-size: 28px;
+  }
 }
 
 h4{
