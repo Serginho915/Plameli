@@ -6,6 +6,7 @@ import Image from "next/image";
 import { useTranslation } from "@/hooks/useTranslation";
 import { Button } from "@/components/ui/Button/Button";
 import { CircleArrowIcon } from "@/components/ui/Icons/CircleArrowIcon/CircleArrowIcon";
+import { EducationCard } from "@/components/ui/EducationCard/EducationCard";
 import { translations } from "./Education.translations";
 import styles from "./Education.module.scss";
 
@@ -26,48 +27,21 @@ export const Education = () => {
               </Link>
             </div>
 
-            <div className={styles.card}>
-              <div className={styles.cardMain}>
-                <div className={styles.imageWrapper}>
-                  <Image 
-                    src="/images/Education/webinar.png" 
-                    alt={t.webinarTitle}
-                    fill
-                    style={{ objectFit: 'cover' }}
-                  />
-                </div>
-                <div className={styles.cardContent}>
-                  <h3 className={styles.cardTitle}>{t.webinarTitle}</h3>
-                  <div className={styles.metaList}>
-                    <div className={styles.metaRow}>
-                      <span className={styles.metaLabel}>{t.startLabel}</span>
-                      <span className={styles.metaValue}>{t.webinarDate}</span>
-                    </div>
-                    <div className={styles.metaRow}>
-                      <span className={styles.metaLabel}>{t.formatLabel}</span>
-                      <span className={styles.metaValue}>{t.webinarFormat}</span>
-                    </div>
-                    <div className={styles.metaRow}>
-                      <span className={styles.metaLabel}>{t.priceLabel}</span>
-                      <span className={`${styles.metaValue} ${styles.price}`}>{t.webinarPrice}</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div className={styles.actions}>
-                <div className={styles.buttonWrapper}>
-                  <Link href={`/${lang}/webinars/1`}>
-                    <Button variant="outline">{t.learnMore}</Button>
-                  </Link>
-                </div>
-                <div className={styles.buttonWrapper}>
-                  <Link href={`/${lang}/webinars/1#form`}>
-                    <Button variant="filled">{t.signUp}</Button>
-                  </Link>
-                </div>
-              </div>
-            </div>
+            <EducationCard
+              title={t.webinarTitle}
+              type="video"
+              mediaSrc="https://vjs.zencdn.net/v/oceans.mp4"
+              poster="/images/Education/webinar.png"
+              meta={[
+                { label: t.startLabel, value: t.webinarDate },
+                { label: t.formatLabel, value: t.webinarFormat },
+                { label: t.priceLabel, value: t.webinarPrice, isPrice: true },
+              ]}
+              learnMoreHref={`/${lang}/webinars/1`}
+              signUpHref={`/${lang}/webinars/1#form`}
+              learnMoreLabel={t.learnMore}
+              signUpLabel={t.signUp}
+            />
           </div>
 
           {/* Courses Column */}
@@ -80,49 +54,27 @@ export const Education = () => {
               </Link>
             </div>
 
-            <div className={styles.card}>
-              <div className={styles.cardMain}>
-                <div className={styles.imageWrapper}>
-                  <Image 
-                    src="/images/Education/course.png" 
-                    alt={t.courseTitle}
-                    fill
-                    style={{ objectFit: 'cover' }}
-                  />
-                </div>
-                <div className={styles.cardContent}>
-                  <h3 className={styles.cardTitle}>{t.courseTitle}</h3>
-                  <div className={styles.metaList}>
-                    <div className={styles.metaRow}>
-                      <span className={styles.metaLabel}>{t.startLabel}</span>
-                      <span className={styles.metaValue}>{t.courseDuration}</span>
-                    </div>
-                    <div className={styles.metaRow}>
-                      <span className={styles.metaLabel}>{t.formatLabel}</span>
-                      <span className={styles.metaValue}>{t.courseFormat}</span>
-                    </div>
-                    <div className={styles.metaRow}>
-                      <span className={styles.metaLabel}>{t.priceLabel}</span>
-                      <span className={`${styles.metaValue} ${styles.price}`}>{t.coursePrice}</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div className={styles.actions}>
-                <div className={styles.buttonWrapper}>
-                  <Link href={`/${lang}/courses/1`}>
-                    <Button variant="outline">{t.learnMore}</Button>
-                  </Link>
-                </div>
-                <div className={styles.buttonWrapper}>
-                  <Link href={`/${lang}/courses/1#form`}>
-                    <Button variant="filled">{t.signUp}</Button>
-                  </Link>
-                </div>
-              </div>
-            </div>
+            <EducationCard
+              title={t.courseTitle}
+              type="image"
+              mediaSrc="/images/Education/course.png"
+              meta={[
+                { label: t.startLabel, value: t.courseDuration },
+                { label: t.formatLabel, value: t.courseFormat },
+                { label: t.priceLabel, value: t.coursePrice, isPrice: true },
+              ]}
+              learnMoreHref={`/${lang}/courses/1`}
+              signUpHref={`/${lang}/courses/1#form`}
+              learnMoreLabel={t.learnMore}
+              signUpLabel={t.signUp}
+            />
           </div>
+        </div>
+        <div className={styles.helpText}>
+          {t.helpText}
+          <Link href="#form">
+            <strong>{t.onlineForm}</strong>
+          </Link>
         </div>
       </div>
     </section>

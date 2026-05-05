@@ -17,6 +17,8 @@ export const translations = {
     courseDuration: "2 месяца",
     courseFormat: "Online",
     coursePrice: "€250",
+    helpText: "Не уверены какой формат подойдет именно вам? Свяжитесь с нами через ",
+    onlineForm: "онлайн форму"
   },
   bg: {
     webinarsTitle: "Уебинари",
@@ -25,7 +27,7 @@ export const translations = {
     startLabel: "Старт",
     formatLabel: "Формат",
     priceLabel: "Цена",
-    learnMore: "Научете повече",
+    learnMore: "Научете больше",
     signUp: "Запишете се",
     // Placeholder content from design
     webinarTitle: "Как да усвоите майсторството на отчитането през 2026 г.",
@@ -36,5 +38,7 @@ export const translations = {
     courseDuration: "2 месеца",
     courseFormat: "Online",
     coursePrice: "€250",
+    helpText: "Не сте сигурни кой формат е подходящ за вас? Свържете се с нас чрез ",
+    onlineForm: "онлайн форма"
   },
 };
