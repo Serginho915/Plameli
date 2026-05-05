@@ -22,7 +22,7 @@
 .grid {
   display: flex;
   gap: 42px;
-  justify-content: center;
+  width: 100%;
 
   @include down("laptop") {
     gap: 24px;
@@ -36,7 +36,6 @@
 
 .column {
   flex: 1;
-  max-width: 634px;
   display: flex;
   flex-direction: column;
   gap: 24px;
