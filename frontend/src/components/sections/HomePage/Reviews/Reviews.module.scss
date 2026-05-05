@@ -13,6 +13,9 @@
   gap: 36px;
   z-index: 1;
   width: 100%;
+  max-width: none;
+  padding: 0;
+  margin: 0;
 
   @include down("mobile-large") {
     gap: 32px;
@@ -96,10 +99,22 @@
   width: 516px;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  position: relative;
+  min-height: 400px; // Maintain height during transitions
 
   @include down("laptop") {
     width: 100%;
+    min-height: auto;
+  }
+}
+
+.animatedContent {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  @include down("laptop") {
     flex-direction: row;
     gap: 32px;
     align-items: flex-start;
@@ -323,7 +338,9 @@
 }
 
 .desktopImage {
-  position: relative;
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
 
