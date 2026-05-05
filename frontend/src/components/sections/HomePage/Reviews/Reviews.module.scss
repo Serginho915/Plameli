@@ -32,10 +32,10 @@
   height: 341px;
   left: 0;
   top: 367px;
-  background: linear-gradient(180deg, #ebeef2 0%, #fafbfc 100%);
-  box-shadow: 145.8px 145.8px 145.8px rgba(0, 0, 0, 0.05);
-  border-radius: 16px;
-  filter: blur(72.9px);
+  // background: linear-gradient(180deg, #ebeef2 0%, #fafbfc 100%);
+  // box-shadow: 145.8px 145.8px 145.8px rgba(0, 0, 0, 0.05);
+   border-radius: 16px;
+  // filter: blur(72.9px);
   z-index: 0;
   pointer-events: none;
 
@@ -138,7 +138,7 @@
   padding: 24px;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start;
 
   @include down("laptop") {
     padding: 0;

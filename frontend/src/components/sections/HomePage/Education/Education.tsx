@@ -11,7 +11,7 @@ import { translations } from "./Education.translations";
 import styles from "./Education.module.scss";
 
 export const Education = () => {
-  const { t, lang } = useTranslation(translations);
+  const { t, language } = useTranslation(translations);
 
   return (
     <section className={styles.education}>
@@ -21,7 +21,7 @@ export const Education = () => {
           <div className={styles.column}>
             <div className={styles.header}>
               <h2 className={styles.title}>{t.webinarsTitle}</h2>
-              <Link href={`/${lang}/webinars`} className={styles.viewAll}>
+              <Link href={`/${language}/webinars`} className={styles.viewAll}>
                 <span>{t.viewAll}</span>
                 <CircleArrowIcon className={styles.viewAllIcon} />
               </Link>
@@ -37,8 +37,8 @@ export const Education = () => {
                 { label: t.formatLabel, value: t.webinarFormat },
                 { label: t.priceLabel, value: t.webinarPrice, isPrice: true },
               ]}
-              learnMoreHref={`/${lang}/webinars/1`}
-              signUpHref={`/${lang}/webinars/1#form`}
+              learnMoreHref={`/${language}/webinars/1`}
+              signUpHref={`/${language}/webinars/1#form`}
               learnMoreLabel={t.learnMore}
               signUpLabel={t.signUp}
             />
@@ -48,7 +48,7 @@ export const Education = () => {
           <div className={styles.column}>
             <div className={styles.header}>
               <h2 className={styles.title}>{t.coursesTitle}</h2>
-              <Link href={`/${lang}/courses`} className={styles.viewAll}>
+              <Link href={`/${language}/courses`} className={styles.viewAll}>
                 <span>{t.viewAll}</span>
                 <CircleArrowIcon className={styles.viewAllIcon} />
               </Link>
@@ -63,8 +63,8 @@ export const Education = () => {
                 { label: t.formatLabel, value: t.courseFormat },
                 { label: t.priceLabel, value: t.coursePrice, isPrice: true },
               ]}
-              learnMoreHref={`/${lang}/courses/1`}
-              signUpHref={`/${lang}/courses/1#form`}
+              learnMoreHref={`/${language}/courses/1`}
+              signUpHref={`/${language}/courses/1#form`}
               learnMoreLabel={t.learnMore}
               signUpLabel={t.signUp}
             />
