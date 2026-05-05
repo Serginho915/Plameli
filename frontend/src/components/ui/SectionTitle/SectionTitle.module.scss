@@ -4,6 +4,7 @@
 .sectionTitle {
     position: relative;
     padding: 24px 0;
+    text-transform: uppercase;
 
     @include down("mobile") {
         padding: 16px 0;

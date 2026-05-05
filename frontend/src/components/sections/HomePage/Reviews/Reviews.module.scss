@@ -1,0 +1,253 @@
+@import "@/styles/variables.scss";
+@import "@/styles/mixins.scss";
+
+.reviews {
+  position: relative;
+  overflow: hidden;
+
+}
+
+.container {
+//   @include container;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 36px;
+  z-index: 1;
+}
+
+// Background decoration from Figma
+.bgDecoration {
+  position: absolute;
+  width: 548px;
+  height: 494px;
+  left: -100px;
+  top: 127px;
+  background: linear-gradient(180deg, #EBEEF2 0%, #FAFBFC 100%);
+  box-shadow: 145.8px 145.8px 145.8px rgba(0, 0, 0, 0.05);
+  border-radius: 16px;
+  filter: blur(72.9px);
+  z-index: 0;
+  pointer-events: none;
+
+  @include down("tablet") {
+    display: none;
+  }
+}
+
+.titleWrapper {
+  width: 100%;
+  text-align: center;
+}
+
+.title {
+  color: $text-grey;
+  font-size: 44px;
+  font-family: $font-primary;
+  font-weight: 500;
+  text-transform: uppercase;
+  line-height: 1.45;
+  margin: 0;
+
+  @include down("laptop") {
+    font-size: 36px;
+  }
+
+  @include down("tablet") {
+    font-size: 32px;
+  }
+
+  @include down("mobile") {
+    font-size: 28px;
+  }
+}
+
+.content {
+  display: flex;
+  gap: 42px;
+  align-items: stretch;
+
+  @include down("laptop") {
+    gap: 24px;
+  }
+
+  @include down("tablet") {
+    flex-direction: column;
+  }
+}
+
+// Left column: testimonial + cards
+.leftColumn {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+}
+
+.testimonialBox {
+  padding: 24px;
+  flex: 1;
+
+  @include down("mobile") {
+    padding: 16px;
+  }
+}
+
+.testimonial {
+  color: #334155;
+  font-size: 24px;
+  font-family: $font-secondary;
+  font-weight: 400;
+  line-height: 1.33;
+  margin: 0;
+
+  @include down("laptop") {
+    font-size: 20px;
+  }
+
+  @include down("mobile") {
+    font-size: 16px;
+  }
+}
+
+.statsGrid {
+  display: flex;
+  gap: 8px;
+  padding: 8px;
+  width: 100%;
+
+  @include down("mobile-large") {
+    flex-direction: column;
+  }
+}
+
+.statCard {
+  flex: 1;
+  padding: 12px 16px 24px;
+  border-radius: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+
+  &.before {
+    background: #F3F5F7;
+    .badge {
+      background: #FFD9D9;
+    }
+  }
+
+  &.after {
+    background: #ffffff;
+    border: 1px solid #EBEEF2;
+    .badge {
+      background: #EBFFD9;
+    }
+  }
+}
+
+.badge {
+  padding: 2px 12px;
+  border-radius: 31px;
+  color: black;
+  font-size: 20px;
+  font-family: $font-secondary;
+  font-weight: 500;
+
+  @include down("mobile") {
+    font-size: 14px;
+  }
+}
+
+.statValue {
+  width: 100%;
+  text-align: center;
+  color: black;
+  font-size: 36px;
+  font-family: $font-primary;
+  font-weight: 600;
+  margin: 4px 0;
+
+  @include down("mobile") {
+    font-size: 28px;
+  }
+}
+
+.statDesc {
+  color: black;
+  font-size: 20px;
+  font-family: $font-secondary;
+  font-weight: 500;
+  margin: 0;
+
+  @include down("mobile") {
+    font-size: 15px;
+  }
+}
+
+// Right column: image + CTA
+.rightColumn {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.imageBox {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 547 / 531;
+  border-radius: 16px;
+  overflow: hidden;
+  background: #f0f0f0;
+}
+
+.clientInfo {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  padding: 12px 24px;
+  background: rgba(255, 255, 255, 0.5);
+  backdrop-filter: blur(12px);
+  border-radius: 12px 12px 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+
+  @include down("mobile") {
+    padding: 8px 16px;
+  }
+}
+
+.clientName {
+  color: #0A0A0A;
+  font-size: 24px;
+  font-family: $font-secondary;
+  font-weight: 400;
+  line-height: 1.15;
+
+  @include down("mobile") {
+    font-size: 18px;
+  }
+}
+
+.clientTitle {
+  color: black;
+  font-size: 24px;
+  font-family: $font-secondary;
+  font-weight: 500;
+  line-height: 1.33;
+
+  @include down("mobile") {
+    font-size: 18px;
+  }
+}
+
+.ctaButton {
+  width: 100%;
+}
