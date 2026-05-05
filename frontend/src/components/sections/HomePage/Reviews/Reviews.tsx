@@ -46,10 +46,11 @@ export const Reviews = () => {
           <div className={styles.rightColumn}>
             <div className={styles.imageBox}>
               <Image
-                src="/images/Reviews/ekaterina.png"
+                src="/images/Reviews/Andrey.png"
                 alt={t.clientName}
                 fill
                 style={{ objectFit: 'cover' }}
+
               />
               <div className={styles.clientInfo}>
                 <span className={styles.clientName}>{t.clientName}</span>

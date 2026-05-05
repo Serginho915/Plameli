@@ -7,8 +7,8 @@ export const translations = {
     beforeValue: "50% ",
     afterValue: "0,36% ",
     errorsLabel: "Ошибок в бухгалтерии",
-    clientName: "Екатерина",
-    clientTitle: "Co-founder Miray Group",
+    clientName: "Андрей",
+    clientTitle: "Founder Miray Group",
     cta: "Получить анализ ситуации",
   },
   bg: {
@@ -19,8 +19,8 @@ export const translations = {
     beforeValue: "50% ",
     afterValue: "0,36% ",
     errorsLabel: "Грешки в счетоводството",
-    clientName: "Екатерина",
-    clientTitle: "Co-founder Miray Group",
+    clientName: "Андрей",
+    clientTitle: "Founder Miray Group",
     cta: "Получете анализ на ситуацията",
   },
 };
