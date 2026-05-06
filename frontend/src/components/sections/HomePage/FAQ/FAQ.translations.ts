@@ -30,34 +30,44 @@ export const translations: ComponentTranslations<FAQTranslations> = {
     },
     items: [
       {
-        category: "all",
-        question: "Какую одежду мне сегодня надеть?",
-        answer: "In the realm of digital dreams, pixels dance and weave stories untold, crafting vibrant tapestries of light and shadow that captivate the wandering eye and spark the imagination's flame."
+        category: "payment",
+        question: "Как можно оплатить ваши услуги?",
+        answer: "Мы принимаем оплату банковскими картами, через системы онлайн-банкинга, а также по безналичному расчету для юридических лиц."
       },
       {
-        category: "all",
-        question: "Как поддержать мотивацию в течение дня?",
-        answer: "Inner sparks ignite with every small victory, fueling determination as challenges transform into stepping stones toward success."
+        category: "payment",
+        question: "Возможна ли оплата частями?",
+        answer: "Да, для длительных курсов обучения и комплексных бухгалтерских услуг мы предлагаем гибкие графики оплаты и рассрочку."
       },
       {
-        category: "all",
-        question: "Что помогает снять стресс после работы?",
-        answer: "Evening whispers of tranquility unfold as serene moments cradle the mind, releasing tension and inviting peaceful rest."
+        category: "education",
+        question: "Какие направления обучения у вас есть?",
+        answer: "Мы специализируемся на курсах по современному бухгалтерскому учету, налоговому законодательству и финансовой грамотности для предпринимателей."
       },
       {
-        category: "all",
-        question: "Какие привычки улучшают креативность?",
-        answer: "Imagination blooms when curiosity dances freely, painting vivid ideas on the canvas of an inspired mind."
+        category: "education",
+        question: "Выдаете ли вы сертификат по окончании?",
+        answer: "По завершении любого обучающего курса наши студенты получают официальный сертификат, подтверждающий их квалификацию."
       },
       {
-        category: "all",
-        question: "Как лучше организовать рабочее пространство?",
-        answer: "Order and simplicity harmonize, crafting a sanctuary where thoughts flow effortlessly and productivity thrives."
+        category: "accounting",
+        question: "Что включает в себя полное бухгалтерское сопровождение?",
+        answer: "Оно включает ведение первичной документации, расчет заработной платы, подготовку и сдачу отчетности, а также консультации по текущим вопросам."
       },
       {
-        category: "all",
-        question: "Стоит ли сегодня взять зонт?",
-        answer: "Beneath the silver clouds, whispers of rain prepare to kiss the earth, painting droplets of life upon the canvas of a bustling city that never sleeps."
+        category: "accounting",
+        question: "Как происходит передача документов?",
+        answer: "Мы работаем через системы электронного документооборота, что позволяет обмениваться файлами мгновенно и безопасно из любой точки."
+      },
+      {
+        category: "taxes",
+        question: "Помогаете ли вы с налоговой оптимизацией?",
+        answer: "Да, наши эксперты анализируют ваш бизнес и предлагают законные способы снижения налоговой нагрузки в рамках текущего законодательства."
+      },
+      {
+        category: "taxes",
+        question: "Можно ли заказать только подачу годовой декларации?",
+        answer: "Конечно, мы предоставляем как разовые услуги по подготовке деклараций, так и полноценное налоговое сопровождение в течение года."
       }
     ]
   },
@@ -72,34 +82,44 @@ export const translations: ComponentTranslations<FAQTranslations> = {
     },
     items: [
       {
-        category: "all",
-        question: "Какви дрехи да облека днес?",
-        answer: "In the realm of digital dreams, pixels dance and weave stories untold, crafting vibrant tapestries of light and shadow that captivate the wandering eye and spark the imagination's flame."
+        category: "payment",
+        question: "Как мога да платя за вашите услуги?",
+        answer: "Приемаме плащания с банкови карти, чрез системи за онлайн банкиране, както и по банков път за юридически лица."
       },
       {
-        category: "all",
-        question: "Как да поддържам мотивацията си през деня?",
-        answer: "Inner sparks ignite with every small victory, fueling determination as challenges transform into stepping stones toward success."
+        category: "payment",
+        question: "Възможно ли е плащане на вноски?",
+        answer: "Да, за дългосрочни курсове на обучение и комплексни счетоводни услуги предлагаме гъвкави графици на плащане и разсрочване."
       },
       {
-        category: "all",
-        question: "Какво помага за облекчаване на стреса след работа?",
-        answer: "Evening whispers of tranquility unfold as serene moments cradle the mind, releasing tension and inviting peaceful rest."
+        category: "education",
+        question: "Какви направления на обучение предлагате?",
+        answer: "Специализираме в курсове по съвременно счетоводство, данъчно законодателство и финансова грамотност за предприемачи."
       },
       {
-        category: "all",
-        question: "Какви навици подобряват креативността?",
-        answer: "Imagination blooms when curiosity dances freely, painting vivid ideas on the canvas of an inspired mind."
+        category: "education",
+        question: "Издавате ли сертификат след завършване?",
+        answer: "След завършване на всеки обучителен курс нашите студенти получават официален сертификат, потвърждаващ тяхната квалификация."
       },
       {
-        category: "all",
-        question: "Как най-добре да организирам работното си пространство?",
-        answer: "Order and simplicity harmonize, crafting a sanctuary where thoughts flow effortlessly and productivity thrives."
+        category: "accounting",
+        question: "Какво включва пълното счетоводно обслужване?",
+        answer: "То включва обработка на първични документи, изчисляване на работни заплати, изготвяне и подаване на отчети, както и консултации по текущи въпроси."
       },
       {
-        category: "all",
-        question: "Трябва ли да взема чадър днес?",
-        answer: "Beneath the silver clouds, whispers of rain prepare to kiss the earth, painting droplets of life upon the canvas of a bustling city that never sleeps."
+        category: "accounting",
+        question: "Как става прехвърлянето на документи?",
+        answer: "Работим чрез системи за електронен документооборот, което позволява мигновен и безопасен обмен на файлове от всяка точка."
+      },
+      {
+        category: "taxes",
+        question: "Помогате ли с данъчната оптимизация?",
+        answer: "Да, нашите експерти анализират вашия бизнес и предлагат законни начини за намаляване на данъчната тежест в рамките на текущото законодателство."
+      },
+      {
+        category: "taxes",
+        question: "Мога ли да поръчам само подаване на годишна декларация?",
+        answer: "Разбира се, предоставяме както еднократни услуги по изготвяне на декларации, така и пълно данъчно обслужване през цялата година."
       }
     ]
   }

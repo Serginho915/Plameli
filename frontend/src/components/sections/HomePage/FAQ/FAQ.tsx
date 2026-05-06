@@ -83,7 +83,10 @@ export const FAQ = () => {
                     >
                       <div className={styles.answerBox}>
                         <p className={styles.answerText}>{item.answer}</p>
-                        <div className={styles.answerIcon}>
+                        <div 
+                          className={styles.answerIcon}
+                          onClick={() => toggleItem(index)}
+                        >
                           <svg
                             viewBox="0 0 19 11"
                             fill="none"
