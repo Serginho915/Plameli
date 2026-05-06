@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from 'react';
-import { motion, LayoutGroup } from 'framer-motion';
+import { motion, LayoutGroup, animate } from 'framer-motion';
 import { SectionTitle } from '@/components/ui/SectionTitle/SectionTitle';
 import { BlogCard } from '@/components/ui/BlogCard/BlogCard';
 import { translations, BlogItem, BlogTranslations } from './Blog.translations';
@@ -12,23 +12,66 @@ export const Blog = () => {
   const { t, language } = useTranslation<BlogTranslations>(translations);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [prevIndex, setPrevIndex] = useState(0);
+  const [isTablet, setIsTablet] = useState(false);
+  const viewportRef = useRef<HTMLDivElement>(null);
   const isInitialMount = useRef(true);
 
   const items = t.items || [];
   
-  const handleNext = () => {
-    if (currentIndex < items.length - 1) {
-      setCurrentIndex(currentIndex + 1);
+  useEffect(() => {
+    const checkTablet = () => {
+      setIsTablet(window.innerWidth <= 768);
+    };
+    checkTablet();
+    window.addEventListener('resize', checkTablet);
+    return () => window.removeEventListener('resize', checkTablet);
+  }, []);
+
+  const getItemWidth = () => {
+    if (window.innerWidth <= 480) return 284 + 20;
+    if (window.innerWidth <= 768) return 328 + 20;
+    return 367 + 32;
+  };
+
+  const scrollTo = (index: number) => {
+    if (isTablet && viewportRef.current) {
+      const itemWidth = getItemWidth();
+      const targetScroll = index * itemWidth;
+      
+      // Ultra smooth spring animation for premium feel
+      animate(viewportRef.current.scrollLeft, targetScroll, {
+        type: "spring",
+        stiffness: 60, // Lower stiffness for "heavy" smooth motion
+        damping: 20,
+        mass: 1.2,
+        onUpdate: (val) => {
+          if (viewportRef.current) viewportRef.current.scrollLeft = val;
+        }
+      });
     } else {
-      setCurrentIndex(0);
+      setCurrentIndex(index);
     }
   };
 
+  const handleNext = () => {
+    const nextIndex = currentIndex < items.length - 1 ? currentIndex + 1 : 0;
+    scrollTo(nextIndex);
+  };
+
   const handlePrev = () => {
-    if (currentIndex > 0) {
-      setCurrentIndex(currentIndex - 1);
-    } else {
-      setCurrentIndex(items.length - 1);
+    const prevIdx = currentIndex > 0 ? currentIndex - 1 : items.length - 1;
+    scrollTo(prevIdx);
+  };
+
+  const handleScroll = () => {
+    if (!isTablet || !viewportRef.current) return;
+    
+    const scrollLeft = viewportRef.current.scrollLeft;
+    const itemWidth = getItemWidth();
+    const newIndex = Math.round(scrollLeft / itemWidth);
+    
+    if (newIndex !== currentIndex && newIndex >= 0 && newIndex < items.length) {
+      setCurrentIndex(newIndex);
     }
   };
 
@@ -39,16 +82,15 @@ export const Blog = () => {
     }
     const timer = setTimeout(() => {
       setPrevIndex(currentIndex);
-    }, 600); // Should match the transition duration
+    }, 800); // Increased to match new smoother duration
     return () => clearTimeout(timer);
   }, [currentIndex]);
 
   const cardWidth = 367;
   const gap = 32;
   const step = cardWidth + gap;
-  const dotStep = 18; // 10px dot + 8px gap
+  const dotStep = 18;
 
-  // Stretchy "Worm" Logic
   const startX = prevIndex * dotStep;
   const targetX = currentIndex * dotStep;
   const distance = Math.abs(targetX - startX);
@@ -59,13 +101,19 @@ export const Blog = () => {
         <SectionTitle text={t.title} className={styles.title} />
         
         <div className={styles.carouselWrapper}>
-          <div className={styles.carouselViewport}>
+          <div 
+            className={styles.carouselViewport}
+            ref={viewportRef}
+            onScroll={handleScroll}
+          >
             <motion.div
               className={styles.track}
-              animate={{ x: -(currentIndex * step) }}
+              animate={isTablet ? { x: 0 } : { x: -(currentIndex * step) }}
               transition={{ 
-                duration: 0.8,
-                ease: [0.32, 0.72, 0, 1]
+                type: "spring",
+                stiffness: 60,
+                damping: 20,
+                mass: 1.2
               }}
             >
               {items.map((item: BlogItem, index: number) => (
@@ -113,10 +161,11 @@ export const Blog = () => {
                       key={index}
                       layout
                       className={`${styles.dotWrapper} ${isActive ? styles.active : ''}`}
-                      onClick={() => setCurrentIndex(index)}
+                      onClick={() => scrollTo(index)}
                       transition={{
-                        duration: 0.6,
-                        ease: [0.4, 0, 0.2, 1]
+                        type: "spring",
+                        stiffness: 60,
+                        damping: 20
                       }}
                     />
                   );
@@ -132,7 +181,7 @@ export const Blog = () => {
                     width: [51, 51 + distance, 51]
                   }}
                   transition={{
-                    duration: 0.6,
+                    duration: 0.8, // Increased for buttery smooth feel
                     times: [0, 0.5, 1],
                     ease: "easeInOut"
                   }}
