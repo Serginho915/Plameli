@@ -66,9 +66,16 @@ export const BlogCarousel: React.FC<BlogCarouselProps> = ({ items, t, language }
   const handleScroll = () => {
     if (!isTablet || !viewportRef.current) return;
     
-    const scrollLeft = viewportRef.current.scrollLeft;
+    const { scrollLeft, offsetWidth, scrollWidth } = viewportRef.current;
     const itemWidth = getItemWidth();
-    const newIndex = Math.round(scrollLeft / itemWidth);
+    
+    // Check if we are at the very end of the scroll
+    const isAtEnd = scrollLeft + offsetWidth >= scrollWidth - 5;
+    let newIndex = Math.round(scrollLeft / itemWidth);
+    
+    if (isAtEnd) {
+      newIndex = items.length - 1;
+    }
     
     if (newIndex !== currentIndex && newIndex >= 0 && newIndex < items.length) {
       setCurrentIndex(newIndex);
