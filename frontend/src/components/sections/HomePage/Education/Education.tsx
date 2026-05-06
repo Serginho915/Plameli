@@ -3,11 +3,11 @@
 import React from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { useTranslation } from "@/hooks/useTranslation";
-import { Button } from "@/components/ui/Button/Button";
-import { CircleArrowIcon } from "@/components/ui/Icons/CircleArrowIcon/CircleArrowIcon";
-import { EducationCard } from "@/components/ui/EducationCard/EducationCard";
-import { translations } from "./Education.translations";
+import { useTranslation } from "@/hooks/useTranslation.ts";
+import { Button } from "@/components/ui/Button/Button.tsx";
+import { CircleArrowIcon } from "@/components/ui/Icons/CircleArrowIcon/CircleArrowIcon.tsx";
+import { EducationCard } from "@/components/ui/EducationCard/EducationCard.tsx";
+import { translations } from "./Education.translations.ts";
 import styles from "./Education.module.scss";
 
 export const Education = () => {

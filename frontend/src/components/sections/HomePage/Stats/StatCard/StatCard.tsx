@@ -1,7 +1,7 @@
 import React from "react";
 import Image from "next/image";
 import styles from "./StatCard.module.scss";
-import { CircleArrowIcon } from "@/components/ui/Icons/CircleArrowIcon/CircleArrowIcon";
+import { CircleArrowIcon } from "@/components/ui/Icons/CircleArrowIcon/CircleArrowIcon.tsx";
 
 export interface StatCardData {
   type: "stat" | "site";

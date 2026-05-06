@@ -1,6 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
-import { CircleArrowIcon } from '../Icons/CircleArrowIcon/CircleArrowIcon';
+import { CircleArrowIcon } from '../Icons/CircleArrowIcon/CircleArrowIcon.tsx';
 import styles from './BlogCard.module.scss';
 
 interface BlogCardProps {

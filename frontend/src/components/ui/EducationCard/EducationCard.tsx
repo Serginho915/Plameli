@@ -3,7 +3,7 @@
 import React, { useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { Button } from "@/components/ui/Button/Button";
+import { Button } from "@/components/ui/Button/Button.tsx";
 import styles from "./EducationCard.module.scss";
 
 interface MetaItem {

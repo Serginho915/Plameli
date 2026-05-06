@@ -3,12 +3,12 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
-import { useTranslation } from "@/hooks/useTranslation";
-import { Button } from "@/components/ui/Button/Button";
-import { translations } from "./Reviews.translations";
-import { reviewsData } from "./Reviews.data";
+import { useTranslation } from "@/hooks/useTranslation.ts";
+import { Button } from "@/components/ui/Button/Button.tsx";
+import { translations } from "./Reviews.translations.ts";
+import { reviewsData } from "./Reviews.data.ts";
 import styles from "./Reviews.module.scss";
-import { SectionTitle } from "@/components/ui/SectionTitle/SectionTitle";
+import { SectionTitle } from "@/components/ui/SectionTitle/SectionTitle.tsx";
 
 export const Reviews = () => {
   const { t, language } = useTranslation(translations);

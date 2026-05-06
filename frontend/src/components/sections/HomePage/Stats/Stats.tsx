@@ -1,14 +1,14 @@
 "use client";
 
 import React from "react";
-import { useTranslation } from "@/hooks/useTranslation";
-import { translations } from "./Stats.translations";
-import { StatCard, StatCardData } from "./StatCard/StatCard";
+import { useTranslation } from "@/hooks/useTranslation.ts";
+import { translations } from "./Stats.translations.ts";
+import { StatCard, StatCardData } from "./StatCard/StatCard.tsx";
 import styles from "./Stats.module.scss";
 import serviceImg from "../../../../../public/images/Stats/service.svg";
 import Image from "next/image";
-import { Button } from "@/components/ui/Button/Button";
-import { Services } from "./Services/Services";
+import { Button } from "@/components/ui/Button/Button.tsx";
+import { Services } from "./Services/Services.tsx";
 
 export const Stats = () => {
   const { t } = useTranslation(translations);

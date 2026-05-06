@@ -2,12 +2,12 @@
 
 import React from "react";
 import Image from "next/image";
-import { useTranslation } from "@/hooks/useTranslation";
-import { translations } from "./Hero.translations";
+import { useTranslation } from "@/hooks/useTranslation.ts";
+import { translations } from "./Hero.translations.ts";
 import styles from "./Hero.module.scss";
 import heroImg from "../../../../../public/images/Hero/olenaShopova.png";
 
-import { CircleArrowIcon } from "@/components/ui/Icons/CircleArrowIcon/CircleArrowIcon";
+import { CircleArrowIcon } from "@/components/ui/Icons/CircleArrowIcon/CircleArrowIcon.tsx";
 
 export const Hero = () => {
   const { t } = useTranslation(translations);

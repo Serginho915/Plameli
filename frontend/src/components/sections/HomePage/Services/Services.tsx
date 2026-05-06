@@ -4,13 +4,13 @@ import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import { useTranslation } from "@/hooks/useTranslation";
-import { Button } from "@/components/ui/Button/Button";
-import { SectionTitle } from "@/components/ui/SectionTitle/SectionTitle";
-import { translations } from "./Services.translations";
-import { CheckIcon } from "./CheckIcon";
+import { useTranslation } from "@/hooks/useTranslation.ts";
+import { Button } from "@/components/ui/Button/Button.tsx";
+import { SectionTitle } from "@/components/ui/SectionTitle/SectionTitle.tsx";
+import { translations } from "./Services.translations.ts";
+import { CheckIcon } from "./CheckIcon.tsx";
 import styles from "./Services.module.scss";
-import { Education } from "../Education/Education";
+import { Education } from "../Education/Education.tsx";
 
 export const Services = () => {
   const { t } = useTranslation(translations);
