@@ -50,6 +50,12 @@
     gap: 12px;
     flex-shrink: 0;
     width: fit-content;
+    list-style: none;
+    padding: 0;
+
+    li {
+        width: 100%;
+    }
 
 
     @include down("tablet") {
@@ -57,6 +63,10 @@
         width: 100%;
         overflow-x: auto;
         padding-bottom: 8px;
+
+        li {
+            width: auto;
+        }
 
         &::-webkit-scrollbar {
             display: none;
@@ -128,6 +138,8 @@
     gap: 16px;
     width: 100%;
     max-width: 916px;
+    list-style: none;
+    padding: 0;
 
     @include down("tablet") {
         gap: 8px;

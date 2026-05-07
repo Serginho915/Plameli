@@ -89,6 +89,7 @@
 
   &:hover {
     color: #ffffff;
+
     &::before {
       height: 100%;
     }
@@ -197,13 +198,14 @@
     left: 0;
     width: 100%;
     height: 0;
-    background-color: #D0DAE7;
+    background-color: #F3F5F7;
     z-index: -1;
     transition: height 0.4s ease;
   }
 
   &:hover {
     color: #516378;
+
     &::before {
       height: 100%;
     }
@@ -240,7 +242,7 @@
   position: relative;
   overflow: hidden;
   z-index: 1;
-  transition: all 0.4s ease;
+  transition: color 0.4s ease, background-color 0.4s ease, border-color 0.4s ease;
 
   &::before {
     content: "";
@@ -249,12 +251,15 @@
     left: 0;
     width: 100%;
     height: 0;
-    background-color: darken($accent, 8%);
+    background-color: $accent;
     z-index: -1;
-    transition: height 0.4s ease;
+    transition: height 0.8s ease-in-out 0.2s;
   }
 
   &:hover {
+    background-color: #fff;
+    animation: filledTextColor 0.6s ease-in-out forwards;
+
     &::before {
       height: 100%;
     }
@@ -272,5 +277,23 @@
   @include down("mobile") {
     font-size: 18px;
     padding: 10px 16px;
+  }
+}
+
+@keyframes filledTextColor {
+  0% {
+    color: #fff;
+  }
+
+  15% {
+    color: $accent;
+  }
+
+  85% {
+    color: $accent;
+  }
+
+  100% {
+    color: #fff;
   }
 }

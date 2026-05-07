@@ -22,19 +22,21 @@ export const BlogCard = ({
 }: BlogCardProps) => {
   return (
     <Link href={href} className={`${styles.blogCard} ${className || ''}`}>
-      <div className={styles.header}>
-        <div className={styles.authorRow}>
-          <span className={styles.authorLabel}>{authorLabel}</span>
-          <span className={styles.authorName}>{authorName}</span>
+      <article className={styles.article}>
+        <div className={styles.header}>
+          <div className={styles.authorRow}>
+            <span className={styles.authorLabel}>{authorLabel}</span>
+            <span className={styles.authorName}>{authorName}</span>
+          </div>
+          <h3 className={styles.title}>{title}</h3>
         </div>
-        <h3 className={styles.title}>{title}</h3>
-      </div>
-      <div className={styles.footer}>
-        <span className={styles.readLabel}>{readLabel}</span>
-        <div className={styles.iconWrapper}>
-          <CircleArrowIcon className={styles.icon} />
+        <div className={styles.footer}>
+          <span className={styles.readLabel}>{readLabel}</span>
+          <div className={styles.iconWrapper}>
+            <CircleArrowIcon className={styles.icon} />
+          </div>
         </div>
-      </div>
+      </article>
     </Link>
   );
 };

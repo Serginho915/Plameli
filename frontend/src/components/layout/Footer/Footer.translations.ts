@@ -1,10 +1,26 @@
 import { ComponentTranslations } from "@/hooks/useTranslation.ts";
 
-export const translations: ComponentTranslations = {
+export interface FooterTranslations {
+  euProjectInfo: string;
+  privacyPolicy: string;
+  cookies: string;
+  paymentsRefunds: string;
+  copyright: string;
+}
+
+export const translations: ComponentTranslations<FooterTranslations> = {
   ru: {
-    footer_copy: "Все права защищены.",
+    euProjectInfo: "Информация о проекте ЕС",
+    privacyPolicy: "Политика конфиденциальности",
+    cookies: "Cookies",
+    paymentsRefunds: "Оплата и возврат",
+    copyright: "© 2026 Plameli. Все права защищены.",
   },
   bg: {
-    footer_copy: "Всички права запазени.",
+    euProjectInfo: "Информация за проект на ЕС",
+    privacyPolicy: "Политика за поверителност",
+    cookies: "Бисквитки",
+    paymentsRefunds: "Плащания и възстановявания",
+    copyright: "© 2026 Plameli. Всички права запазени.",
   },
 };

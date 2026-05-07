@@ -32,9 +32,15 @@
     }
   }
 
-  @include down("mobile") {
-    width: 100%;
+  @include down(1024px) {
+    width: 328px;
     height: auto;
+    min-height: 354px;
+    padding: 16px 24px;
+  }
+
+  @include down("mobile-large") {
+    width: 284px;
     min-height: 320px;
     padding: 24px 20px;
   }
@@ -71,8 +77,10 @@
   line-height: 36px;
   margin: 0;
   text-align: left;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
 
-  @include down("mobile") {
+  @include down("mobile-large") {
     font-size: 26px;
     line-height: 30px;
   }
@@ -115,4 +123,8 @@
     width: 20px;
     height: 20px;
   }
+}
+
+.article {
+  display: contents;
 }

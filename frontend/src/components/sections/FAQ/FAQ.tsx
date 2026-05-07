@@ -33,23 +33,24 @@ export const FAQ = () => {
       <SectionTitle text={t.title} className={styles.title} />
 
       <div className={styles.content}>
-        <div className={styles.sidebar}>
+        <ul className={styles.sidebar}>
           {categories.map((cat) => (
-            <button
-              key={cat.id}
-              className={`${styles.categoryBtn} ${activeCategory === cat.id ? styles.active : ""}`}
-              onClick={() => setActiveCategory(cat.id)}
-            >
-              {cat.label}
-            </button>
+            <li key={cat.id}>
+              <button
+                className={`${styles.categoryBtn} ${activeCategory === cat.id ? styles.active : ""}`}
+                onClick={() => setActiveCategory(cat.id)}
+              >
+                {cat.label}
+              </button>
+            </li>
           ))}
-        </div>
+        </ul>
 
-        <div className={styles.accordion}>
+        <ul className={styles.accordion}>
           {filteredItems.map((item, index) => {
             const isOpen = openIndex === index;
             return (
-              <div key={index} className={styles.accordionItem}>
+              <li key={index} className={styles.accordionItem}>
                 <div
                   className={`${styles.questionBox} ${isOpen ? styles.isOpen : ""}`}
                   onClick={() => toggleItem(index)}
@@ -105,10 +106,10 @@ export const FAQ = () => {
                     </motion.div>
                   )}
                 </AnimatePresence>
-              </div>
+              </li>
             );
           })}
-        </div>
+        </ul>
       </div>
     </section>
   );

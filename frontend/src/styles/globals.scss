@@ -19,8 +19,8 @@ body {
   font-size: 22px;
   font-family: $font-secondary;
   background: linear-gradient(181deg, #FFF 12.53%, #EBEEF2 62.41%);
+  background-attachment: fixed;
   min-height: 100vh;
-  background-repeat: no-repeat;
   
   /* Disable language-specific glyphs (e.g. Bulgarian Cyrillic) */
   font-feature-settings: 'locl' 0;
@@ -34,14 +34,20 @@ h1{
 }
 
 h2{
-  font-size: 48px;
+  font-size: 44px;
+  color: $text-grey;
 
   @include down("tablet") {
     font-size: 36px;
   }
-
-  
+  @include down("mobile-large") {
+    font-size: 32px;
+  }
+  @include down("mobile") {
+    font-size: 28px;
+  }
 }
+
 h3{
   font-size: 44px;
   color: $text-grey;
@@ -73,10 +79,7 @@ h6 {
 }
 
 .container {
-  max-width: $max-width;
-  margin: 0 auto;
-  padding: 0 $container-padding;
-  width: 100%;
+  @include container;
 }
 
 .main-flex {

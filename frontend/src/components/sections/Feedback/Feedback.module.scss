@@ -1,0 +1,407 @@
+@import "@/styles/variables.scss";
+@import "@/styles/mixins.scss";
+
+.feedback {
+    // padding: 80px 0;
+
+    // @include down("tablet") {
+    //     padding: 60px 0;
+    // }
+
+    // @include down("mobile") {
+    //     padding: 40px 0;
+    // }
+}
+
+// .sectionTitle {
+//     margin-bottom: 40px;
+// }
+
+.wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: stretch;
+    gap: 40px;
+    margin: 36px 0;;
+
+    @include down("tablet") {
+        flex-direction: column;
+        gap: 56px;
+        align-items: flex-start;
+    }
+
+    // Increased specificity for buttons to override defaults without !important
+    .consultationBtn {
+        width: fit-content;
+        font-size: 28px;
+        font-style: italic;
+        font-weight: 600;
+        line-height: 32px;
+        letter-spacing: 1px;
+        padding: 12px 24px;
+        text-transform: none;
+
+        &:hover {
+            color: #ffffff;
+        }
+
+        .mobileText {
+            display: none;
+        }
+
+        .desktopText {
+            display: inline;
+        }
+
+        @include down("tablet") {
+            width: 100%;
+            font-size: 24px;
+        }
+
+        @include down("mobile-large") {
+            font-size: 22px;
+            padding: 8px 24px;
+
+            .mobileText {
+                display: inline;
+            }
+
+            .desktopText {
+                display: none;
+            }
+        }
+
+        @include down("mobile") {
+            font-size: 20px;
+        }
+    }
+
+    .submitBtn {
+        width: 100%;
+        font-size: 28px;
+        font-style: italic;
+        font-weight: 600;
+        line-height: 32px;
+        letter-spacing: 1px;
+        padding: 12px 24px;
+        text-transform: none;
+        border-color: #a3afbf;
+        color: #516378;
+
+        &:hover {}
+
+        @include down("tablet") {
+            font-size: 24px;
+        }
+
+        @include down("mobile-large") {
+            font-size: 22px;
+            padding: 8px 24px;
+        }
+
+        @include down("mobile") {
+            font-size: 20px;
+        }
+    }
+}
+
+.leftColumn {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 24px 0 16px;
+  max-width: 600px;
+
+  @include down("tablet") {
+    width: 100%;
+    max-width: none;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    grid-template-areas: 
+      "title socials"
+      "list list"
+      "wrapper wrapper";
+    gap: 28px;
+    padding: 0;
+  }
+
+  @include down("mobile-large") {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+}
+
+.contactsTitle {
+  color: #2a2a2a;
+  font-size: 32px;
+  font-family: $font-secondary;
+  font-weight: 500;
+  line-height: 36px;
+  text-align: left;
+  grid-area: title;
+
+  @include down("tablet") {
+    font-size: 28px;
+  }
+  @include down("mobile-large") {
+    font-size: 26px;
+    order: 1;
+  }
+  @include down("mobile") {
+    font-size: 24px;
+    line-height: 28px;
+  }
+}
+
+.contactList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-self: stretch;
+  grid-area: list;
+
+  @include down("tablet") {
+    flex: 1;
+  }
+
+  @include down("mobile-large") {
+    order: 2;
+  }
+}
+
+.contactItem {
+    display: flex;
+    align-items: center;
+    gap: 22px;
+    padding: 12px 0;
+    text-decoration: none;
+    color: black;
+    font-size: 22px;
+    font-family: $font-secondary;
+    font-weight: 500;
+    transition: opacity 0.3s ease;
+
+    &:hover {
+        opacity: 0.7;
+    }
+
+    @include down("tablet") {
+        font-size: 20px;
+        line-height: 28px;
+    }
+
+    @include down("mobile") {
+        font-size: 16px;
+        line-height: 24px;
+        gap: 16px;
+    }
+}
+
+.iconBox {
+    width: 24px;
+    height: 26px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: black;
+    flex-shrink: 0;
+}
+
+.socialsRow {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-start;
+  align-items: center;
+  grid-area: socials;
+
+  @include down("mobile-large") {
+    order: 3;
+    margin: 8px 0;
+  }
+}
+
+.socialBtn {
+  width: 44px;
+  height: 44px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: transparent;
+  border: none;
+  border-radius: 4.6px;
+  outline: 1px #D0DAE7 solid;
+  outline-offset: -1px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  color: black;
+  padding: 0;
+
+  &:hover {
+    color: #f1592a;
+    outline-color: #f1592a;
+  }
+}
+
+.socialIcon {
+    width: 24px;
+    height: 24px;
+}
+
+.consultationBtnWrapper {
+  grid-area: wrapper;
+
+  @include down("tablet") {
+    width: 100%;
+  }
+
+  @include down("mobile-large") {
+    order: 4;
+  }
+}
+
+.rightSide {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 40px;
+    align-self: stretch;
+
+    @include down("tablet") {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+        align-self: auto;
+    }
+
+    @include down("mobile-large") {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}
+
+.formBlock {
+  width: 462px;
+  padding: 24px 8px 16px;
+  background: linear-gradient(129deg, #f5f7fa 0%, #fff7f5 100%);
+  box-shadow: 0px 2px 8px rgba(81, 99, 120, 0.15);
+  border-radius: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+
+  @include down("tablet") {
+    max-width: none;
+    width: 100%;
+  }
+
+  @include down("mobile-large") {
+    order: 1;
+  }
+}
+
+.formHeader {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 0 16px;
+}
+
+.formTitle {
+    color: black;
+    font-size: 32px;
+    font-family: $font-secondary;
+    font-weight: 500;
+    line-height: 36px;
+    text-align: center;
+
+    @include down("tablet") {
+        font-size: 28px;
+    }
+
+    @include down("mobile-large") {
+        font-size: 26px;
+        text-align: left;
+        padding: 0;
+    }
+
+    @include down("mobile") {
+        font-size: 24px;
+        line-height: 28px;
+    }
+}
+
+.formSubtitle {
+    color: #7f7f7f;
+    font-size: 20px;
+    font-family: $font-secondary;
+    font-weight: 400;
+    line-height: 24px;
+
+    @include down("mobile-large") {
+        font-size: 16px;
+        line-height: 20px;
+    }
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    padding: 8px 16px;
+
+    @include down("mobile-large") {
+        gap: 16px;
+        padding: 8px;
+    }
+}
+
+.inputsStack {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.inputField,
+.textareaField {
+    width: 100%;
+    padding: 10px;
+    background: white;
+    border-radius: 12px;
+    border: none;
+    font-size: 24px;
+    font-family: $font-secondary;
+    color: black;
+    outline: none;
+
+    &::placeholder {
+        color: #b4b4b4;
+    }
+
+    @include down("tablet") {
+        font-size: 20px;
+        line-height: 26px;
+    }
+
+    @include down("mobile-large") {
+        font-size: 20px;
+        line-height: 24px;
+    }
+
+    @include down("mobile") {
+        font-size: 16px;
+        line-height: 20px;
+    }
+}
+
+.textareaField {
+    height: 178px;
+    resize: none;
+}
+
+.submitBtn {
+    width: 100%;
+}
