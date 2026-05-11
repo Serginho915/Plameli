@@ -3,7 +3,7 @@
 
 .header {
   width: 100%;
-  padding: 20px 0;
+  padding: $scale-20 0;
   position: relative;
   z-index: 100;
   font-family: $font-secondary;
@@ -58,10 +58,10 @@
 .actions {
   display: flex;
   align-items: center;
-  gap: 24px;
+  gap: $scale-24;
 
   @include down("tablet") {
-    gap: 12px;
+    gap: $scale-12;
   }
 }
 
@@ -81,17 +81,17 @@
   font-family: $font-secondary;
   font-style: italic;
   text-transform: none;
-  font-size: 28px;
+  font-size: $font-size-body-lg;
   width: auto;
-  padding: 8px 24px;
+  padding: $scale-8 $scale-24;
   &:hover {
-    color: #ffffff;
+    color: $color-neutrals-100;
   }
 
   @include down("tablet") {
     width: auto;
-    padding: 8px 24px;
-    font-size: 24px;
+    padding: $scale-8 $scale-24;
+    font-size: $font-size-body-md;
     text-transform: none;
     border-width: 1px;
   }
@@ -110,13 +110,12 @@
   top: 100%;
   left: 0;
   width: 100%;
-  border-radius: 0 0 var(--size-spacing-sp-16, 16px)
-    var(--size-spacing-sp-16, 16px);
-  background: linear-gradient(180deg, #fff 0%, rgba(235, 238, 242, 0.3) 100%);
+  border-radius: 0 0 $radius-16 $radius-16;
+  background: linear-gradient(180deg, $color-neutrals-100 0%, rgba(235, 238, 242, 0.3) 100%);
   backdrop-filter: blur(20px);
   transition: all 0.4s ease-in-out;
   z-index: 90;
-  padding: 12px;
+  padding: $scale-12;
   display: flex;
   flex-direction: column;
   overflow: hidden;

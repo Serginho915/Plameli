@@ -86,27 +86,27 @@ $breakpoints: (
 }
 
 @mixin container {
-  max-width: 1440px;
+  max-width: $max-width;
   margin: 0 auto;
-  padding: 0 56px;
+  padding: 0 $container-padding;
   width: 100%;
 
   @include down("laptop") {
-    padding: 0 36px;
+    padding: 0 $scale-36;
     max-width: 1200px;
   }
 
   @include down("tablet") {
-    padding: 0 28px;
+    padding: 0 $scale-28;
     max-width: 768px;
   }
 
   @include down("mobile-large") {
-    padding: 0 16px;
+    padding: 0 $scale-16;
     max-width: 480px;
   }
   @include down("mobile") {
-    padding: 0 12px;
+    padding: 0 $scale-12;
     max-width: 320px;
   }
 }
