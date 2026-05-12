@@ -8,7 +8,7 @@ import { useTranslation } from "@/hooks/useTranslation.ts";
 import { Button } from "@/components/ui/Button/Button.tsx";
 import { SectionTitle } from "@/components/ui/SectionTitle/SectionTitle.tsx";
 import { translations } from "./Services.translations.ts";
-import { CheckIcon } from "./CheckIcon.tsx";
+import { CheckIcon } from "@/components/ui/Icons/CheckIcon/CheckIcon.tsx";
 import styles from "./Services.module.scss";
 import { Education } from "../Education/Education.tsx";
 

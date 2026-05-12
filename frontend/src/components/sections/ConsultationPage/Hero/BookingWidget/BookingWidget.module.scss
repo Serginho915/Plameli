@@ -1,0 +1,830 @@
+@import "@/styles/variables.scss";
+@import "@/styles/mixins.scss";
+
+.widgetCard {
+  width: 100%;
+  max-width: 563px;
+  background: linear-gradient(180deg, white 1%, white 100%);
+  box-shadow: 0px 0px 16px 3px rgba(148, 163, 184, 0.3);
+  border-radius: 16px;
+  padding: 16px 24px;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+
+  @include down("mobile") {
+    padding: 16px;
+  }
+}
+
+.header {
+  align-self: stretch;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.stepperRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+  height: 40px;
+}
+
+.stepNumberWrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;   
+}
+
+.stepNumber {
+  color: black;
+  font-size: 32px;
+  font-family: $font-secondary;
+  font-weight: 500;
+  line-height: 36px;
+}
+
+.pagination {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  position: relative;
+  min-width: 105px;
+  justify-content: flex-start;
+}
+
+.dotWrapper {
+  width: 10px;
+  height: 10px;
+  background: #D0DAE7;
+  border-radius: 40px;
+  transition: width 0.3s ease, background 0.3s ease;
+  cursor: pointer;
+
+  &.active, &.disabled {
+    cursor: default;
+  }
+
+  &.active {
+    width: 51px;
+    background: transparent;
+    border-radius: 41px;
+  }
+}
+
+.activePill {
+  position: absolute;
+  height: 10px;
+  background: black;
+  border-radius: 41px;
+  left: 0;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.stepTitle {
+  text-align: center;
+  color: #353535;
+  font-size: 24px;
+  font-family: $font-secondary;
+  font-weight: 600;
+  line-height: 32px;
+  margin: 0;
+}
+
+// Step container — no overflow:hidden, no clipping
+.stepContainer {
+  position: relative;
+  width: 100%;
+}
+
+.stepContent {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding: 32px 0;
+}
+
+.formatCards {
+  display: flex;
+  gap: 16px;
+
+  @include down("mobile") {
+    flex-direction: column;
+  }
+}
+
+.formatCard {
+  flex: 1;
+  background: #F4F6F8;
+  border-radius: 8px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  cursor: pointer;
+  transition: $transition-base;
+  border: 1px solid transparent;
+
+  &.selected {
+    border-color: $accent;
+    background: white;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  }
+
+  @include down("mobile") {
+    flex-direction: row;
+    height: auto;
+  }
+}
+
+.cardHeader {
+  padding: 0 16px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+
+  @include down("mobile") {
+    padding: 8px;
+    justify-content: center;
+  }
+}
+
+.cardTitleRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  @include down("mobile") {
+    flex-direction: column;
+    gap: 8px;
+  }
+}
+
+.cardIcon {
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  svg {
+    width: 15px;
+    height: 15px;
+  }
+}
+
+.formatName {
+  flex: 1;
+  padding: 16px 0;
+  text-align: center;
+  color: #323131;
+  font-size: 28px;
+  font-family: $font-primary;
+  line-height: 40px;
+  letter-spacing: 0.28px;
+
+  @include down("mobile") {
+    padding: 8px 0;
+    font-size: 24px;
+    line-height: 28px;
+  }
+}
+
+.cardPriceRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 16px 13px;
+
+  @include down("mobile") {
+    flex-direction: column;
+    padding: 0 8px 8px;
+    gap: 4px;
+  }
+}
+
+.priceLabel {
+  color: #717B87;
+  font-size: 20px;
+  font-family: $font-secondary;
+  line-height: 24px;
+
+  @include down("mobile") {
+    font-size: 12px;
+    line-height: 16px;
+  }
+}
+
+.priceValue {
+  display: flex;
+  align-items: baseline;
+  gap: 2px;
+  font-family: $font-secondary;
+
+  .amount {
+    color: #030213;
+    font-size: 24px;
+    font-weight: 600;
+    line-height: 32px;
+
+    @include down("mobile") {
+      font-size: 16px;
+      line-height: 24px;
+    }
+  }
+
+  .currency,
+  .slash {
+    color: #030213;
+    font-size: 20px;
+    line-height: 24px;
+
+    @include down("mobile") {
+      font-size: 16px;
+      line-height: 20px;
+    }
+  }
+
+  .time {
+    color: #030213;
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 22px;
+
+    @include down("mobile") {
+      font-size: 12px;
+      line-height: 16px;
+    }
+  }
+}
+
+.cardDetails {
+  padding: 8px;
+  background: #3A3C3D;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 0 8px 8px;
+
+  @include down("mobile") {
+    flex: 1;
+    margin: 8px;
+    justify-content: center;
+    gap: 4px;
+  }
+}
+
+.detailItem {
+  background: white;
+  border-radius: 8px;
+  padding: 8px 12px;
+  color: black;
+  font-size: 16px;
+  font-family: $font-secondary;
+  font-weight: 500;
+  line-height: 22px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  align-self: stretch;
+  height: 40px;
+
+  @include down("mobile") {
+    font-size: 12px;
+    line-height: 16px;
+    height: auto;
+    padding: 8px;
+  }
+}
+
+// Meeting Types
+.meetingTypes {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.meetingOption {
+  background: #F4F6F8;
+  border-radius: 8px;
+  padding: 8px 12px 8px 8px;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 24px;
+  cursor: pointer;
+  transition: $transition-base;
+  border: 1px solid transparent;
+  align-self: stretch;
+  height: 44px;
+
+  &.selected {
+    border-color: $accent;
+    background: white;
+
+    .checkbox {
+      border-color: $accent;
+      background: $accent;
+      color: white; // For CheckIcon currentColor
+    }
+  }
+}
+
+.checkbox {
+  width: 28px;
+  height: 28px;
+  background: white;
+  border-radius: 8px;
+  border: 1px solid #D0DAE7;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: $transition-base;
+
+  svg {
+    width: 14px;
+    height: 14px;
+  }
+}
+
+.meetingLabel {
+  color: black;
+  font-size: 20px;
+  font-family: $font-secondary;
+  line-height: 24px;
+}
+
+.submitBtn {
+  margin-top: 8px;
+  flex: 1;
+}
+
+// Step 2 Form
+.formFields {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding-bottom: 24px;
+}
+
+.formField {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  align-self: stretch;
+}
+
+.label {
+  color: #222323;
+  font-size: 16px;
+  font-family: $font-secondary;
+  font-weight: 500;
+  line-height: 22px;
+}
+
+.input,
+.textarea {
+  width: 100%;
+  padding: 10px 16px;
+  background: #F4F6F8;
+  border-radius: 12px;
+  border: 1px solid transparent;
+  color: #334155;
+  font-size: 24px;
+  font-family: $font-secondary;
+  font-weight: 400;
+  line-height: 28px;
+  outline: none;
+  transition: $transition-base;
+
+  &::placeholder {
+    opacity: 0.6;
+  }
+
+  &:focus {
+    border-color: $accent;
+    background: white;
+  }
+}
+
+.textarea {
+  height: 233px;
+  resize: none;
+  font-size: 20px;
+  line-height: 24px;
+}
+
+.phoneInputWrapper {
+  display: flex;
+  align-items: center;
+  background: #F4F6F8;
+  border-radius: 12px;
+  padding: 8px;
+  gap: 10px;
+  transition: $transition-base;
+  border: 1px solid transparent;
+
+  &:focus-within {
+    border-color: $accent;
+    background: white;
+  }
+}
+
+.countryPrefix {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 2px 8px;
+  background: transparent;
+  border-radius: 44px;
+  flex-shrink: 0;
+}
+
+.flag {
+  width: 20px;
+  height: 15px;
+  position: relative;
+  overflow: hidden;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+.flagBg {
+  position: absolute;
+  inset: 0;
+  background: #00976E;
+}
+
+.flagRed {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 5px;
+  background: #D7210A;
+}
+
+.flagWhite {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 5px;
+  background: white;
+}
+
+.prefix {
+  color: black;
+  font-size: 24px;
+  font-family: $font-secondary;
+  line-height: 28px;
+}
+
+.phoneInput {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: #334155;
+  font-size: 24px;
+  font-family: $font-secondary;
+  line-height: 28px;
+
+  &::placeholder {
+    opacity: 0.6;
+  }
+}
+
+.navigationRow {
+  display: flex;
+  align-items: flex-end;
+  gap: 16px;
+  align-self: stretch;
+}
+
+.backBtn {
+  width: 57px;
+  height: 57px;
+  background: white;
+  border-radius: 24px;
+  border: 2px solid rgba(148, 163, 184, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: $transition-base;
+  flex-shrink: 0;
+
+  &:hover {
+    border-color: $accent;
+
+    svg path {
+      stroke: $accent;
+    }
+  }
+}
+
+// Step 3 Date & Time
+.dateTimeFields {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding-bottom: 16px;
+}
+
+.calendarWrapper {
+  background: #F4F6F8;
+  border-radius: 12px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  outline: 1px solid #F5F5F5;
+}
+
+.dateSelector {
+  position: relative;
+  width: 100%;
+}
+
+.dateInput {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 16px;
+  background: #F4F6F8;
+  border-radius: 12px;
+  border-bottom: 1px solid #697B91;
+  cursor: pointer;
+  transition: $transition-base;
+
+  span {
+    font-size: 24px;
+    font-family: $font-secondary;
+    color: #334155;
+    line-height: 28px;
+
+    &.placeholder {
+      opacity: 0.6;
+    }
+  }
+
+  .arrow {
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.3s ease;
+
+    &.open {
+      transform: rotate(180deg);
+    }
+
+    svg path {
+      stroke: #8395AC;
+    }
+  }
+}
+
+.calendarHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.monthYear {
+  color: #131A29;
+  font-size: 20px;
+  font-family: $font-secondary;
+  font-weight: 500;
+  line-height: 28px;
+  flex: 1;
+  text-align: right;
+  order: 2;
+}
+
+.calendarNav {
+  display: flex;
+  gap: 4px;
+  order: 1;
+}
+
+.navBtn {
+  padding: 4px;
+  border-radius: 8px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: $transition-base;
+
+  &:hover {
+    background: white;
+  }
+
+  svg {
+    width: 20px;
+    height: 20px;
+  }
+}
+
+.calendarBody {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.weekDays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+}
+
+.weekDay {
+  text-align: center;
+  color: rgba(148, 163, 184, 0.5);
+  font-size: 16px;
+  font-family: $font-secondary;
+  font-weight: 500;
+  line-height: 24px;
+  min-width: 32px;
+}
+
+.daysGrid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+}
+
+.dayCell {
+  position: relative;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  font-family: $font-secondary;
+  font-weight: 500;
+  color: #131A29;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: $transition-base;
+  background: white;
+
+  &.outside {
+    color: rgba(148, 163, 184, 0.5);
+    background: #F4F6F8;
+  }
+
+  &.selected {
+    background: #F1592A;
+    color: white;
+  }
+
+  &.weekend,
+  &.disabled {
+    color: rgba(148, 163, 184, 0.4);
+    cursor: default;
+    pointer-events: none;
+  }
+
+  &:hover:not(.selected):not(.outside):not(.weekend):not(.disabled) {
+    background: rgba(241, 89, 42, 0.1);
+  }
+}
+
+
+.timeSlots {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 8px;
+
+  @include down("mobile") {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.timeSlot {
+  width: 100%;
+  padding: 8px 4px;
+  background: #F4F6F8;
+  border-radius: 44px;
+  border: none;
+  color: black;
+  font-size: 24px;
+  font-family: $font-secondary;
+  font-weight: 500;
+  line-height: 32px;
+  cursor: pointer;
+  transition: $transition-base;
+  text-align: center;
+  white-space: nowrap;
+
+  &.active {
+    background: #3A3C3D;
+    color: white;
+  }
+
+  &:hover:not(.active) {
+    background: #E2E8F0;
+  }
+}
+
+// Step 4 Confirmation
+.summaryGrid {
+  display: flex;
+  gap: 8px;
+  padding-top: 16px;
+  padding-bottom: 16px;
+
+  @include down("mobile") {
+    flex-direction: column;
+  }
+}
+
+.summaryCard {
+  flex: 1;
+  padding: 8px;
+  background: white;
+  border-radius: 16px;
+  outline: 2px solid #EBEEF2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+  min-width: 0;
+}
+
+.summaryLabel {
+  color: #131A29;
+  font-size: 16px;
+  font-family: $font-secondary;
+  font-weight: 500;
+  line-height: 22px;
+  text-align: center;
+}
+
+.summaryValueWrapper {
+  align-self: stretch;
+  padding: 4px 8px;
+  background: #F3F5F7;
+  border-radius: 8px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.summaryValue {
+  color: #212122;
+  font-size: 24px;
+  font-family: $font-secondary;
+  font-weight: 500;
+  line-height: 32px;
+  text-align: center;
+}
+
+.paymentRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px;
+  width: 100%;
+}
+
+.paymentLabel {
+  color: #B4B4B4;
+  font-size: 20px;
+  font-family: $font-secondary;
+  font-weight: 400;
+  line-height: 24px;
+}
+
+.paymentValue {
+  color: #030213;
+  font-size: 24px;
+  font-family: $font-secondary;
+  font-weight: 400;
+  line-height: 28px;
+}
+
+.errorMessage {
+  color: $accent;
+  font-size: 13px;
+  font-family: $font-secondary;
+  font-weight: 500;
+  margin-top: 4px;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-5px); }
+  to { opacity: 1; transform: translateY(0); }
+}

@@ -1,0 +1,31 @@
+import React from "react";
+
+interface BagIconProps {
+  className?: string;
+  color?: string;
+  width?: number;
+  height?: number;
+}
+
+export const BagIcon: React.FC<BagIconProps> = ({ 
+  className, 
+  color = "currentColor", 
+  width = 22, 
+  height = 21 
+}) => {
+  return (
+    <svg 
+      width={width} 
+      height={height} 
+      viewBox="0 0 22 21" 
+      fill="none" 
+      xmlns="http://www.w3.org/2000/svg"
+      className={className}
+    >
+      <path 
+        d="M2 21C1.45 21 0.979333 20.8043 0.588 20.413C0.196667 20.0217 0.000666667 19.5507 0 19V8H2V19H19V21H2ZM6 17C5.45 17 4.97933 16.8043 4.588 16.413C4.19667 16.0217 4.00067 15.5507 4 15V4H9V2C9 1.45 9.196 0.979333 9.588 0.588C9.98 0.196667 10.4507 0.000666667 11 0H15C15.55 0 16.021 0.196 16.413 0.588C16.805 0.98 17.0007 1.45067 17 2V4H22V15C22 15.55 21.8043 16.021 21.413 16.413C21.0217 16.805 20.5507 17.0007 20 17H6ZM11 4H15V2H11V4Z" 
+        fill={color}
+      />
+    </svg>
+  );
+};

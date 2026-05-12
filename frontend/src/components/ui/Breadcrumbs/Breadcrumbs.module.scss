@@ -1,0 +1,56 @@
+@import "@/styles/variables.scss";
+@import "@/styles/mixins.scss";
+
+.breadcrumbs {
+  display: flex;
+  align-items: center;
+  gap: $scale-16;
+  font-family: $font-secondary;
+  font-size: $font-size-body-sm;
+  line-height: $lh-body-sm;
+
+  @include down("mobile") {
+    font-size: $font-size-body-caption;
+    gap: $scale-8;
+  }
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  gap: $scale-16;
+
+  @include down("mobile") {
+    gap: $scale-8;
+  }
+
+  &:last-child {
+    .separator {
+      display: none;
+    }
+  }
+}
+
+.link {
+  color: $text-body-grey;
+  text-decoration: none;
+  transition: $transition-base;
+
+  &:hover {
+    color: $accent;
+  }
+}
+
+.current {
+  color: $color-neutrals-black;
+  cursor: default;
+}
+
+.separator {
+  width: 4.5px;
+  height: 8.5px;
+  border-right: 1.5px solid black;
+  border-bottom: 1.5px solid black;
+  transform: rotate(-45deg);
+  flex-shrink: 0;
+}

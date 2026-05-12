@@ -1,9 +1,14 @@
 import React from "react";
-import styles from "./Services.module.scss";
+import styles from "./CheckIcon.module.scss";
 
-export const CheckIcon = () => {
+interface CheckIconProps {
+  className?: string;
+  pure?: boolean;
+}
+
+export const CheckIcon: React.FC<CheckIconProps> = ({ className, pure = false }) => {
   return (
-    <div className={styles.checkIconWrapper}>
+    <div className={`${!pure ? styles.checkIconWrapper : ""} ${className || ""}`}>
       <svg
         viewBox="0 0 12 12"
         fill="none"
@@ -11,7 +16,7 @@ export const CheckIcon = () => {
       >
         <path
           d="M1.00015 5.54751L4.23092 11.0001L11.0002 1.00012"
-          stroke="#516378"
+          stroke="currentColor"
           strokeWidth="2"
           strokeLinecap="round"
           strokeLinejoin="round"

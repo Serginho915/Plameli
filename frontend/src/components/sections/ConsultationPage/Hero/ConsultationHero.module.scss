@@ -1,0 +1,308 @@
+@import "@/styles/variables.scss";
+@import "@/styles/mixins.scss";
+
+.hero {
+  padding-top: $scale-32;
+  padding-bottom: $scale-64;
+}
+
+.container {
+  display: flex;
+  gap: $scale-32;
+  align-items: flex-start;
+  justify-content: space-between;
+
+  @include down("laptop") {
+    flex-direction: column;
+    align-items: center;
+    gap: $scale-48;
+  }
+}
+
+.leftColumn {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: $scale-32;
+  max-width: 642px;
+
+  @include down("laptop") {
+    max-width: 100%;
+    width: 100%;
+  }
+}
+
+// Title
+.title {
+  font-family: $font-primary;
+  font-size: 44px;
+  line-height: 56px;
+  color: #171717;
+  letter-spacing: 0.88px;
+  margin: 0;
+
+  @include down("tablet") {
+    font-size: 36px;
+    line-height: 44px;
+  }
+
+  @include down("mobile") {
+    font-size: 32px;
+    line-height: 40px;
+  }
+}
+
+// Quote Rows
+.quotesContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 16px ;
+}
+
+.quoteRow {
+  display: flex;
+  position: relative;
+  gap: 16px;
+
+  @include down("mobile") {
+    flex-direction: column;
+    align-items: stretch;
+    gap: $scale-16;
+  }
+}
+
+.firstRow {
+  align-items: flex-end;
+
+  .textBox {
+    z-index: 2;
+  }
+
+  @include down("mobile") {
+    align-items: stretch;
+  }
+}
+
+.secondRow {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-start;
+  gap: 16px;
+
+  .analysisBox {
+    z-index: 1;
+
+    p {
+      max-width: 303px;
+    }
+  }
+
+  @include down("mobile") {
+    align-items: stretch;
+  }
+}
+
+.imageBox {
+  flex-shrink: 0;
+  border-radius: $radius-12;
+  overflow: hidden;
+  position: relative;
+
+  img {
+    object-fit: cover;
+    display: block;
+  }
+}
+
+.mainImage {
+  width: 295px;
+  height: 238px;
+
+  @include down("mobile") {
+    width: 100%;
+    height: 200px;
+  }
+}
+
+.secondaryImage {
+  width: 183px;
+  height: 128px;
+
+  @include down("mobile") {
+    width: 100%;
+    height: 150px;
+    order: -1;
+  }
+}
+
+.textBox {
+  display: flex;
+  align-items: flex-start;
+  gap: $scale-16;
+  flex: 1;
+  padding: 16px 16px 16px 24px;
+  background: $color-grey-50;
+  border-radius: $radius-8;
+  box-shadow: 0 2px 8px 0 rgba(81, 99, 120, 0.15);
+  min-height: 128px;
+
+  p {
+    flex: 1;
+    font-family: $font-secondary;
+    font-size: $font-size-body-md;
+    font-weight: $weight-medium;
+    line-height: $lh-body-md;
+    color: #212121;
+    margin: 0;
+  }
+
+  @include down("mobile") {
+    width: 100%;
+    padding: $scale-16;
+    min-height: auto;
+  }
+}
+
+.analysisBox {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  flex: 1;
+  padding: 16px 24px 16px 16px;
+  background: $color-grey-50;
+  border-radius: 8px;
+  box-shadow: 0px 2px 8px rgba(81, 99, 120, 0.15);
+  min-height: 128px;
+
+  p {
+    flex: 1;
+    font-family: $font-secondary;
+    font-size: $font-size-body-md;
+    font-weight: $weight-medium;
+    line-height: $lh-body-md;
+    color: black;
+    margin: 0;
+  }
+
+  @include down("mobile") {
+    width: 100%;
+    padding: $scale-16;
+    min-height: auto;
+  }
+}
+
+.iconCircle {
+  width: 38px;
+  height: 38px;
+  background: white;
+  border-radius: 50%;
+  flex-shrink: 0;
+  box-sizing: border-box;
+  box-shadow: 0px 2px 8px rgba(81, 99, 120, 0.15);
+  border: 1px solid $color-grey-200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  svg {
+    width: 22px;
+    height: 22px;
+
+    path {
+      fill: $color-grey-500;
+    }
+  }
+}
+
+// Summary Section
+.summary {
+  display: flex;
+  flex-direction: column;
+  gap: $scale-24;
+}
+
+.summaryTitle {
+  color: #000;
+  font-family: $font-secondary;
+  font-size: 20px;
+  font-weight: $weight-medium;
+  line-height: 28px;
+  margin: 0;
+
+  span {
+    font-weight: $weight-medium;
+  }
+
+  @include down("mobile") {
+    font-size: 16px;
+    line-height: 24px;
+  }
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: $scale-20;
+  padding-right: $scale-64;
+  margin: 0;
+  padding-left: 0;
+  list-style: none;
+
+  @include down("tablet") {
+    padding-right: 0;
+  }
+}
+
+.listItem {
+  display: flex;
+  gap: $scale-16;
+  align-items: flex-start;
+
+  &::before {
+    content: '';
+    display: block;
+    width: 6.55px;
+    height: 11.15px;
+    background-color: $accent;
+    mask-image: url("data:image/svg+xml,%3Csvg width='7' height='11' viewBox='0 0 7 11' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L6 5.5L1 10' stroke='black' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    mask-repeat: no-repeat;
+    mask-position: center;
+    mask-size: contain;
+    flex-shrink: 0;
+    margin-top: 6px;
+  }
+}
+
+.listText {
+  font-family: $font-secondary;
+  font-size: 20px;
+  line-height: 24px;
+  color: black;
+
+  @include down("mobile") {
+    font-size: 16px;
+    line-height: 20px;
+  }
+}
+
+.rightColumn {
+  flex: 0 0 563px;
+  position: sticky;
+  top: $scale-32;
+  align-self: flex-start;
+  z-index: 10;
+  width: 100%;
+  max-width: 563px;
+
+  @include down("laptop") {
+    flex: none;
+    position: static;
+    margin: 48px auto 0;
+  }
+
+  @include down("mobile") {
+    max-width: 100%;
+    margin-top: 32px;
+  }
+}
