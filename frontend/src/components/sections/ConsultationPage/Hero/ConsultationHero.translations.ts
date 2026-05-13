@@ -133,7 +133,7 @@ export const translations = {
       priceStandard: "€150",
       pricePriority: "€250",
       duration: "60 мин",
-      recordStandard: "Записване 10-14 дни предварително",
+      recordStandard: "Брониране: 10–14 дни",
       timeStandard: "Делнични дни (9:00 - 18:00)",
       recordPriority: "Записване до 48 часа",
       timePriority: "Извън стандартния график",

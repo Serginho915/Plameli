@@ -77,7 +77,7 @@ export const ConsultationHero = () => {
           {/* Summary Section */}
           <div className={styles.summary}>
             <h3 className={styles.summaryTitle}>
-              <span>{t.summaryTitleBold}</span>
+              {t.summaryTitleBold}
               {t.summaryTitleRegular}
             </h3>
             <ul className={styles.list}>

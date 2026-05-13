@@ -430,6 +430,7 @@
   font-weight: $weight-medium;
   line-height: 28px;
   margin: 0;
+  text-align: left;
 
   span {
     font-weight: $weight-medium;
@@ -463,8 +464,8 @@
   &::before {
     content: '';
     display: block;
-    width: 6.55px;
-    height: 11.15px;
+    width: 7px;
+    height: 12px;
     background-color: $accent;
     mask-image: url("data:image/svg+xml,%3Csvg width='7' height='11' viewBox='0 0 7 11' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L6 5.5L1 10' stroke='black' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
     mask-repeat: no-repeat;
@@ -505,6 +506,7 @@
 
   @include down("mobile") {
     max-width: 100%;
-    margin-top: 32px;
+    //margin-top: 32px;
+    
   }
 }
