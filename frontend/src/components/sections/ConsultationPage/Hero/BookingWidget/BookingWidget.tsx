@@ -59,6 +59,20 @@ export const BookingWidget = () => {
     return () => clearTimeout(timer);
   }, [currentStep]);
 
+  // Bugfix: Clear selected date if it becomes invalid when switching formats
+  useEffect(() => {
+    if (selectedDate && selectedFormat === "standard") {
+      const minDate = new Date();
+      minDate.setDate(minDate.getDate() + 14);
+      minDate.setHours(0, 0, 0, 0);
+      
+      if (selectedDate < minDate) {
+        setSelectedDate(null);
+        setSelectedTime(null);
+      }
+    }
+  }, [selectedFormat, selectedDate]);
+
   const isStepValid = (step: number) => {
     switch (step) {
       case 0:
@@ -443,9 +457,9 @@ export const BookingWidget = () => {
                     {isCalendarOpen && (
                       <motion.div 
                         className={styles.calendarWrapper}
-                        initial={{ opacity: 0, height: 0, marginTop: 0 }}
-                        animate={{ opacity: 1, height: 'auto', marginTop: 8 }}
-                        exit={{ opacity: 0, height: 0, marginTop: 0 }}
+                        initial={{ opacity: 0, height: 0, paddingTop: 0 }}
+                        animate={{ opacity: 1, height: 'auto', paddingTop: 12 }}
+                        exit={{ opacity: 0, height: 0, paddingTop: 0 }}
                         style={{ overflow: 'hidden' }}
                         transition={{ 
                           duration: 0.35, 

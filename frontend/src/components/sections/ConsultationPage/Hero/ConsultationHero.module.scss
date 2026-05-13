@@ -56,30 +56,47 @@
 .quotesContainer {
   display: flex;
   flex-direction: column;
-  gap: 16px ;
+  gap: 16px;
 }
 
 .quoteRow {
   display: flex;
   position: relative;
   gap: 16px;
-
-  @include down("mobile") {
-    flex-direction: column;
-    align-items: stretch;
-    gap: $scale-16;
-  }
 }
 
 .firstRow {
-  align-items: flex-end;
+  align-items: center;
 
   .textBox {
+    margin-left: -40px;
     z-index: 2;
   }
 
+  @include down("laptop") {
+    justify-content: flex-start;
+    align-items: flex-end;
+
+    .textBox {
+      margin-left: 0;
+    }
+  }
+
+  @include down("tablet") {
+    justify-content: center;
+    align-items: flex-end;
+    gap: 16px;
+  }
+
+  @include down("mobile-large") {
+    align-items: center;
+    gap: 8px;
+  }
+
   @include down("mobile") {
-    align-items: stretch;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
   }
 }
 
@@ -87,19 +104,43 @@
   width: 100%;
   display: flex;
   justify-content: flex-end;
-  align-items: flex-start;
+  align-items: center;
   gap: 16px;
 
-  .analysisBox {
-    z-index: 1;
+  // Laptop: same layout, same gap
+  @include down("laptop") {
+    align-items: center;
+    gap: 16px;
+  }
 
-    p {
-      max-width: 303px;
+  // Tablet: align to top
+  @include down("tablet") {
+    align-items: flex-start;
+    gap: 16px;
+  }
+
+  // Mobile-large: align to bottom, tighter gap
+  @include down("mobile-large") {
+    align-items: flex-end;
+    gap: 8px;
+
+    .imageBox {
+      flex: 1 1 0;
+      align-self: stretch;
+      flex-shrink: 1;
     }
   }
 
+  // Mobile: align to bottom, tighter gap
   @include down("mobile") {
-    align-items: stretch;
+    align-items: flex-end;
+    gap: 8px;
+
+    .imageBox {
+      flex: 1 1 0;
+      align-self: stretch;
+      flex-shrink: 1;
+    }
   }
 }
 
@@ -113,26 +154,68 @@
     object-fit: cover;
     display: block;
   }
+
+  @include down("tablet") {
+    flex-shrink: 1;
+  }
 }
 
 .mainImage {
   width: 295px;
   height: 238px;
 
+  @include down("laptop") {
+    width: 351px;
+    height: 283px;
+  }
+
+  @include down("tablet") {
+    width: 256px;
+    height: 198px;
+  }
+
+  @include down("mobile-large") {
+    width: 100%;
+    height: auto;
+  }
+
   @include down("mobile") {
     width: 100%;
-    height: 200px;
+    height: 255px;
   }
 }
 
 .secondaryImage {
   width: 183px;
   height: 128px;
+  border-radius: 12px;
 
+  // Laptop: same as desktop
+  @include down("laptop") {
+    width: 183px;
+    height: 128px;
+    border-radius: 12px;
+  }
+
+  // Tablet: same width/height, smaller radius
+  @include down("tablet") {
+    width: 183px;
+    height: 128px;
+    border-radius: 8px;
+  }
+
+  // Mobile-large: fill parent imageBox
+  @include down("mobile-large") {
+    width: 100%;
+    height: 100%;
+    border-radius: 8px;
+  }
+
+  // Mobile: fill parent imageBox
   @include down("mobile") {
     width: 100%;
-    height: 150px;
-    order: -1;
+    height: 100%;
+    border-radius: 8px;
   }
 }
 
@@ -157,38 +240,131 @@
     margin: 0;
   }
 
+  @include down("tablet") {
+    padding: 24px;
+    background: #F3F5F7;
+
+    p {
+      font-size: 20px;
+      line-height: 28px;
+    }
+
+    .iconCircle {
+      order: 1;
+    }
+  }
+
+  @include down("mobile-large") {
+    padding: 16px 12px;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 8px;
+    min-height: auto;
+
+    p {
+      line-height: 26px;
+      order: 2;
+      align-self: stretch;
+    }
+  }
+
   @include down("mobile") {
     width: 100%;
-    padding: $scale-16;
-    min-height: auto;
+    padding: 8px 12px;
+    gap: 4px;
+
+    p {
+      font-size: 16px;
+      line-height: 24px;
+    }
   }
 }
 
 .analysisBox {
   display: flex;
+  flex: 1 1 0;
+  justify-content: flex-start;
   align-items: flex-start;
   gap: 16px;
-  flex: 1;
   padding: 16px 24px 16px 16px;
-  background: $color-grey-50;
+  background: var(--color-surface-background-tertiary, #F3F5F7);
   border-radius: 8px;
   box-shadow: 0px 2px 8px rgba(81, 99, 120, 0.15);
-  min-height: 128px;
 
   p {
-    flex: 1;
+    width: 303px;
     font-family: $font-secondary;
-    font-size: $font-size-body-md;
-    font-weight: $weight-medium;
-    line-height: $lh-body-md;
+    font-size: 24px;
+    font-weight: 500;
+    line-height: 32px;
     color: black;
     margin: 0;
+    word-wrap: break-word;
   }
 
+  // Laptop: horizontal, center-justified, tighter right padding
+  @include down("laptop") {
+    padding: 16px 8px 16px 16px;
+    //justify-content: center;
+    align-items: flex-start;
+    gap: 16px;
+
+    p {
+      width: 303px;
+      font-size: 24px;
+      line-height: 32px;
+    }
+  }
+
+  // Tablet: horizontal, stretch height, centered items, wider gap
+  @include down("tablet") {
+    align-self: stretch;
+    padding: 12px 24px;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 24px;
+
+    p {
+      width: auto;
+      flex: 1 1 0;
+      font-size: 20px;
+      line-height: 28px;
+    }
+  }
+
+  // Mobile-large: column layout, max 274px width
+  @include down("mobile-large") {
+    max-width: 274px;
+    flex: 1 1 0;
+    align-self: stretch;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 12px 8px 12px 12px;
+
+    p {
+      width: auto;
+      align-self: stretch;
+      font-size: 20px;
+      line-height: 26px;
+    }
+  }
+
+  // Mobile: column layout, max 135px width
   @include down("mobile") {
-    width: 100%;
-    padding: $scale-16;
-    min-height: auto;
+    max-width: 135px;
+    padding: 8px 4px 8px 12px;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 4px;
+
+    p {
+      align-self: stretch;
+      font-size: 16px;
+      line-height: 24px;
+    }
   }
 }
 
@@ -213,13 +389,38 @@
       fill: $color-grey-500;
     }
   }
+
+  @include down("tablet") {
+    border-radius: 49px;
+    padding: 8px;
+    border: none;
+
+    svg {
+      height: 21px;
+
+      path {
+        fill: #8395AC;
+      }
+    }
+  }
+
+  @include down("mobile-large") {
+    width: 28.44px;
+    height: 28.44px;
+    padding: 6px;
+
+    svg {
+      width: 16.47px;
+      height: 15.72px;
+    }
+  }
 }
 
 // Summary Section
 .summary {
   display: flex;
   flex-direction: column;
-  gap: $scale-24;
+  gap: 40px;
 }
 
 .summaryTitle {
@@ -298,7 +499,8 @@
   @include down("laptop") {
     flex: none;
     position: static;
-    margin: 48px auto 0;
+    margin: 0 auto;
+    align-self: center;
   }
 
   @include down("mobile") {
