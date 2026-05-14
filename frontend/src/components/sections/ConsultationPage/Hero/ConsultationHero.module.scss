@@ -3,7 +3,6 @@
 
 .hero {
   padding-top: $scale-32;
-  padding-bottom: $scale-64;
 }
 
 .container {
@@ -498,6 +497,8 @@
   max-width: 563px;
 
   @include down("laptop") {
+    display: flex;
+    justify-content: center;
     flex: none;
     position: static;
     margin: 0 auto;
@@ -507,6 +508,6 @@
   @include down("mobile") {
     max-width: 100%;
     //margin-top: 32px;
-    
+
   }
 }

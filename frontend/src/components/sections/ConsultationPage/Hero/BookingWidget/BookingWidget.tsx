@@ -9,6 +9,7 @@ import { CheckIcon } from "@/components/ui/Icons/CheckIcon/CheckIcon.tsx";
 import { Button } from "@/components/ui/Button/Button.tsx";
 import { CalendarIcon } from "@/components/ui/Icons/CalendarIcon/CalendarIcon.tsx";
 import { UrgentIcon } from "@/components/ui/Icons/UrgentIcon/UrgentIcon.tsx";
+import { fetchAvailableSlots, AvailableSlots } from "./bookingApi.ts";
 
 export const BookingWidget = () => {
   const { t, language } = useTranslation(translations);
@@ -24,8 +25,10 @@ export const BookingWidget = () => {
     message: ""
   });
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
-  const [selectedTime, setSelectedTime] = useState<string | null>("15:00");
+  const [selectedTime, setSelectedTime] = useState<string | null>(null);
   const [viewDate, setViewDate] = useState(new Date(new Date().getFullYear(), new Date().getMonth(), 1));
+  const [availableSlots, setAvailableSlots] = useState<AvailableSlots>({});
+  const [isLoadingSlots, setIsLoadingSlots] = useState(false);
 
   const [contentHeight, setContentHeight] = useState<number | "auto">("auto");
   const contentRef = useRef<HTMLDivElement | null>(null);
@@ -72,6 +75,21 @@ export const BookingWidget = () => {
       }
     }
   }, [selectedFormat, selectedDate]);
+
+  useEffect(() => {
+    const loadSlots = async () => {
+      setIsLoadingSlots(true);
+      try {
+        const data = await fetchAvailableSlots(viewDate.getFullYear(), viewDate.getMonth());
+        setAvailableSlots(data);
+      } catch (error) {
+        console.error("Failed to load slots:", error);
+      } finally {
+        setIsLoadingSlots(false);
+      }
+    };
+    loadSlots();
+  }, [viewDate]);
 
   const isStepValid = (step: number) => {
     switch (step) {
@@ -179,20 +197,40 @@ export const BookingWidget = () => {
     // Current month days
     for (let i = 1; i <= lastDay.getDate(); i++) {
       const date = new Date(year, month, i);
+      const dateKey = `${year}-${String(month + 1).padStart(2, '0')}-${String(i).padStart(2, '0')}`;
       const dayOfWeek = date.getDay();
       const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
       const isPast = date < minDate;
-      days.push({ day: i, current: true, month, isWeekend, isPast });
+      const hasSlots = availableSlots[dateKey] && availableSlots[dateKey].length > 0;
+      
+      days.push({ 
+        day: i, 
+        current: true, 
+        month, 
+        isWeekend, 
+        isPast: isPast || !hasSlots,
+        dateKey
+      });
     }
     
     // Next month padding to fill 42 cells (6 weeks)
     const remaining = 42 - days.length;
     for (let i = 1; i <= remaining; i++) {
       const date = new Date(year, month + 1, i);
+      const dateKey = `${year}-${String(month + 2).padStart(2, '0')}-${String(i).padStart(2, '0')}`;
       const dayOfWeek = date.getDay();
       const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
       const isPast = date < minDate;
-      days.push({ day: i, current: false, month: month + 1, isWeekend, isPast });
+      const hasSlots = availableSlots[dateKey] && availableSlots[dateKey].length > 0;
+      
+      days.push({ 
+        day: i, 
+        current: false, 
+        month: month + 1, 
+        isWeekend, 
+        isPast: isPast || !hasSlots,
+        dateKey
+      });
     }
     
     return days;
@@ -534,15 +572,20 @@ export const BookingWidget = () => {
                   >
                     <label className={styles.label}>{t.bookingWidget.labelTime}</label>
                     <div className={styles.timeSlots}>
-                      {['09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00'].map(time => (
-                        <button 
-                          key={time}
-                          className={`${styles.timeSlot} ${selectedTime === time ? styles.active : ''}`}
-                          onClick={() => setSelectedTime(time)}
-                        >
-                          {time}
-                        </button>
-                      ))}
+                      {(() => {
+                        const dateKey = `${selectedDate.getFullYear()}-${String(selectedDate.getMonth() + 1).padStart(2, '0')}-${String(selectedDate.getDate()).padStart(2, '0')}`;
+                        const slots = availableSlots[dateKey] || [];
+                        
+                        return slots.map(time => (
+                          <button 
+                            key={time}
+                            className={`${styles.timeSlot} ${selectedTime === time ? styles.active : ''}`}
+                            onClick={() => setSelectedTime(time)}
+                          >
+                            {time}
+                          </button>
+                        ));
+                      })()}
                       {getFieldError("time") && <div className={styles.errorMessage}>{getFieldError("time")}</div>}
                     </div>
                   </motion.div>
