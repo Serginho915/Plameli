@@ -4,12 +4,11 @@
 .forWhom {}
 
 .container {
+  width: 100%;
   display: grid;
   grid-template-columns: 1fr;
   padding-top: 36px;
   gap: $scale-48;
-  max-width: 1056px;
-  margin: 0 auto;
   padding-left: 20px;
   padding-right: 20px;
 }
