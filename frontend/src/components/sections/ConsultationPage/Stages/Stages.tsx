@@ -10,9 +10,37 @@ import stagesBg from "../../../../../public/images/Stages/stages_bg.png";
 
 export const Stages = () => {
   const { t } = useTranslation(translations);
+  const [activeStep, setActiveStep] = React.useState(0);
+  const sectionRef = React.useRef<HTMLElement>(null);
+
+  React.useEffect(() => {
+    let intervalId: NodeJS.Timeout;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          intervalId = setInterval(() => {
+            setActiveStep((prev) => (prev + 1) % t.steps.length);
+          }, 800);
+        } else {
+          if (intervalId) clearInterval(intervalId);
+        }
+      },
+      { threshold: 0.2 },
+    );
+
+    if (sectionRef.current) {
+      observer.observe(sectionRef.current);
+    }
+
+    return () => {
+      if (intervalId) clearInterval(intervalId);
+      observer.disconnect();
+    };
+  }, [t.steps.length]);
 
   return (
-    <section className={styles.stages}>
+    <section className={styles.stages} ref={sectionRef}>
       <SectionTitle text={t.title} />
 
       <div className={styles.container}>
@@ -26,7 +54,10 @@ export const Stages = () => {
                     step: { title: string; description: string },
                     index: number,
                   ) => (
-                    <li key={index} className={styles.stepItem}>
+                    <li
+                      key={index}
+                      className={`${styles.stepItem} ${activeStep === index ? styles.active : ""}`}
+                    >
                       <div className={styles.stepContent}>
                         <h4 className={styles.stepTitle}>{step.title}</h4>
                         <p className={styles.stepDescription}>
