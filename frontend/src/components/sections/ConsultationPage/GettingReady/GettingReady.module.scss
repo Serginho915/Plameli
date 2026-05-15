@@ -1,0 +1,202 @@
+@import "@/styles/variables.scss";
+@import "@/styles/mixins.scss";
+
+.gettingReady {
+  width: 100%;
+}
+
+.sectionTitle {
+  line-height: 40px;
+}
+
+.container {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 61px;
+  margin-top: 40px;
+  max-width: 1440px;
+  margin-left: auto;
+  margin-right: auto;
+  //padding: 0 56px;
+
+  @include down("laptop") {
+    gap: 32px;
+    //padding: 0 32px;
+  }
+
+  @include down("tablet") {
+    flex-direction: column;
+    align-items: center;
+    gap: 32px;
+    //padding: 0 20px;
+  }
+
+  @include down("mobile") {
+    gap: 24px;
+    margin-top: 24px;
+    //padding: 0 12px;
+  }
+}
+
+.contentColumn {
+  flex: 1;
+  max-width: 614px;
+  display: flex;
+  flex-direction: column;
+  gap: 80px;
+  padding-top: 32px;
+
+  @include down("laptop") {
+    gap: 64px;
+    max-width: 542px;
+  }
+
+  @include down("tablet") {
+    padding-top: 0;
+    gap: 32px;
+    max-width: 100%;
+  }
+}
+
+.textBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+
+  @include down("tablet") {
+    gap: 24px;
+  }
+
+  @include down("mobile") {
+    gap: 16px;
+  }
+}
+
+.subtitle {
+  color: black;
+  font-size: 32px;
+  font-family: $font-secondary;
+  font-weight: 500;
+  line-height: 36px;
+  text-align: left;
+
+  @include down("tablet") {
+    font-size: 28px;
+  }
+
+  @include down("mobile") {
+    font-size: 24px;
+    line-height: 28px;
+  }
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+
+  @include down("mobile") {
+    gap: 8px;
+  }
+}
+
+.listItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.listItemContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+
+  @include down("mobile") {
+    gap: 4px;
+  }
+}
+
+.bullet {
+  width: 15px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: black;
+
+  @include down("tablet") {
+    height: 26px;
+  }
+
+  @include down("mobile") {
+    height: 20px;
+  }
+
+  svg {
+    width: 15px;
+    height: 8px;
+  }
+}
+
+.itemContent {
+  color: black;
+  font-size: 24px;
+  font-family: $font-secondary;
+  font-weight: 400;
+  line-height: 28px;
+
+  @include down("tablet") {
+    font-size: 20px;
+    line-height: 26px;
+  }
+
+  @include down("mobile") {
+    font-size: 16px;
+    line-height: 20px;
+  }
+
+  strong {
+    font-weight: 500;
+    display: block;
+    margin-bottom: 4px;
+
+    @include down("mobile") {
+      margin-bottom: 0;
+    }
+  }
+}
+
+.decor {
+  width: 12px;
+  height: 12px;
+  border-radius: 2px;
+  border-top: 2px solid $accent;
+  border-left: 2px solid $accent;
+  opacity: 0.8;
+  transform: rotate(180deg);
+  align-self: flex-end;
+
+  @include down("tablet") {
+    align-self: flex-start;
+  }
+}
+
+.widgetWrapper {
+  flex: 1;
+  max-width: 563px;
+
+  @include down("laptop") {
+    max-width: 542px;
+  }
+
+  @include down("tablet") {
+    width: 100%;
+    max-width: 486px;
+  }
+
+  @include down("mobile") {
+    max-width: 100%;
+  }
+}
