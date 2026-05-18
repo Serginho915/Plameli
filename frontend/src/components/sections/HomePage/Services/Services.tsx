@@ -32,7 +32,7 @@ export const Services = () => {
   };
 
   return (
-    <section className={styles.services}>
+    <section id="services" className={styles.services}>
       <SectionTitle text={t.title} />
 
       {/* Card Header (Above the block) */}
@@ -92,7 +92,7 @@ export const Services = () => {
               <ul className={styles.processSteps}>
                 {t.processSteps.map((step: string, index: number) => (
                   <li key={index} className={styles.processStep}>
-                    <CheckIcon />
+                    <CheckIcon className={styles.checkIconWrapper} />
                     <p>{step}</p>
                   </li>
                 ))}

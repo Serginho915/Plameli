@@ -7,16 +7,20 @@ import { translations } from "./Hero.translations.ts";
 import styles from "./Hero.module.scss";
 import heroImg from "../../../../../public/images/Hero/olenaShopova.png";
 
-import { CircleArrowIcon } from "@/components/ui/Icons/CircleArrowIcon/CircleArrowIcon.tsx";
+import { ActionLink } from "@/components/ui/ActionLink/ActionLink.tsx";
 
 export const Hero = () => {
   const { t } = useTranslation(translations);
 
   const forbesBannerContent = (
-    <div className={styles.forbesBanner}>
-      <p>{t.forbesBanner}</p>
-      <CircleArrowIcon className={styles.forbesIcon} />
-    </div>
+    <ActionLink 
+      text={t.forbesBanner} 
+      variant="forbes" 
+      className={styles.forbesBannerLink} 
+      href="https://forbesbulgaria.com/2024/09/17/schetovodstvo-sas-sartse/"
+      target="_blank"
+      rel="noopener noreferrer"
+    />
   );
 
   return (

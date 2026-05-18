@@ -27,7 +27,7 @@ export const Stats = () => {
   ];
 
   return (
-    <section className={styles.stats}>
+    <section id="achievements" className={styles.stats}>
         <ul className={styles.statsRow}>
           {statsData.map((stat, index) => (
             <li key={index}>

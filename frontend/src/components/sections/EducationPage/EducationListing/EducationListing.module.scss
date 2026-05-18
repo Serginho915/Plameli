@@ -1,0 +1,397 @@
+@import "@/styles/variables.scss";
+@import "@/styles/mixins.scss";
+
+.section {
+  width: 100%;
+  padding-bottom: 64px;
+  margin-top: 24px;
+
+  @include down("tablet") {
+    padding-bottom: 48px;
+  }
+
+  @include down("mobile-large") {
+    padding-bottom: 32px;
+  }
+}
+
+.container {
+  max-width: $max-width;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+
+  @include down("tablet") {
+    gap: 24px;
+  }
+
+  @include down("mobile-large") {
+    gap: 20px;
+  }
+}
+
+// ====== BREADCRUMB ======
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+
+  @include down("mobile-large") {
+    gap: 16px;
+  }
+}
+
+.breadcrumbLink {
+  color: $color-grey-800;
+  font-size: 24px;
+  font-family: $font-secondary;
+  font-weight: 400;
+  line-height: 28px;
+  text-decoration: none;
+  transition: color 0.3s ease;
+
+  &:hover {
+    color: $accent;
+  }
+
+  @include down("mobile-large") {
+    font-size: 18px;
+    line-height: 22px;
+  }
+}
+
+.breadcrumbSeparator {
+  width: 6px;
+  height: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  svg {
+    width: 100%;
+    height: 100%;
+  }
+}
+
+.breadcrumbCurrent {
+  color: $color-neutrals-black;
+  font-size: 24px;
+  font-family: $font-secondary;
+  font-weight: 400;
+  line-height: 28px;
+
+  @include down("mobile-large") {
+    font-size: 18px;
+    line-height: 22px;
+  }
+}
+
+// ====== HEADER ROW (description + filters) ======
+.headerRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 32px;
+  position: relative;
+
+  @include down("tablet") {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 24px;
+  }
+}
+
+.description {
+  max-width: 588px;
+  padding: 8px 0;
+
+  @include down("tablet") {
+    max-width: 100%;
+  }
+}
+
+.descriptionText {
+  font-size: 24px;
+  font-family: $font-secondary;
+  font-weight: 400;
+  line-height: 28px;
+
+  @include down("mobile-large") {
+    font-size: 18px;
+    line-height: 24px;
+  }
+}
+
+.descriptionGrey {
+  color: $color-neutrals-500;
+}
+
+.descriptionBold {
+  color: $color-neutrals-900;
+  font-weight: 500;
+  line-height: 32px;
+
+  @include down("mobile-large") {
+    line-height: 24px;
+  }
+}
+
+// ====== FILTER BAR ======
+.filterBar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap; // wraps nicely on small/tablet viewports to prevent overflow clipping
+  flex-shrink: 0;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+
+  @include down("tablet") {
+    width: 100%;
+  }
+
+  @include down("mobile-large") {
+    gap: 8px;
+  }
+}
+
+// ====== FILTER WRAPPER FOR DROPDOWN ======
+.filterWrapper {
+  position: relative;
+  display: inline-block;
+
+  &:last-child {
+    .dropdownMenu {
+      left: auto;
+      right: 0;
+      transform-origin: top right;
+    }
+  }
+}
+
+.filterPill {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 18px;
+  border-radius: 44px;
+  border: 1px solid transparent;
+  cursor: pointer;
+  font-size: 18px;
+  font-family: $font-secondary;
+  font-weight: 400;
+  line-height: 22px;
+  color: $color-neutrals-black;
+  background: $color-neutrals-200;
+  transition: all 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
+  white-space: nowrap;
+  flex-shrink: 0;
+
+  @include down("mobile-large") {
+    font-size: 14px;
+    line-height: 18px;
+    padding: 8px 14px;
+    gap: 6px;
+  }
+
+  &:hover {
+    background: #e2e8f0;
+  }
+
+  &.active {
+    background: white;
+    border-color: #e2e8f0;
+    box-shadow: 0px 4px 12px rgba(81, 99, 120, 0.12);
+
+    .filterIcon {
+      filter: brightness(0);
+      opacity: 1;
+    }
+  }
+
+  &.dropdownOpen {
+    background: white;
+    border-color: #8395AC;
+    box-shadow: 0px 4px 12px rgba(81, 99, 120, 0.15);
+  }
+
+  &:not(.active) {
+    .filterIcon {
+      opacity: 0.6;
+    }
+  }
+}
+
+.filterText {
+  display: inline-block;
+}
+
+.filterIcon {
+  width: 22px;
+  height: 22px;
+  object-fit: contain;
+  flex-shrink: 0;
+  transition: filter 0.3s ease, opacity 0.3s ease;
+
+  @include down("mobile-large") {
+    width: 18px;
+    height: 18px;
+  }
+}
+
+.chevron {
+  width: 10px;
+  height: 6px;
+  flex-shrink: 0;
+  transition: transform 0.3s ease;
+  color: #8395AC;
+
+  path {
+    stroke: #8395AC;
+  }
+}
+
+.chevronRotated {
+  transform: rotate(180deg);
+}
+
+// ====== DROPDOWN MENU ======
+.dropdownMenu {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0px 10px 30px rgba(3, 2, 19, 0.12);
+  border: 1px solid rgba(208, 218, 231, 0.8);
+  padding: 8px;
+  z-index: 1200; // float above all listing elements
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 240px;
+  box-sizing: border-box;
+  animation: dropdownFadeIn 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  transform-origin: top left;
+  list-style: none;
+  margin: 0;
+
+  @include down("mobile-large") {
+    min-width: 200px;
+    border-radius: 12px;
+    padding: 6px;
+  }
+}
+
+@keyframes dropdownFadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.96) translateY(-5px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.dropdownItem {
+  display: flex;
+  align-items: center;
+  padding: 10px 16px;
+  border-radius: 10px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-size: 16px;
+  font-family: $font-secondary;
+  font-weight: 400;
+  color: $color-neutrals-700;
+  text-align: left;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+  width: 100%;
+  box-sizing: border-box;
+
+  &:hover {
+    background: #F4F6F8;
+    color: $color-neutrals-black;
+  }
+
+  &.itemActive {
+    background: $color-neutrals-900;
+    color: white;
+    font-weight: 500;
+  }
+
+  @include down("mobile-large") {
+    font-size: 14px;
+    padding: 8px 12px;
+    border-radius: 8px;
+  }
+}
+
+// ====== SECTION GROUPS ======
+.sectionGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+
+  @include down("mobile-large") {
+    gap: 20px;
+  }
+}
+
+.sectionTitle {
+  color: $color-neutrals-black;
+  font-size: 56px;
+  font-family: $font-primary;
+  font-weight: 400;
+  line-height: 56px;
+  letter-spacing: 1.12px;
+
+  @include down("tablet") {
+    font-size: 40px;
+    line-height: 44px;
+  }
+
+  @include down("mobile-large") {
+    font-size: 32px;
+    line-height: 36px;
+  }
+}
+
+// ====== CARDS GRID ======
+.cardsGrid {
+  display: flex;
+  gap: 32px;
+  width: 100%;
+
+  @include down("tablet") {
+    gap: 24px;
+  }
+
+  @include down("mobile-large") {
+    flex-direction: column;
+    gap: 16px;
+  }
+}
+
+.cardWrapper {
+  flex: 1;
+  min-width: 0;
+}
+
+// ====== EMPTY STATE ======
+.emptyState {
+  padding: 48px 24px;
+  text-align: center;
+  color: $color-neutrals-500;
+  font-family: $font-secondary;
+  font-size: 20px;
+  line-height: 28px;
+  background: $color-grey-50;
+  border-radius: 16px;
+  width: 100%;
+}

@@ -22,6 +22,7 @@ interface EducationCardProps {
   signUpHref: string;
   learnMoreLabel: string;
   signUpLabel: string;
+  onSignUpClick?: () => void;
 }
 
 export const EducationCard: React.FC<EducationCardProps> = ({
@@ -34,6 +35,7 @@ export const EducationCard: React.FC<EducationCardProps> = ({
   signUpHref,
   learnMoreLabel,
   signUpLabel,
+  onSignUpClick,
 }) => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -112,9 +114,15 @@ export const EducationCard: React.FC<EducationCardProps> = ({
           </Link>
         </div>
         <div className={styles.buttonWrapper}>
-          <Link href={signUpHref}>
-            <Button variant="filled">{signUpLabel}</Button>
-          </Link>
+          {onSignUpClick ? (
+            <Button variant="filled" onClick={onSignUpClick}>
+              {signUpLabel}
+            </Button>
+          ) : (
+            <Link href={signUpHref}>
+              <Button variant="filled">{signUpLabel}</Button>
+            </Link>
+          )}
         </div>
       </div>
     </div>

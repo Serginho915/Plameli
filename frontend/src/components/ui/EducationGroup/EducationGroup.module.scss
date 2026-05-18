@@ -1,0 +1,101 @@
+@import "@/styles/variables.scss";
+@import "@/styles/mixins.scss";
+
+.group {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.cardsGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  width: 100%;
+}
+
+.cardWrapper {
+  width: 100%;
+}
+
+.emptyState {
+  padding: 48px 24px;
+  text-align: center;
+  color: $color-neutrals-500;
+  font-family: $font-secondary;
+  font-size: 20px;
+  line-height: 28px;
+  background: $color-grey-50;
+  border-radius: 16px;
+  width: 100%;
+}
+
+// ====== HOMEPAGE VARIANT ======
+.group.homepage {
+  gap: 24px;
+
+  .title {
+    color: #323131;
+    font-size: 32px;
+    font-family: $font-secondary;
+    font-weight: 500;
+    line-height: 36px;
+
+    @include down("mobile-large") {
+      font-size: 28px;
+    }
+  }
+
+  .cardsGrid {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+}
+
+// ====== LISTING VARIANT ======
+.group.listing {
+  gap: 32px;
+
+  @include down("mobile-large") {
+    gap: 20px;
+  }
+
+  .title {
+    color: $color-neutrals-black;
+    font-size: 56px;
+    font-family: $font-primary;
+    font-weight: 400;
+    line-height: 56px;
+    letter-spacing: 1.12px;
+
+    @include down("tablet") {
+      font-size: 40px;
+      line-height: 44px;
+    }
+
+    @include down("mobile-large") {
+      font-size: 32px;
+      line-height: 36px;
+    }
+  }
+
+  .cardsGrid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 32px;
+
+    @include down("tablet") {
+      gap: 24px;
+    }
+
+    @include down("mobile-large") {
+      grid-template-columns: 1fr;
+      gap: 16px;
+    }
+  }
+}

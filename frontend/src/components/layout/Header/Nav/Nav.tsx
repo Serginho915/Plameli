@@ -3,11 +3,13 @@ import React, { useState, useRef, useEffect } from 'react'
 import styles from './Nav.module.scss'
 import Link from 'next/link'
 import { useTranslation } from '@/hooks/useTranslation.ts'
+import { useUI } from '@/context/UIContext.tsx'
 import { translations } from './translations.ts'
 
 export const Nav = () => {
   const { t, language } = useTranslation(translations);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const { setIsMenuOpen } = useUI();
   const dropdownRef = useRef<HTMLLIElement>(null);
 
   // Close dropdown when clicking outside
@@ -20,6 +22,26 @@ export const Nav = () => {
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
+
+  const handleLinkClick = (e: React.MouseEvent<HTMLAnchorElement>, anchor: string) => {
+    setIsDropdownOpen(false);
+    setIsMenuOpen(false);
+
+    const isHomepage =
+      window.location.pathname === `/${language}` ||
+      window.location.pathname === `/${language}/` ||
+      window.location.pathname === '/' ||
+      window.location.pathname === '';
+
+    if (isHomepage) {
+      const element = document.getElementById(anchor);
+      if (element) {
+        e.preventDefault();
+        element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        window.history.pushState(null, '', `#${anchor}`);
+      }
+    }
+  };
 
   return (
     <nav>
@@ -44,9 +66,9 @@ export const Nav = () => {
                 {t.dropdown_items.map((item: { label: string; anchor: string }) => (
                   <li key={item.anchor} className={styles.dropdownItem}>
                     <Link
-                      href={`/${language}/about#${item.anchor}`}
+                      href={`/${language}#${item.anchor}`}
                       className={styles.dropdownLink}
-                      onClick={() => setIsDropdownOpen(false)}
+                      onClick={(e) => handleLinkClick(e, item.anchor)}
                     >
                       {item.label}
                     </Link>
@@ -56,12 +78,12 @@ export const Nav = () => {
             )}
           </li>
           <li className={styles.navItem}>
-            <Link href={`/${language}/education`} className={styles.navLink}>
+            <Link href={`/${language}/education`} className={styles.navLink} onClick={() => setIsMenuOpen(false)}>
               {t.nav_education}
             </Link>
           </li>
           <li className={styles.navItem}>
-            <Link href={`/${language}/blog`} className={styles.navLink}>
+            <Link href={`/${language}/blog`} className={styles.navLink} onClick={() => setIsMenuOpen(false)}>
               {t.nav_blog}
             </Link>
           </li>

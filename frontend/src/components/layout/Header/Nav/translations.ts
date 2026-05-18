@@ -10,7 +10,7 @@ export const translations = {
       { label: "Достижения", anchor: "achievements" },
       { label: "Отзывы", anchor: "reviews" },
       { label: "FAQ", anchor: "faq" },
-      { label: "Связаться", anchor: "contact" }
+      { label: "Связаться", anchor: "contacts" }
     ]
   },
   bg: {
@@ -22,7 +22,7 @@ export const translations = {
       { label: "Постижения", anchor: "achievements" },
       { label: "Отзиви", anchor: "reviews" },
       { label: "FAQ", anchor: "faq" },
-      { label: "Свържете се", anchor: "contact" }
+      { label: "Свържете се", anchor: "contacts" }
     ]
   },
 } satisfies ComponentTranslations;

@@ -47,7 +47,7 @@ export const Reviews = () => {
   };
 
   return (
-    <section className={styles.reviews}>
+    <section id="reviews" className={styles.reviews}>
       <div className={styles.bgDecoration} />
       
       <div className={styles.container}>
