@@ -1,0 +1,363 @@
+@import "@/styles/variables.scss";
+@import "@/styles/mixins.scss";
+
+.container {
+  max-width: 1360px;
+  margin: 0 auto;
+  box-sizing: border-box;
+
+}
+
+.breadcrumbs {
+  margin-bottom: 32px;
+  margin-top: 24px;
+}
+
+.layout {
+  display: flex;
+  align-items: flex-start;
+  gap: 44px;
+  width: 100%;
+
+  @include down("desktop") {
+    gap: 32px;
+  }
+
+  @include down("tablet") {
+    flex-direction: column;
+    gap: 40px;
+  }
+}
+
+.leftCol {
+  flex: 1 1 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 32px;
+  width: 100%;
+  position: sticky;
+  top: 40px;
+  align-self: flex-start;
+  z-index: 10;
+
+  @include down("tablet") {
+    position: static;
+  }
+}
+
+.titleRow {
+  align-self: stretch;
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-end;
+  gap: 80px;
+}
+
+.title {
+  align-self: stretch;
+  color: $color-neutrals-900;
+  font-size: 56px;
+  font-family: "Oswald", sans-serif;
+  font-weight: 400;
+  line-height: 1.1;
+  letter-spacing: 1.12px;
+  margin: 0;
+
+  @include down("desktop") {
+    font-size: 44px;
+  }
+
+  @include down("mobile-large") {
+    font-size: 32px;
+  }
+}
+
+.descriptionRow {
+  align-self: stretch;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.description {
+  flex: 1 1 0;
+  color: $color-neutrals-900;
+  font-size: 24px;
+  font-family: "Source Sans 3", sans-serif;
+  font-weight: 400;
+  line-height: 1.4;
+  margin: 0;
+
+  @include down("desktop") {
+    font-size: 20px;
+  }
+
+  @include down("mobile-large") {
+    font-size: 18px;
+    line-height: 1.5;
+  }
+}
+
+.ctaButton {
+  align-self: stretch;
+  padding: 16px 24px;
+  background: #F1592A;
+  border-radius: 24px;
+  border: none;
+  cursor: pointer;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  gap: 24px;
+  transition: background 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+  text-decoration: none;
+  box-sizing: border-box;
+
+  &:hover {
+    background: darken(#F1592A, 6%);
+    box-shadow: 0px 8px 24px rgba(241, 89, 42, 0.3);
+    transform: translateY(-2px);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+.ctaText {
+  color: white;
+  font-size: 24px;
+  font-family: "Source Sans 3", sans-serif;
+  font-style: italic;
+  font-weight: 500;
+  line-height: 32px;
+  letter-spacing: 1px;
+
+  @include down("mobile-large") {
+    font-size: 20px;
+    line-height: 28px;
+  }
+}
+
+.rightCol {
+  flex: 1 1 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 44px;
+  width: 100%;
+}
+
+.mediaCard {
+  align-self: stretch;
+  height: 529px;
+  position: relative;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0px 10px 30px rgba(3, 2, 19, 0.08);
+
+  @include down("desktop") {
+    height: 420px;
+  }
+
+  @include down("mobile-large") {
+    height: 280px;
+  }
+}
+
+.mediaImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.videoWrapper {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  background: #000;
+}
+
+.video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.playButton {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: transform 0.3s ease, background 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  z-index: 10;
+
+  svg {
+    width: 32px;
+    height: 32px;
+    color: #F1592A;
+    margin-left: 4px;
+    transition: transform 0.3s ease;
+  }
+
+  &:hover {
+    transform: translate(-50%, -50%) scale(1.1);
+    background: #F1592A;
+    svg {
+      color: white;
+      transform: scale(1.1);
+    }
+  }
+}
+
+.badgeOverlay {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+  z-index: 5;
+  pointer-events: none; // prevent clicking badges from pausing video
+
+  @include down("mobile-large") {
+    top: 12px;
+    left: 12px;
+    gap: 8px;
+  }
+}
+
+.badgeRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.badge {
+  padding: 8px 16px;
+  background: white;
+  border-radius: 44px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  box-shadow: 0px 4px 15px rgba(3, 2, 19, 0.08);
+
+  @include down("mobile-large") {
+    padding: 6px 12px;
+    gap: 8px;
+  }
+}
+
+.badgeIcon {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: black;
+
+  @include down("mobile-large") {
+    width: 20px;
+    height: 20px;
+  }
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+}
+
+.badgeText {
+  color: black;
+  font-size: 24px;
+  font-family: "Source Sans 3", sans-serif;
+  font-weight: 500;
+  line-height: 32px;
+
+  @include down("desktop") {
+    font-size: 20px;
+    line-height: 26px;
+  }
+
+  @include down("mobile-large") {
+    font-size: 16px;
+    line-height: 20px;
+  }
+}
+
+
+
+// ====== NOT FOUND / FALLBACK ======
+.notFoundContainer {
+  max-width: 1360px;
+  margin: 0 auto;
+  box-sizing: border-box;
+  text-align: center;
+  padding: 120px 24px;
+}
+
+.notFoundTitle {
+  font-family: "Oswald", sans-serif;
+  font-size: 40px;
+  line-height: 1.2;
+  margin-bottom: 24px;
+  color: $color-neutrals-900;
+
+  @include down("mobile-large") {
+    font-size: 32px;
+  }
+}
+
+.notFoundText {
+  font-family: "Source Sans 3", sans-serif;
+  font-size: 18px;
+  line-height: 1.4;
+  margin-bottom: 32px;
+  color: #8395AC;
+
+  @include down("mobile-large") {
+    font-size: 16px;
+  }
+}
+
+.notFoundLink {
+  display: inline-block;
+  padding: 12px 32px;
+  background: #F1592A;
+  color: white;
+  border-radius: 24px;
+  text-decoration: none;
+  font-weight: 600;
+  font-family: "Source Sans 3", sans-serif;
+  transition: background 0.3s ease, transform 0.2s ease;
+
+  &:hover {
+    background: darken(#F1592A, 6%);
+    transform: translateY(-2px);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+// ====== IMAGE WRAPPER ======
+.imageWrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+

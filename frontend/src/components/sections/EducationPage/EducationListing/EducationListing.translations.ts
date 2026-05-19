@@ -47,6 +47,16 @@ export const translations = {
     validationEmail: "Некорректный Email",
     validationPhone: "Номер телефона должен содержать минимум 8 цифр",
     successMsg: "Регистрация прошла успешно! Мы свяжемся с вами в ближайшее время.",
+    // Detail page translations
+    detailStartCourse: "Начать курс",
+    detailStartWebinar: "Начать вебинар",
+    detailProgramCourse: "Программа курса",
+    detailProgramWebinar: "Программа вебинара",
+    detailNotFoundTitle: "Материал не найден",
+    detailNotFoundDesc: "Извините, запрашиваемый курс или вебинар не существует или был перемещен.",
+    detailNotFoundBtn: "Вернуться к списку",
+    detailPlayVideo: "Воспроизвести видео",
+    similarMaterials: "Похожие материалы",
   },
   bg: {
     breadcrumbHome: "Главна",
@@ -96,5 +106,15 @@ export const translations = {
     validationEmail: "Невалиден Email",
     validationPhone: "Телефонният номер трябва да съдържа поне 8 цифри",
     successMsg: "Регистрацията беше успешна! Ще се свържем с вас възможно най-скоро.",
+    // Detail page translations
+    detailStartCourse: "Започнете курса",
+    detailStartWebinar: "Започнете уебинара",
+    detailProgramCourse: "Програма на курса",
+    detailProgramWebinar: "Програма на уебинара",
+    detailNotFoundTitle: "Материалът не е намерен",
+    detailNotFoundDesc: "Съжаляваме, исканият курс или уебинар не съществува или е преместен.",
+    detailNotFoundBtn: "Връщане към списъка",
+    detailPlayVideo: "Пусни видео",
+    similarMaterials: "Подобни материали",
   },
 };

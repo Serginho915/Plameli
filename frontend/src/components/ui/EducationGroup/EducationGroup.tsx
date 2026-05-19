@@ -66,14 +66,14 @@ export const EducationGroup: React.FC<EducationGroupProps> = ({
                 title={item.title}
                 type={item.type}
                 mediaSrc={item.mediaSrc}
-                poster={item.poster}
+                poster={item.type === "video" ? item.poster : undefined}
                 meta={[
                   { label: startLabel, value: item.startDate },
                   { label: formatLabel, value: item.format },
                   { label: priceLabel, value: item.price, isPrice: true },
                 ]}
-                learnMoreHref={`/${language}/education/${item.type === "video" ? "webinars" : "courses"}/${item.id}`}
-                signUpHref={`/${language}/education/${item.type === "video" ? "webinars" : "courses"}/${item.id}#form`}
+                learnMoreHref={`/${language}/education/${item.slug}`}
+                signUpHref={`/${language}/education/${item.slug}#register`}
                 learnMoreLabel={learnMoreLabel}
                 signUpLabel={signUpLabel}
                 onSignUpClick={onSignUpClick ? () => onSignUpClick(item) : undefined}

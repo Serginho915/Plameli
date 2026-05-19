@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useTranslation } from "@/hooks/useTranslation.ts";
 import { EducationGroup } from "@/components/ui/EducationGroup/EducationGroup.tsx";
 import { RegisterModal } from "@/components/ui/RegisterModal/RegisterModal.tsx";
+import { Breadcrumbs } from "@/components/ui/Breadcrumbs/Breadcrumbs.tsx";
 import { translations } from "./EducationListing.translations.ts";
 import { getMockCourses, getMockWebinars, EducationItem } from "./mockData.ts";
 import styles from "./EducationListing.module.scss";
@@ -41,7 +42,7 @@ export const EducationListing = () => {
   const [selectedItem, setSelectedItem] = useState<EducationItem | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const filterBarRef = useRef<HTMLDivElement>(null);
+  const filterBarRef = useRef<HTMLUListElement>(null);
 
   // Click outside dropdown handler
   useEffect(() => {
@@ -149,17 +150,13 @@ export const EducationListing = () => {
     <section className={styles.section}>
       <div className={styles.container}>
         {/* Breadcrumb */}
-        <nav className={styles.breadcrumb}>
-          <Link href={`/${language}`} className={styles.breadcrumbLink}>
-            {t.breadcrumbHome}
-          </Link>
-          <span className={styles.breadcrumbSeparator}>
-            <svg viewBox="0 0 6 10" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M1 1L5 5L1 9" stroke="black" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
-          </span>
-          <span className={styles.breadcrumbCurrent}>{t.breadcrumbEducation}</span>
-        </nav>
+        <Breadcrumbs
+          items={[
+            { label: t.breadcrumbHome, href: `/${language}` },
+            { label: t.breadcrumbEducation },
+          ]}
+          className={styles.breadcrumbs}
+        />
 
         {/* Header row: description + filters */}
         <div className={styles.headerRow}>
