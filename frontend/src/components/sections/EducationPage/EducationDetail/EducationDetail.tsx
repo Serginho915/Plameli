@@ -178,6 +178,22 @@ export const EducationDetail = () => {
     }
   };
 
+  const handleWrapperClick = () => {
+    handlePlayClick();
+  };
+
+  const handleVideoClick = (e: React.MouseEvent<HTMLVideoElement>) => {
+    e.stopPropagation();
+    if (videoRef.current) {
+      const rect = videoRef.current.getBoundingClientRect();
+      const clickY = e.clientY - rect.top;
+      if (showControls && clickY > rect.height - 50) {
+        return;
+      }
+    }
+    handlePlayClick();
+  };
+
   return (
     <>
       <div className={styles.container}>
@@ -200,6 +216,7 @@ export const EducationDetail = () => {
                   className={styles.videoWrapper}
                   onMouseEnter={() => setShowControls(true)}
                   onMouseLeave={() => setShowControls(false)}
+                  onClick={handleWrapperClick}
                 >
                   <video
                     ref={videoRef}
@@ -207,6 +224,7 @@ export const EducationDetail = () => {
                     poster={item.poster}
                     className={styles.video}
                     controls={showControls}
+                    onClick={handleVideoClick}
                     onEnded={() => setIsPlaying(false)}
                     onPlay={() => setIsPlaying(true)}
                     onPause={() => setIsPlaying(false)}
@@ -214,7 +232,10 @@ export const EducationDetail = () => {
                   {!isPlaying && (
                     <button
                       className={styles.playButton}
-                      onClick={handlePlayClick}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handlePlayClick();
+                      }}
                       aria-label={t.detailPlayVideo}
                     >
                       <svg viewBox="0 0 24 24" fill="currentColor">

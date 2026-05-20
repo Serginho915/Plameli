@@ -15,6 +15,7 @@ export const translations = {
     priceLabel: "Цена",
     learnMore: "Узнать больше",
     signUp: "Записаться",
+    showAll: "Показать все",
     // Levels
     levelAll: "Все уровни",
     levelBeginner: "Для новичков",
@@ -74,6 +75,7 @@ export const translations = {
     priceLabel: "Цена",
     learnMore: "Научете повече",
     signUp: "Запишете се",
+    showAll: "Покажи всички",
     // Levels
     levelAll: "Всички нива",
     levelBeginner: "За начинаещи",

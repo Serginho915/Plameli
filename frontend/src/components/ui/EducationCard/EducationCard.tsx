@@ -71,8 +71,16 @@ export const EducationCard: React.FC<EducationCardProps> = ({
               onPlay={() => setIsPlaying(true)}
               onPause={() => setIsPlaying(false)}
             />
+            {/* Transparent overlay — intercepts clicks so shadow-DOM native controls don't block play/pause */}
+            <div className={styles.clickInterceptor} onClick={handlePlay} />
             {!isPlaying && (
-              <div className={styles.playButton} onClick={handlePlay}>
+              <div
+                className={styles.playButton}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handlePlay();
+                }}
+              >
                 <svg viewBox="0 0 24 24" fill="currentColor">
                   <path d="M8 5v14l11-7z" />
                 </svg>

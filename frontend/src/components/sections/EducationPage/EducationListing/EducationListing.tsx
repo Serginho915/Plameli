@@ -241,6 +241,8 @@ export const EducationListing = () => {
           title={t.coursesTitle}
           items={filteredCourses}
           variant="listing"
+          initialLimit={2}
+          showMoreLabel={t.showAll}
           language={language}
           learnMoreLabel={t.learnMore}
           signUpLabel={t.signUp}
@@ -255,6 +257,8 @@ export const EducationListing = () => {
           title={t.webinarsTitle}
           items={filteredWebinars}
           variant="listing"
+          initialLimit={2}
+          showMoreLabel={t.showAll}
           language={language}
           learnMoreLabel={t.learnMore}
           signUpLabel={t.signUp}
