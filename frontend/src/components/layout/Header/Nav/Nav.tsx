@@ -83,7 +83,11 @@ export const Nav = () => {
             </Link>
           </li>
           <li className={styles.navItem}>
-            <Link href={`/${language}/blog`} className={styles.navLink} onClick={() => setIsMenuOpen(false)}>
+            <Link
+              href={`/${language}#blog`}
+              className={styles.navLink}
+              onClick={(e) => handleLinkClick(e, 'blog')}
+            >
               {t.nav_blog}
             </Link>
           </li>

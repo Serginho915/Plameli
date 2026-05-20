@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useRef, useMemo } from "react";
+import dynamic from "next/dynamic";
 import Link from "next/link";
 import Image from "next/image";
 import { useParams, useRouter } from "next/navigation";
@@ -12,8 +13,12 @@ import { Feedback } from "@/components/sections/Feedback/Feedback.tsx";
 import { EducationProgram } from "@/components/ui/EducationProgram/EducationProgram.tsx";
 import { SectionTitle } from "@/components/ui/SectionTitle/SectionTitle.tsx";
 import { EducationCard } from "@/components/ui/EducationCard/EducationCard.tsx";
-import { SimilarMaterials } from "@/components/ui/SimilarMaterials/SimilarMaterials.tsx";
 import styles from "./EducationDetail.module.scss";
+
+const SimilarMaterials = dynamic(
+  () => import("@/components/ui/SimilarMaterials/SimilarMaterials.tsx").then((m) => m.SimilarMaterials),
+  { ssr: false }
+);
 
 export const EducationDetail = () => {
   const params = useParams();

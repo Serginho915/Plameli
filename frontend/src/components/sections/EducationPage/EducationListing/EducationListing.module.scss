@@ -107,14 +107,6 @@
 .filterWrapper {
   position: relative;
   display: inline-block;
-
-  &:last-child {
-    .dropdownMenu {
-      left: auto;
-      right: 0;
-      transform-origin: top right;
-    }
-  }
 }
 
 .filterPill {
@@ -213,11 +205,12 @@
   box-shadow: 0px 10px 30px rgba(3, 2, 19, 0.12);
   border: 1px solid rgba(208, 218, 231, 0.8);
   padding: 8px;
-  z-index: 1200; // float above all listing elements
+  z-index: 1200;
   display: flex;
   flex-direction: column;
   gap: 4px;
-  min-width: 240px;
+  min-width: 200px;
+  max-width: min(280px, calc(100vw - 32px)); // never overflow the viewport
   box-sizing: border-box;
   animation: dropdownFadeIn 0.25s cubic-bezier(0.16, 1, 0.3, 1);
   transform-origin: top left;
@@ -225,7 +218,7 @@
   margin: 0;
 
   @include down("mobile-large") {
-    min-width: 200px;
+    min-width: 180px;
     border-radius: 12px;
     padding: 6px;
   }

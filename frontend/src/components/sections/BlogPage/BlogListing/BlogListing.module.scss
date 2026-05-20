@@ -1,0 +1,104 @@
+@import "@/styles/variables.scss";
+@import "@/styles/mixins.scss";
+
+.blogListing {
+  width: 100%;
+  background-color: #EBEEF2;
+  padding-bottom: 64px;
+
+  @include down("tablet") {
+    padding-bottom: 48px;
+  }
+}
+
+.container {
+  max-width: 1360px;
+  margin: 0 auto;
+  padding: 40px 24px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+
+  @include down("tablet") {
+    padding: 32px 16px 0;
+    gap: 32px;
+  }
+}
+
+.breadcrumbs {
+  margin-bottom: 8px;
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.title {
+  font-family: $font-primary;
+  font-size: 72px;
+  font-weight: 400;
+  line-height: 80px;
+  letter-spacing: 1.44px;
+  text-transform: uppercase;
+  color: #1D1C1C;
+  margin: 0;
+
+  @include down("laptop") {
+    font-size: 56px;
+    line-height: 64px;
+  }
+
+  @include down("tablet") {
+    font-size: 44px;
+    line-height: 52px;
+  }
+
+  @include down("mobile-large") {
+    font-size: 36px;
+    line-height: 44px;
+  }
+}
+
+.description {
+  font-family: $font-secondary;
+  font-size: 20px;
+  font-weight: 400;
+  line-height: 30px;
+  color: #697B91;
+  margin: 0;
+
+  @include down("mobile-large") {
+    font-size: 16px;
+    line-height: 24px;
+  }
+}
+
+.descriptionGrey {
+  color: #697B91;
+}
+
+.descriptionBold {
+  color: #1D1C1C;
+  font-weight: 600;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+
+  @include down("laptop") {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @include down("mobile-large") {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+}
+
+.card {
+  height: 100%;
+}
