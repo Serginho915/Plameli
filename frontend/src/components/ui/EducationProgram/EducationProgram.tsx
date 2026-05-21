@@ -28,7 +28,7 @@ export const EducationProgram: React.FC<EducationProgramProps> = ({ program, tit
               <div className={styles.iconWrapper}>
                 <Image
                   src="/images/Stats/service.svg"
-                  alt=""
+                  alt="Module"
                   width={22}
                   height={22}
                 />

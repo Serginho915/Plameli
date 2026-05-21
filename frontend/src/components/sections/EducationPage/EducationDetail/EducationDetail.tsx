@@ -263,7 +263,7 @@ export const EducationDetail = () => {
                   {/* Level Badge */}
                   <div className={styles.badge}>
                     <div className={styles.badgeIcon}>
-                      <img src="/icons/education/Vector1.svg" alt="" />
+                      <img src="/icons/education/Vector1.svg" alt="Level" />
                     </div>
                     <span className={styles.badgeText}>{item.levelLabel}</span>
                   </div>
@@ -271,7 +271,7 @@ export const EducationDetail = () => {
                   {/* Goal Badge */}
                   <div className={styles.badge}>
                     <div className={styles.badgeIcon}>
-                      <img src="/icons/education/vector2.svg" alt="" />
+                      <img src="/icons/education/vector2.svg" alt="Goal" />
                     </div>
                     <span className={styles.badgeText}>{item.goalLabel}</span>
                   </div>
@@ -281,7 +281,7 @@ export const EducationDetail = () => {
                 <div className={styles.badgeRow}>
                   <div className={styles.badge}>
                     <div className={styles.badgeIcon}>
-                      <img src="/icons/education/vector3.svg" alt="" />
+                      <img src="/icons/education/vector3.svg" alt="Format" />
                     </div>
                     <span className={styles.badgeText}>{item.formatLabel}</span>
                   </div>

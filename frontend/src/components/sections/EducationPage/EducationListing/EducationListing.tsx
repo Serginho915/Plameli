@@ -184,7 +184,7 @@ export const EducationListing = () => {
                   >
                     <img
                       src={filter.iconSrc}
-                      alt=""
+                      alt={filter.label}
                       className={styles.filterIcon}
                     />
                     <span className={styles.filterText}>

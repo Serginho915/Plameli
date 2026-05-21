@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { BlogDetail } from "@/components/sections/BlogPage/BlogDetail/BlogDetail.tsx";
 import {
@@ -5,6 +6,42 @@ import {
   getMockBlogPosts,
 } from "@/components/sections/BlogPage/BlogDetail/mockData.ts";
 import { i18n } from "@/i18n-config.ts";
+
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://plameli.com";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ lang: string; slug: string }>;
+}): Promise<Metadata> {
+  const { lang, slug } = await params;
+  const post = getMockBlogPost(slug, lang);
+
+  if (!post) {
+    return { title: "Not Found" };
+  }
+
+  const description = post.content[0]?.slice(0, 160) || post.title;
+
+  return {
+    title: post.title,
+    description,
+    alternates: {
+      canonical: `/${lang}/blog/${slug}`,
+      languages: {
+        bg: `/bg/blog/${slug}`,
+        ru: `/ru/blog/${slug}`,
+      },
+    },
+    openGraph: {
+      title: post.title,
+      description,
+      url: `${BASE_URL}/${lang}/blog/${slug}`,
+      type: "article",
+      images: post.mediaSrc ? [{ url: post.mediaSrc }] : undefined,
+    },
+  };
+}
 
 // Pre-generate paths for all mock posts at build time
 // When switching to API: replace with `await fetchAllSlugs(locale)`

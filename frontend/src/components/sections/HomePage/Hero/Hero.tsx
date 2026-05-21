@@ -43,7 +43,7 @@ export const Hero = () => {
         <div className={styles.imageBlock}>
           <Image
             src={heroImg}
-            alt="Hero Image"
+            alt="Олена Шопова — финансовый консультант"
             width={406}
             height={365}
             priority

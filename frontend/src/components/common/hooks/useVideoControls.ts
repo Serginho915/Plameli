@@ -1,4 +1,4 @@
-import { useState, useCallback, MouseEvent } from 'react';
+import { useState, useCallback, useRef, MouseEvent } from 'react';
 
 export interface UseVideoControlsReturn {
   isPlaying: boolean;
@@ -7,7 +7,7 @@ export interface UseVideoControlsReturn {
   handleVideoClick: (e: MouseEvent<HTMLVideoElement>) => void;
   setShowControls: (v: boolean) => void;
   setIsPlaying: (v: boolean) => void;
-  videoRef: React.RefObject<HTMLVideoElement>;
+  videoRef: React.RefObject<HTMLVideoElement | null>;
 }
 
 export const useVideoControls = (): UseVideoControlsReturn => {

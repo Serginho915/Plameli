@@ -5,6 +5,8 @@ export interface FeedbackTranslations {
   contactsTitle: string;
   telegram: string;
   email: string;
+  phone1: string;
+  phone2: string;
   location: string;
   consultationBtn: string;
   consultationBtnMobile: string;
@@ -25,9 +27,11 @@ export const translations: ComponentTranslations<FeedbackTranslations> = {
   ru: {
     title: "Обратная связь",
     contactsTitle: "Контакты",
-    telegram: "OlenaShopovaManager",
-    email: "email111@gmail.com",
-    location: "София, Болгария",
+    telegram: "buhgalter_v_bolgarii",
+    email: "office@plameli.com",
+    phone1: "+359 886 843 640",
+    phone2: "+359 242 327 32",
+    location: "гр. София, ул. Рачо Димчев 1А, ет.1, ап.2",
     consultationBtn: "Записаться на консультацию",
     consultationBtnMobile: "Консультация",
     formTitle: "Остались Вопросы?",
@@ -45,9 +49,11 @@ export const translations: ComponentTranslations<FeedbackTranslations> = {
   bg: {
     title: "Обратна връзка",
     contactsTitle: "Контакти",
-    telegram: "OlenaShopovaManager",
-    email: "email111@gmail.com",
-    location: "София, България",
+    telegram: "buhgalter_v_bolgarii",
+    email: "office@plameli.com",
+    phone1: "+359 886 843 640",
+    phone2: "+359 242 327 32",
+    location: "гр. София, ул. Рачо Димчев 1А, ет.1, ап.2",
     consultationBtn: "Запишете се за консултация",
     consultationBtnMobile: "Консултация",
     formTitle: "Останаха ли въпроси?",

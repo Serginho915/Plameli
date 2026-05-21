@@ -28,13 +28,13 @@ export const TrainingCTA = () => {
                   <div key={index} className={styles.featureItem}>
                     <div className={styles.iconWrapper}>
                       {feature.iconType === 'black' && (
-                        <Image src="/icons/TrainingCTA/Vector1.svg" alt="" width={16} height={16} />
+                        <Image src="/icons/TrainingCTA/Vector1.svg" alt="Feature" width={16} height={16} />
                       )}
                       {feature.iconType === 'orange' && (
-                        <Image src="/icons/TrainingCTA/Vector2.svg" alt="" width={24} height={24} />
+                        <Image src="/icons/TrainingCTA/Vector2.svg" alt="Feature" width={24} height={24} />
                       )}
                       {feature.iconType === 'black-large' && (
-                        <Image src="/icons/TrainingCTA/Vector3.svg" alt="" width={24} height={24} />
+                        <Image src="/icons/TrainingCTA/Vector3.svg" alt="Feature" width={24} height={24} />
                       )}
                     </div>
                     <span className={styles.featureText}>{feature.text}</span>
@@ -47,7 +47,7 @@ export const TrainingCTA = () => {
           <div className={styles.imageColumn}>
             <Image 
               src="/images/Consultation/TrainingCTA.png"
-              alt="Training CTA"
+              alt="Обучения и курсове по счетоводство"
               fill
               className={styles.image}
               sizes="(max-width: 768px) 100vw, 347px"
