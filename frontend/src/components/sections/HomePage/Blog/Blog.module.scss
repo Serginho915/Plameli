@@ -1,0 +1,35 @@
+@import "@/styles/variables.scss";
+@import "@/styles/mixins.scss";
+
+.blog {
+
+    overflow: hidden;
+    width: 100%;
+
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    gap: 36px;
+    width: 100%;
+    max-width: 1320px;
+    margin: 0 auto;
+
+    @include down("tablet") {
+        gap: 32px;
+    }
+
+    @include down("mobile-large") {
+        gap: 28px;
+    }
+
+    @include down("mobile") {
+        gap: 24px;
+    }
+}
+
+.title {
+    text-align: center;
+    width: 100%;
+}

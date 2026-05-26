@@ -1,20 +1,41 @@
 'use client';
-import { useState } from 'react';
+import { useRef, useEffect } from 'react';
 import Link from 'next/link';
-import { Logo } from './Logo/Logo';
-import { Nav } from './Nav/Nav';
-import { LanguageSwitcher } from '@/components/ui/LanguageSwitcher/LanguageSwitcher';
-import { useTranslation } from '@/hooks/useTranslation';
+import { Logo } from './Logo/Logo.tsx';
+import { Nav } from './Nav/Nav.tsx';
+import { LanguageSwitcher } from '@/components/ui/LanguageSwitcher/LanguageSwitcher.tsx';
+import { useTranslation } from '@/hooks/useTranslation.ts';
 import styles from './Header.module.scss';
-import { Button } from '@/components/ui/Button/Button';
-import { Burger } from './Burger/Burger';
+import { Button } from '@/components/ui/Button/Button.tsx';
+import { Burger } from './Burger/Burger.tsx';
+import { useUI } from '@/context/UIContext.tsx';
 
 export const Header = () => {
   const { language } = useTranslation();
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { isMenuOpen, setIsMenuOpen } = useUI();
+  const headerRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (headerRef.current && !headerRef.current.contains(event.target as Node)) {
+        setIsMenuOpen(false);
+      }
+    };
+
+    if (isMenuOpen) {
+      // Use a small timeout to avoid immediate closing when opening the menu
+      const timer = setTimeout(() => {
+        document.addEventListener('click', handleClickOutside);
+      }, 0);
+      return () => {
+        clearTimeout(timer);
+        document.removeEventListener('click', handleClickOutside);
+      };
+    }
+  }, [isMenuOpen, setIsMenuOpen]);
 
   return (
-    <header className={styles.header}>
+    <header className={styles.header} ref={headerRef}>
       <div className={`container ${styles.headerContainer}`}>
         <Link href={`/${language}`} className={styles.logo}>
           <Logo />
@@ -34,23 +55,31 @@ export const Header = () => {
             <LanguageSwitcher />
           </div>
           <div className={styles.desktopBtn}>
-            <Button
-              text='Консультация'>
-              <Link href="#" />
-            </Button>
+            <Link href={`/${language}/consultation`}>
+              <Button
+                text='Консультация'
+                variant='default'
+                className={styles.headerButton}
+              />
+            </Link>
           </div>
         </div>
       </div>
 
       <div className={`${styles.mobileMenu} ${isMenuOpen ? styles.mobileMenuOpen : ''}`}>
         <div className={styles.mobileMenuContent}>
+          <div className={styles.mobileTop}>
+            <LanguageSwitcher variant="mobile" />
+          </div>
           <Nav />
           <div className={styles.mobileActions}>
-            <LanguageSwitcher />
-            <Button
-              text='Консультация'>
-              <Link href="#" />
-            </Button>
+            <Link href={`/${language}/consultation`} className={styles.mobileLink}>
+              <Button
+                text='Консультация'
+                variant='consultationMobile'
+                className={styles.headerButton}
+              />
+            </Link>
           </div>
         </div>
       </div>

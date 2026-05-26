@@ -1,0 +1,156 @@
+@import "@/styles/variables.scss";
+@import "@/styles/mixins.scss";
+
+.group {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.cardsGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  width: 100%;
+}
+
+.cardWrapper {
+  width: 100%;
+}
+
+.emptyState {
+  padding: 48px 24px;
+  text-align: center;
+  color: $color-neutrals-500;
+  font-family: $font-secondary;
+  font-size: 20px;
+  line-height: 28px;
+  background: $color-grey-50;
+  border-radius: 16px;
+  width: 100%;
+}
+
+// ====== HOMEPAGE VARIANT ======
+.group.homepage {
+  gap: 24px;
+
+  .title {
+    color: #323131;
+    font-size: 32px;
+    font-family: $font-secondary;
+    font-weight: 500;
+    line-height: 36px;
+
+    @include down("mobile-large") {
+      font-size: 28px;
+    }
+  }
+
+  .cardsGrid {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+}
+
+// ====== LISTING VARIANT ======
+.group.listing {
+  gap: 32px;
+
+  @include down("mobile-large") {
+    gap: 16px;
+  }
+
+  .title {
+    color: $color-neutrals-black;
+    font-size: 56px;
+    font-family: $font-primary;
+    font-weight: 400;
+    line-height: 56px;
+    letter-spacing: 1.12px;
+
+    @include down("tablet") {
+      font-size: 40px;
+      line-height: 44px;
+    }
+
+    @include down("mobile-large") {
+      font-size: 32px;
+      line-height: 36px;
+    }
+  }
+
+  .cardsGrid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 32px;
+
+    @include down("tablet") {
+      grid-template-columns: 1fr; // full-width stacked on tablet per Figma
+      gap: 12px;
+    }
+
+    @include down("mobile-large") {
+      grid-template-columns: 1fr;
+      gap: 16px;
+    }
+  }
+
+  .showMoreBtn {
+    align-self: stretch;
+    width: 100%;
+    height: 48px;
+    padding: 12px 24px;
+    position: relative;
+    overflow: hidden;
+    border-radius: 16px;
+    border: none;
+    border-bottom: 2px solid var(--color-surface-buttons-secondary-button-on, #A3AFBF);
+    background: transparent;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    transition: background-color 0.2s ease, border-bottom-color 0.2s ease;
+
+    .orangeLine {
+      width: 600px;
+      height: 1px;
+      left: 55px;
+      top: 46.81px;
+      position: absolute;
+      background: #F1592A;
+      opacity: 0.8;
+      transition: opacity 0.2s ease, background-color 0.2s ease;
+    }
+
+    .chevronIcon {
+      color: var(--color-text-headings-grey, #697B91);
+      transition: color 0.2s ease, transform 0.2s ease;
+    }
+
+    &:hover {
+      background-color: rgba(241, 89, 42, 0.05);
+      border-bottom-color: #F1592A;
+
+      .orangeLine {
+        opacity: 1;
+        background: #F1592A;
+      }
+
+      .chevronIcon {
+        color: #F1592A;
+        transform: translateY(2px);
+      }
+    }
+
+    @include down("tablet") {
+      padding: 10px 20px;
+    }
+  }
+}

@@ -1,0 +1,194 @@
+@import "@/styles/variables.scss";
+@import "@/styles/mixins.scss";
+
+.similarSection {
+  width: 100%;
+  padding: 64px 0;
+  box-sizing: border-box;
+
+  @include down("tablet") {
+    padding: 48px 0;
+  }
+
+  @include down("mobile-large") {
+    padding: 32px 0;
+  }
+}
+
+.similarContainer {
+  max-width: 1360px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 48px;
+  box-sizing: border-box;
+
+  @include down("mobile-large") {
+    gap: 32px;
+
+  }
+}
+
+.similarGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px;
+  width: 100%;
+
+  @include down("tablet") {
+    grid-template-columns: 1fr;
+  }
+}
+
+// ====== CAROUSEL SLIDER ======
+.carouselWrapper {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: 36px;
+
+  @include down("laptop") {
+    gap: 32px;
+  }
+
+  @include down("mobile-large") {
+    gap: 28px;
+  }
+}
+
+.carouselViewport {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+
+  @include down("tablet") {
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-snap-type: x mandatory;
+    padding-bottom: 12px;
+    margin-bottom: -12px;
+    
+    &::-webkit-scrollbar {
+      display: none;
+    }
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+}
+
+.track {
+  display: flex;
+  gap: 24px;
+  width: max-content;
+  will-change: transform;
+
+  @include down("tablet") {
+    gap: 16px;
+    transform: none !important;
+  }
+}
+
+.slide {
+  flex-shrink: 0;
+  width: 644px;
+
+  @include down("tablet") {
+    width: 600px;
+    scroll-snap-align: center;
+  }
+
+  @include down("mobile-large") {
+    width: calc(100vw - 48px);
+  }
+
+  @include down("mobile") {
+    width: calc(100vw - 32px);
+  }
+}
+
+.controls {
+  display: flex;
+  justify-content: start;
+  align-items: center;
+  gap: 59px;
+  width: 100%;
+
+  @include down("tablet") {
+    justify-content: space-between;
+  }
+}
+
+.arrows {
+  border-radius: 40px;
+  border: 2px solid #D0DAE7;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 8px;
+  padding: 0;
+}
+
+.arrowBtn {
+  padding: 12px 16px;
+  background: rgba(255, 255, 255, 0.50);
+  border-radius: 44px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+
+  svg {
+    width: 10.45px;
+    height: 18.96px;
+  }
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.80);
+  }
+
+  &.next {
+    transform: rotate(180deg);
+  }
+}
+
+.pagination {
+  position: relative;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 8px;
+  height: 10px;
+}
+
+.dotWrapper {
+  position: relative;
+  width: 10px;
+  height: 10px;
+  background: #D0DAE7;
+  border-radius: 50%;
+  cursor: pointer;
+  flex-shrink: 0;
+
+  &.active {
+    width: 51px;
+    background: transparent;
+    border-radius: 41px;
+  }
+
+  &:hover:not(.active) {
+    background: #b8c5d6;
+  }
+}
+
+.activePill {
+  position: absolute;
+  height: 10px;
+  background: black;
+  border-radius: 41px;
+  z-index: 2;
+  pointer-events: none;
+  top: 0;
+  left: 0;
+}

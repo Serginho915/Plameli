@@ -1,0 +1,33 @@
+@import "@/styles/variables.scss";
+@import "@/styles/mixins.scss";
+
+.circleIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 2px solid #94A3B8;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  background-color: transparent;
+
+  svg path {
+    stroke: #697B91;
+    transition: all 0.3s ease;
+  }
+}
+
+// Hover state for the icon itself
+.circleIcon:hover,
+.active {
+  transform: translateY(-10px);
+  background-color: #111111;
+  border-color: #111111;
+
+  svg path {
+    stroke: #ffffff;
+  }
+}

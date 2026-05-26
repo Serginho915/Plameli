@@ -1,0 +1,544 @@
+@import "@/styles/variables.scss";
+@import "@/styles/mixins.scss";
+
+.reviews {
+  position: relative;
+  overflow: hidden;
+}
+
+.container {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 36px;
+  z-index: 1;
+  width: 100%;
+  max-width: none;
+  padding: 0;
+  margin: 0;
+
+  @include down("mobile-large") {
+    gap: 32px;
+  }
+
+  @include down("mobile") {
+    gap: 24px;
+  }
+}
+
+.bgDecoration {
+  position: absolute;
+  width: 504px;
+  height: 341px;
+  left: 0;
+  top: 367px;
+  // background: linear-gradient(180deg, #ebeef2 0%, #fafbfc 100%);
+  // box-shadow: 145.8px 145.8px 145.8px rgba(0, 0, 0, 0.05);
+   border-radius: 16px;
+  // filter: blur(72.9px);
+  z-index: 0;
+  pointer-events: none;
+
+  @include down("tablet") {
+    width: 404px;
+    height: 290px;
+    top: 112px;
+  }
+
+  @include down("mobile-large") {
+    width: 447px;
+    height: 290px;
+    top: 111.69px;
+  }
+}
+
+.title {
+  color: $text-grey;
+  font-size: 44px;
+  font-family: $font-primary;
+  font-weight: 500;
+  text-transform: uppercase;
+  line-height: 64px;
+  text-align: center;
+  margin: 0;
+
+  @include down("tablet") {
+    font-size: 36px;
+    line-height: 40px;
+  }
+
+  @include down("mobile-large") {
+    font-size: 32px;
+    line-height: 40px;
+  }
+
+  @include down("mobile") {
+    font-size: 28px;
+    line-height: 40px;
+  }
+}
+
+.content {
+  display: flex;
+  gap: 44px;
+  align-items: stretch;
+  width: 100%;
+  justify-content: space-between;
+
+  @include down("laptop") {
+    flex-direction: column;
+    gap: 32px;
+  }
+
+  @include down("mobile-large") {
+    gap: 12px;
+  }
+}
+
+.mainContent {
+  width: 516px;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  min-height: 400px;
+
+  @include down("laptop") {
+    width: 100%;
+    min-height: auto;
+  }
+}
+
+.animatedContent {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  @include down("laptop") {
+    flex-direction: row;
+    gap: 32px;
+    align-items: flex-start;
+    height: auto;
+  }
+
+  @include down(800px) {
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  @include down("mobile-large") {
+    flex-direction: column;
+    gap: 24px;
+  }
+}
+
+.testimonialWrapper {
+  flex: 1;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+
+  @include down("laptop") {
+    padding: 0;
+    justify-content: flex-start;
+  }
+}
+
+.testimonial {
+  color: #334155;
+  font-size: 24px;
+  font-family: $font-secondary;
+  font-weight: 400;
+  line-height: 32px;
+  margin: 0;
+
+  @include down("laptop") {
+    font-size: 20px;
+    line-height: 28px;
+  }
+
+  @include down("mobile-large") {
+    line-height: 26px;
+  }
+
+  @include down("mobile") {
+    font-size: 16px;
+    line-height: 24px;
+  }
+}
+
+.statsRow {
+  display: flex;
+  gap: 8px;
+  width: 100%;
+  margin-top: auto;
+
+  @include down("laptop") {
+    width: 227px;
+    flex-direction: column;
+    align-self: stretch;
+    margin-top: 0;
+  }
+
+  @include down(800px) {
+    width: 100%;
+    flex-direction: row;
+    align-self: center;
+  }
+
+  @include down("mobile-large") {
+    width: 100%;
+    flex-direction: row;
+  }
+}
+
+.statCard {
+  flex: 1;
+  padding: 8px 12px 16px;
+  border-radius: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  width: 100%;
+
+  @include down("laptop") {
+    border-radius: 12px;
+    padding: 8px 12px;
+  }
+
+  @include down("mobile-large") {
+    padding: 8px;
+    border-radius: 8px;
+  }
+
+  @include down("mobile") {
+    padding: 4px 8px;
+    gap: 4px;
+  }
+
+  &.before {
+    background: #f3f5f7;
+
+    .badge {
+      background: #ffd9d9;
+    }
+  }
+
+  &.after {
+    background: #ffffff;
+    border: 1px solid #ebeef2;
+
+    .badge {
+      background: #ebffd9;
+    }
+  }
+}
+
+.badge {
+  padding: 0 12px;
+  border-radius: 31px;
+  color: black;
+  font-size: 20px;
+  font-family: $font-secondary;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  @include down("laptop") {
+    font-size: 16px;
+    line-height: 22px;
+  }
+
+  @include down("mobile") {
+    font-size: 12px;
+    line-height: 16px;
+  }
+}
+
+.statValue {
+  width: 100%;
+  text-align: center;
+  color: black;
+  font-size: 36px;
+  font-family: $font-primary;
+  font-weight: 600;
+
+  @include down("mobile-large") {
+    font-size: 32px;
+  }
+}
+
+.statDesc {
+  color: black;
+  font-size: 20px;
+  font-family: $font-secondary;
+  font-weight: 500;
+  margin: 0;
+
+  @include down("laptop") {
+    line-height: 28px;
+    color: #2a2a2a;
+  }
+
+  @include down("mobile-large") {
+    line-height: 26px;
+  }
+
+  @include down("mobile") {
+    font-size: 16px;
+    line-height: 24px;
+  }
+}
+
+.clientSection {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 32px;
+  width: 100%;
+  max-width: 547px;
+
+  @include down("laptop") {
+    max-width: 100%;
+    gap: 32px;
+  }
+
+  @include down("mobile-large") {
+    gap: 28px;
+  }
+
+  @include down("mobile") {
+    gap: 24px;
+  }
+}
+
+.displayArea {
+  position: relative;
+  width: 547px;
+  height: 531px;
+  border-radius: 16px;
+  overflow: hidden;
+
+  @include down("desktop") {
+    width: 512px;
+  }
+
+  &:hover {
+    .infoBar {
+      bottom: 0;
+      opacity: 1;
+    }
+  }
+
+  @include down("laptop") {
+    width: 100%;
+    height: auto;
+    overflow: visible;
+    border-radius: 0;
+  }
+}
+
+.desktopImage {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+
+  @include down("laptop") {
+    display: none;
+  }
+}
+
+.infoBar {
+  position: absolute;
+  bottom: -80px;
+  left: 0;
+  width: 100%;
+  padding: 12px 24px;
+  background: rgba(255, 255, 255, 0.5);
+  backdrop-filter: blur(12px);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  z-index: 2;
+  opacity: 0;
+  transition: all 0.4s ease;
+
+  @include down("laptop") {
+    position: static;
+    padding: 0;
+    background: transparent;
+    backdrop-filter: none;
+    justify-content: space-between;
+    align-items: flex-end;
+    opacity: 1;
+  }
+}
+
+.avatar {
+  display: none;
+
+  @include down("laptop") {
+    display: block;
+    width: 104px;
+    height: 104px;
+    border-radius: 16px;
+    overflow: hidden;
+    flex-shrink: 0;
+
+    img {
+      object-fit: contain;
+    }
+  }
+
+  @include down("mobile") {
+    width: 68px;
+    height: 68px;
+    border-radius: 10.46px;
+  }
+}
+
+.clientDetails {
+  flex: 1;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  @include down("laptop") {
+    align-items: flex-end;
+    padding: 8px 0 8px 24px;
+  }
+
+  @include down("mobile-large") {
+    padding: 8px 0 8px 16px;
+  }
+
+  @include down("mobile") {
+    padding: 0 8px;
+  }
+}
+
+.nameGroup {
+  display: flex;
+  flex-direction: column;
+}
+
+.clientName {
+  color: #0a0a0a;
+  font-size: 24px;
+  font-family: $font-secondary;
+  font-weight: 400;
+  line-height: 28px;
+
+  @include down("laptop") {
+    font-size: 20px;
+    line-height: 26px;
+  }
+
+  @include down("mobile") {
+    font-size: 16px;
+    line-height: 20px;
+  }
+}
+
+.clientTitle {
+  color: black;
+  font-size: 24px;
+  font-family: $font-secondary;
+  font-weight: 500;
+  line-height: 32px;
+
+  @include down("laptop") {
+    font-size: 20px;
+    line-height: 28px;
+  }
+
+  @include down("mobile") {
+    font-size: 16px;
+    line-height: 24px;
+  }
+}
+
+.arrows {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  @include down("laptop") {
+    gap: 10px;
+  }
+
+  @include down("mobile") {
+    gap: 0;
+  }
+}
+
+.arrowBtn {
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border-radius: 44px;
+  transition: $transition-base;
+
+  svg {
+    width: 10.45px;
+    height: 18.96px;
+
+    @include down("mobile") {
+      width: 8px;
+      height: 14px;
+    }
+  }
+
+  &:hover {
+    background: rgba(0, 0, 0, 0.05);
+  }
+
+  &.next {
+    transform: rotate(180deg);
+  }
+}
+
+.ctaWrapper {
+  width: 100%;
+}
+
+.ctaButton {
+  width: 100%;
+  font-family: $font-secondary;
+  font-size: 24px;
+  height: 56px;
+  font-style: italic;
+  font-weight: 600;
+  line-height: 32px;
+  letter-spacing: 0.5px;
+  padding: 12px 24px;
+  text-transform: none;
+
+  @include down("laptop") {
+    font-size: 24px;
+  }
+
+  @include down("tablet") {
+    padding: 8px 24px;
+  }
+
+  @include down("mobile-large") {
+    font-size: 20px;
+    border-radius: 20px;
+  }
+
+  @include down("mobile") {
+    font-size: 18px;
+    padding: 10px 12px;
+  }
+}

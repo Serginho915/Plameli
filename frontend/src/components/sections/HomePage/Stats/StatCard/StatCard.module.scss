@@ -1,0 +1,107 @@
+@import "@/styles/variables.scss";
+@import "@/styles/mixins.scss";
+
+.statCard {
+  background: $color-grey-50;
+  border-radius: $radius-16;
+  padding: $scale-24 $scale-16;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: $scale-22;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+  width: 100%;
+  // height: 284px;
+
+  @include down("mobile-large") {
+    gap: 16px;
+  }
+}
+.statValue {
+  font-family: $font-primary;
+  font-size: $font-size-body-title;
+  font-weight: $weight-medium;
+  color: $text-primary;
+  line-height: 1.2;
+
+  @include down("laptop") {
+    font-size: $font-size-body-lg;
+  }
+
+  @include down("mobile") {
+    font-size: 26px; // Keep custom or map to 24px
+  }
+}
+
+.statLabel {
+  font-family: $font-secondary;
+  font-size: $font-size-body-md;
+  line-height: $lh-body-md;
+  color: $color-neutrals-800;
+
+  @include down("tablet") {
+    font-size: $font-size-body-sm;
+  }
+
+  @include down("mobile") {
+    font-size: $font-size-body-caption;
+  }
+}
+
+// ──────────────────────────
+// Site card (plameli.com)
+// ──────────────────────────
+.siteCard {
+  justify-content: space-between;
+  background: transparent;
+  box-shadow: none;
+  backdrop-filter: none;
+  border: none;
+  padding: 28px 0;
+
+  @include down("tablet") {
+    padding: 24px 0;
+  }
+}
+
+.siteTop {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.siteLogo {
+  width: 28px;
+  height: auto;
+}
+
+.siteName {
+  font-family: $font-primary;
+  font-size: 20px;
+  font-weight: 500;
+  color: $text-primary;
+
+  @include down("mobile") {
+    font-size: 18px;
+  }
+}
+
+.siteLink {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-family: $font-secondary;
+  font-size: 16px;
+  color: $text-body-grey;
+  text-decoration: none;
+  transition: $transition-base;
+
+  &:hover {
+    color: $accent;
+  }
+
+  @include down("mobile") {
+    font-size: 14px;
+  }
+}

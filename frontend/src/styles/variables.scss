@@ -1,23 +1,175 @@
-// Colors
-$accent: #F1592A;
-$accent-secondary: #FF8E6E;
+// --- PRIMITIVE COLORS ---
 
+// Grey
+$color-grey-50: #f3f5f7;
+$color-grey-100: #ebeef2;
+$color-grey-200: #d0dae7;
+$color-grey-300: #c3ccd9;
+$color-grey-400: #a3afbf;
+$color-grey-500: #8395ac;
+$color-grey-600: #697b91;
+$color-grey-700: #516378;
+$color-grey-800: #404e5e;
+$color-grey-900: #2f3945;
+
+// Neutrals
+$color-neutrals-black: #000000;
+$color-neutrals-100: #ffffff;
+$color-neutrals-200: #eaeaea;
+$color-neutrals-300: #cacaca;
+$color-neutrals-400: #b4b4b4;
+$color-neutrals-500: #7f7f7f;
+$color-neutrals-600: #6a6a6a;
+$color-neutrals-700: #555555;
+$color-neutrals-800: #3f3f3f;
+$color-neutrals-900: #2a2a2a;
+
+// Brand
+$color-brand-100: #fcded4;
+$color-brand-200: #f9bdaa;
+$color-brand-300: #f79b7f;
+$color-brand-400: #f47a55;
+$color-brand-500: #f1592a;
+$color-brand-600: #c14722;
+$color-brand-700: #913519;
+$color-brand-800: #602411;
+$color-brand-900: #481b0d;
+
+// Green (Success)
+$color-green-100: #ebffd9;
+$color-green-200: #acdfaf;
+$color-green-300: #82d087;
+$color-green-400: #58c05f;
+$color-green-500: #2fb037;
+$color-green-600: #258d2c;
+$color-green-700: #1c6a21;
+$color-green-800: #134616;
+$color-green-900: #0e3511;
+
+// Red (Error)
+$color-red-100: #ffcdcd;
+$color-red-200: #ff9a9a;
+$color-red-300: #ff6868;
+$color-red-400: #ff3636;
+$color-red-500: #ff0303;
+$color-red-600: #cc0303;
+$color-red-700: #990202;
+$color-red-800: #660101;
+$color-red-900: #330101;
+
+
+// --- SEMANTIC COLORS ---
+
+// Accent (Legacy mapping preserved)
+$accent: $color-brand-500;
+$accent-secondary: $color-brand-300;
 
 // Text
-$text-primary: #000;
-$text-grey: #697B91;
-$text-black: #2A2A2A;
-$text-body-grey: #404E5E;
+$text-primary: $color-neutrals-black;
+$text-black: $color-neutrals-900;
+$text-grey: $color-grey-600;
+$text-body-grey: $color-grey-800;
+
+$color-text-headings-darker: $color-neutrals-black;
+$color-text-headings-black: $color-neutrals-900;
+$color-text-headings-grey: $color-grey-600;
+
+$color-text-body-white: $color-neutrals-100;
+$color-text-body-black: $color-neutrals-black;
+$color-text-body-brand: $color-brand-500;
+
+// Surface
+$color-surface-background-primary: $color-grey-100;
+$color-surface-background-secondary: $color-neutrals-100;
+$color-surface-background-tertiary: $color-grey-50;
+
+// Buttons
+$color-button-primary-on: $color-brand-500;
+$color-button-primary-hover: $color-brand-500;
+$color-button-primary-disabled: $color-brand-100;
+
+// Icons & Strokes
+$color-icon-primary: $color-grey-500;
+$color-icon-secondary: $color-grey-800;
+$color-icon-accent: $color-brand-500;
+
+$color-stroke-primary: $color-grey-200;
+$color-stroke-secondary: $color-neutrals-900;
+$color-stroke-accent: $color-brand-500;
 
 
-// Typography
+// --- TYPOGRAPHY ---
+
 $font-primary: var(--font-oswald), sans-serif;
 $font-secondary: var(--font-source-sans), sans-serif;
 
-// Layout
-$max-width: 1440px;
-$container-padding: 56px;
+// Weights
+$weight-medium: 500;
+$weight-semibold: 600;
+$weight-bold: 700;
 
-// Effects
+// Desktop Sizes (Base)
+$font-size-h1: 56px;
+$font-size-h2: 48px;
+$font-size-h3: 44px;
+$font-size-h4: 28px;
+$font-size-numbers: 36px;
+
+$font-size-body-title: 32px;
+$font-size-body-lg: 28px;
+$font-size-body-md: 24px;
+$font-size-body-sm: 20px;
+$font-size-body-caption: 16px;
+
+// Line Heights
+$lh-h1: 56px;
+$lh-h2: 56px;
+$lh-h3: 64px;
+$lh-h4: 40px;
+$lh-numbers: 48px;
+
+$lh-body-title: 36px;
+$lh-body-lg: 32px;
+$lh-body-md: 28px;
+$lh-body-sm: 24px;
+$lh-body-caption: 22px;
+
+
+// --- SCALE & SPACING ---
+
+$scale-0: 0px;
+$scale-1: 1px;
+$scale-2: 2px;
+$scale-4: 4px;
+$scale-8: 8px;
+$scale-12: 12px;
+$scale-16: 16px;
+$scale-20: 20px;
+$scale-22: 22px;
+$scale-24: 24px;
+$scale-26: 26px;
+$scale-28: 28px;
+$scale-32: 32px;
+$scale-36: 36px;
+$scale-40: 40px;
+$scale-44: 44px;
+$scale-48: 48px;
+$scale-56: 56px;
+$scale-64: 64px;
+$scale-70: 70px;
+$scale-120: 120px;
+$scale-160: 160px;
+$scale-200: 200px;
+
+// Radius
+$radius-none: 0px;
+$radius-4: 4px;
+$radius-8: 8px;
+$radius-12: 12px;
+$radius-16: 16px;
+
+// Legacy / Layout Defaults
+$max-width: 1440px;
+$container-padding: $scale-56;
 $transition-base: all 0.3s ease;
-$border-radius: 12px;
+$border-radius: $radius-12;

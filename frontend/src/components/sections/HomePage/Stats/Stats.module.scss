@@ -1,0 +1,57 @@
+@import "@/styles/variables.scss";
+@import "@/styles/mixins.scss";
+
+.stats {
+  display: flex;
+  flex-direction: column;
+  gap: 56px;
+  // padding: 32px 0;
+
+  h3 {
+    font-size: 24px;
+    font-weight: 400;
+    color: $text-grey;
+    font-family: $font-primary;
+
+    @include down("mobile-large") {
+      font-size: 36px;
+    }
+  }
+
+  @include down("tablet") {
+    gap: 40px;
+  }
+}
+
+
+.statsRow {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+
+  @include down("laptop") {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+  }
+
+  @include down("tablet") {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+
+  @include down("mobile-large") {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  li {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+  }
+}
+

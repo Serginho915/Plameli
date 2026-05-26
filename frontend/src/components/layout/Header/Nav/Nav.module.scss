@@ -1,33 +1,172 @@
-@import "@/styles/variables";
-@import "@/styles/mixins";
+@import "@/styles/variables.scss";
+@import "@/styles/mixins.scss";
 
+.navList {
+  display: flex;
+  align-items: center;
+  gap: 40px;
+  list-style: none;
 
-.navList{
-    display: flex;
+  @include down("tablet") {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 4px;
+    width: 100%;
+  }
 }
 
-.navItem{
-    font-family: $font-secondary;
-    text-transform: uppercase;
-    color: $text-body-grey;
-    padding: 8px 12px;
+.navItem {
+  position: relative;
+  padding: 8px 12px;
+  
+  @include down("tablet") {
+    width: 100%;
+  }
 }
 
 .navLink {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    text-decoration: none;
-    color: inherit;
+  font-family: $font-secondary;
+  font-size: 22px;
+  color: #404E5E;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  text-transform: uppercase;
+  font-weight: 400;
+  transition: color 0.2s ease;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+
+  &:hover {
+    color: darken($color: #404E5E, $amount: 10%);
+  }
+@include down(906px) {
+  font-size: 16px;
 }
 
-.arrow {
-    display: inline-block;
-    width: 0;
-    height: 0;
-    border-left: 4.5px solid transparent;
-    border-right: 4.5px solid transparent;
-    border-top: 4.5px solid currentColor;
-    transition: transform 0.2s ease;
+  @include up("tablet") {
+    position: relative;
+
+    &:not(.noArrow) {
+      &::after {
+        content: '';
+        position: absolute;
+        right: -20px;
+        top: 50%;
+        transform: translateY(-10%) translateX(-10px);
+        width: 14px;
+        height: 14px;
+        background-color: currentColor;
+        -webkit-mask-image: url("data:image/svg+xml,%3Csvg width='20' height='20' viewBox='0 0 20 20' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M5 15L15 5M15 5H8M15 5V12' stroke='black' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+        mask-image: url("data:image/svg+xml,%3Csvg width='20' height='20' viewBox='0 0 20 20' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M5 15L15 5M15 5H8M15 5V12' stroke='black' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+        -webkit-mask-size: contain;
+        mask-size: contain;
+        -webkit-mask-repeat: no-repeat;
+        mask-repeat: no-repeat;
+        opacity: 0;
+        transition: all 0.3s ease;
+        pointer-events: none;
+      }
+
+      &:hover::after {
+        opacity: 1;
+        transform: translateY(-50%) translateX(0);
+      }
+    }
+  }
+
+  @include down("tablet") {
+    font-size: 24px;
+    width: 100%;
+    justify-content: flex-end;
+    text-align: right;
+  }
 }
 
+.navLinkActive {
+  color: $accent;
+}
+
+.chevron {
+  transition: transform 0.3s ease;
+
+  @include down("tablet") {
+    width: 20px;
+    height: 12px;
+  }
+}
+
+.chevronOpen {
+  transform: rotate(180deg);
+}
+
+// ──────────────────────────
+// Dropdown menu
+// ──────────────────────────
+.dropdown {
+  position: absolute;
+  top: calc(100% + 12px);
+  left: 0;
+  width: 207px;
+  background: #ffffff;
+  //border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.10);
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  z-index: 200;
+  overflow: hidden;
+  animation: dropdownFadeIn 0.2s ease;
+
+  @include down("tablet") {
+    position: static;
+    width: 100%;
+    box-shadow: none;
+    border-radius: 12px;
+    border: 1px solid #DCE1E8;
+    animation: none;
+  }
+}
+
+@keyframes dropdownFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.dropdownItem {
+  border-bottom: 1px solid #F1F5F9;
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.dropdownLink {
+  display: block;
+  padding: 12px;
+  color: #404E5E;
+  font-family: $font-secondary;
+  font-size: 24px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 28px;
+  text-decoration: none;
+  background-color: #F3F5F7;
+  border-bottom: 2px solid #D0DAE7;
+  border-radius: 4px;
+
+  &:hover {
+    background: #ffffff;
+    color: #000000;
+    border-bottom: 2px solid #2A2A2A;
+  }
+}

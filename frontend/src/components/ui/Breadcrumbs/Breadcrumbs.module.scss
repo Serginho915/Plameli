@@ -1,0 +1,58 @@
+@import "@/styles/variables.scss";
+@import "@/styles/mixins.scss";
+
+.breadcrumbs {
+  display: flex;
+  align-items: center;
+  gap: $scale-16;
+  font-family: $font-secondary;
+  font-size: 24px;
+  line-height: 28px;
+
+  @include down("mobile-large") {
+    font-size: 18px;
+    line-height: 22px;
+    gap: $scale-8;
+  }
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  gap: $scale-16;
+
+  @include down("mobile-large") {
+    gap: $scale-8;
+  }
+
+  &:last-child {
+    .separator {
+      display: none;
+    }
+  }
+}
+
+.link {
+  color: $text-body-grey;
+  text-decoration: none;
+  transition: $transition-base;
+
+  &:hover {
+    color: $accent;
+  }
+}
+
+.current {
+  color: $color-neutrals-black;
+  cursor: default;
+}
+
+.separator {
+  width: 6px;
+  height: 6px;
+  border-right: 1.5px solid black;
+  border-bottom: 1.5px solid black;
+  transform: rotate(-45deg);
+  flex-shrink: 0;
+  margin-top: -1px; // Visual centering for rotated element
+}

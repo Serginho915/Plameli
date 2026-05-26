@@ -1,0 +1,554 @@
+@import "@/styles/variables.scss";
+@import "@/styles/mixins.scss";
+
+.services {
+  display: flex;
+  flex-direction: column;
+  gap: $scale-44; 
+
+  @include down("mobile") {
+    gap: $scale-28;
+  }
+}
+
+// ====== Card Header ======
+.cardHeader {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+
+  @include down("mobile") {
+    gap: 12px;
+  }
+}
+
+.cardTitle {
+  font-family: $font-secondary;
+  font-size: $font-size-body-title;
+  font-weight: $weight-medium;
+  color: $text-black;
+
+  @include down(1005px) {
+    font-size: $font-size-body-md;
+  }
+
+  @include down("mobile") {
+    font-size: $font-size-body-sm;
+  }
+}
+
+.cardTitleDesktop {
+  display: inline;
+
+  @include down("mobile-large") {
+    display: none;
+  }
+}
+
+.cardTitleMobile {
+  display: none;
+
+  @include down("mobile-large") {
+    display: inline;
+  }
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: $scale-8 $scale-12;
+  color: $color-neutrals-100;
+  font-family: $font-secondary;
+  font-size: $font-size-body-caption;
+  font-weight: $weight-medium;
+  border-radius: 54px;
+  line-height: $lh-body-caption;
+  background: $color-neutrals-black; // Closest to #030213
+
+  @include down(1005px) {
+    padding: 4px 12px;
+  }
+
+  @include down("mobile-large") {
+    font-size: 16px;
+  }
+
+  @include down("mobile") {
+    padding: 2px 10px;
+    font-size: 12px;
+  }
+
+  @include down("mobile") {
+    font-size: 12px;
+    padding: 3px 12px;
+  }
+}
+
+// ====== Main Content Wrapper ======
+.contentWrapper {
+  border-radius: $scale-20;
+  background: $color-neutrals-100;
+  box-shadow: 0 2px 12px 0 rgba(81, 99, 120, 0.25);
+  padding: $scale-24;
+
+  @include down("laptop") {
+    padding: $scale-24 $scale-16;
+  }
+
+  @include down(1005px) {
+    padding: $scale-16 $scale-12;
+  }
+
+  @include down("mobile") {
+    padding: $scale-16 $scale-8;
+  }
+}
+
+.content {
+  display: flex;
+  gap: 36px;
+  justify-content: space-between;
+  flex-wrap: wrap;
+
+  @include down("laptop") {
+    gap: 24px;
+  }
+
+  @include down(1005px) {
+    flex-direction: column;
+    gap: 36px;
+  }
+
+  @include down("mobile") {
+    gap: 16px;
+  }
+}
+
+// ====== Left Column ======
+.leftColumn {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  max-width: 813px;
+
+  @include down(1005px) {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+// ====== Consultation Card ======
+.consultationCard {
+  display: flex;
+  gap: $scale-8;
+  padding: $scale-8;
+  background: $color-neutrals-100;
+  border-radius: $radius-16;
+  border: 2px solid $color-stroke-primary;
+  align-items: stretch;
+
+  //   @include down(1005px) {
+  //     gap: 20px;
+  //   }
+
+  @include down("mobile-large") {
+    flex-direction: column;
+  }
+}
+
+.cardImage {
+  //   flex-shrink: 0;
+  max-width: 309px;
+  min-height: 309px;
+  border-radius: 16px;
+  overflow: hidden;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  @include down(1005px) {
+    max-width: 285px;
+    min-height: 232px;
+  }
+
+  @include down("mobile-large") {
+    max-width: 100%;
+    min-height: 184px;
+    border-radius: 12px;
+  }
+}
+
+.cardInfo {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: $scale-16;
+  flex: 1 0 0;
+  padding: $scale-24 $scale-32;
+  border-radius: $radius-12;
+  background: $color-grey-100;
+
+  @include down("mobile-large") {
+    padding: 16px;
+  }
+}
+
+.cardDescription {
+  font-family: $font-secondary;
+  font-size: $font-size-body-lg;
+  font-weight: $weight-medium;
+  line-height: $lh-body-lg;
+  color: $color-neutrals-900;
+
+  @include down(1005px) {
+    font-size: $font-size-body-md;
+    line-height: $lh-body-md;
+  }
+
+  @include down("mobile-large") {
+    font-size: 22px; // Custom size not in tokens, keep or map to 20px
+    line-height: 26px;
+    text-align: center;
+  }
+
+  @include down("mobile") {
+    font-size: $font-size-body-sm;
+    line-height: $lh-body-sm;
+  }
+}
+
+.cardMeta {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.metaRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.metaLabel {
+  font-family: $font-secondary;
+  font-size: 20px;
+  color: #030213;
+  line-height: 24px;
+  font-weight: 400;
+  //   min-width: 70px;
+
+  @include down("mobile-large") {
+    font-size: 16px;
+    line-height: 20px;
+  }
+}
+
+.metaValue {
+  display: inline-flex;
+  align-items: center;
+  padding: 0 $scale-16;
+  border: 2px solid $color-stroke-primary;
+  border-radius: 67px;
+  font-family: $font-secondary;
+  font-size: $font-size-body-md;
+  font-weight: $weight-medium;
+  color: $color-neutrals-900;
+  line-height: $lh-body-lg;
+  background: $color-neutrals-100;
+  box-shadow: 0 0 1px 0 rgba(0, 0, 0, 0.12);
+
+  @include down(1005px) {
+    font-size: $font-size-body-sm;
+    line-height: $lh-body-md;
+  }
+
+  @include down("mobile") {
+    font-size: $font-size-body-caption;
+    line-height: $lh-body-sm;
+  }
+}
+
+.pricePrefix {
+  color: #030213;
+  font-family: $font-secondary;
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 24px;
+  margin-right: 4px;
+
+  @include down("mobile-large") {
+    font-size: 16px;
+    line-height: 20px;
+  }
+}
+
+// ====== Process Block ======
+.processBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+
+  @include down("mobile-large") {
+    transition: all 0.4s ease;
+  }
+}
+
+.blockTitle {
+  font-family: $font-secondary;
+  font-size: 20px;
+  font-weight: 400;
+  color: #0a0a0a;
+  text-align: center;
+  line-height: 24px;
+
+  @include down("mobile-large") {
+    font-size: 16px;
+  }
+}
+
+.processSteps {
+  display: flex;
+  gap: 16px;
+  list-style: none;
+  flex-wrap: wrap;
+
+  @include down(768px) {
+    flex-direction: column;
+    gap: 8px;
+  }
+}
+
+.processStep {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: $scale-8;
+  padding-bottom: $scale-16;
+  background: $color-grey-100;
+  border-radius: $radius-12;
+  flex: 1;
+  min-width: 0;
+
+  @include down(768px) {
+    flex-direction: row;
+    width: 100%;
+    padding: $scale-12 $scale-16;
+    text-align: left;
+    align-items: center;
+  }
+
+  p {
+    font-family: $font-secondary;
+    font-size: 24px;
+    font-weight: 400;
+    color: #000;
+    line-height: 28px;
+
+    @include down(1005px) {
+      font-size: 20px;
+      line-height: 26px;
+    }
+
+    @include down(850px) {
+      font-size: 16px;
+      line-height: 20px;
+    }
+
+    @include down(768px) {
+      font-size: 18px;
+      line-height: 24px;
+      text-align: left;
+    }
+
+    @include down("mobile") {
+      font-size: 16px;
+      line-height: 20px;
+    }
+  }
+}
+
+.checkIconWrapper {
+  align-self: flex-end;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 10px;
+  height: 10px;
+  padding: $scale-8;
+  border-radius: 50%;
+  border: 1px solid $color-grey-700;
+  background-color: $color-neutrals-100;
+  flex-shrink: 0;
+  box-sizing: content-box;
+  align-self: flex-end;
+
+  svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+
+  @include down("mobile-large") {
+    align-self: center;
+  }
+}
+
+// ====== Right Column ======
+.rightColumn {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  //   flex: 0 0 375px;
+
+  @include down("laptop") {
+    // flex: 0 0 240px;
+  }
+
+  @include down(1005px) {
+    flex: none;
+    width: 100%;
+    flex-direction: row;
+    gap: 32px;
+  }
+
+  @include down("mobile-large") {
+    flex-direction: column;
+    gap: 24px;
+    transition: all 0.4s ease;
+  }
+}
+
+// ====== Request Block ======
+.requestBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+
+  @include down("mobile-large") {
+    gap: 12pz;
+  }
+}
+
+.requestList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px;
+
+
+  @include down("laptop") {
+    padding: 16px 0;
+  }
+
+  @include down (1005px) {
+    padding: 0 16px 16px;
+  }
+
+  li {
+    font-family: $font-secondary;
+    font-size: 22px;
+    font-weight: 500;
+    color: #0a0a0a;
+    padding-left: 16px;
+    position: relative;
+
+    &::before {
+      content: "•";
+      position: absolute;
+      left: 0;
+      color: #0a0a0a;
+      width: 8px;
+      height: 8px;
+    }
+
+    @include down("mobile") {
+      font-size: 16px;
+      line-height: 20px;
+    }
+  }
+}
+
+// ====== Result Block ======
+.resultBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+
+  @include down(1005px) {
+    flex: 1;
+  }
+}
+
+.resultList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px;
+
+  @include down("laptop") {
+    padding: 16px 0;
+  }
+
+  @include down(1005px) {
+    padding: 0 16px 16px;
+  }
+
+  li {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    font-family: $font-secondary;
+    font-size: 22px;
+    font-weight: 500;
+    color: #0a0a0a;
+
+    @include down("mobile") {
+      font-size: 16px;
+      line-height: 20px;
+    }
+  }
+}
+
+.plusIcon {
+  color: $accent;
+  font-weight: 700;
+  font-size: 22px;
+  line-height: 1;
+  flex-shrink: 0;
+  margin-top: 4px;
+}
+
+// ====== Buttons Row ======
+.buttonsRow {
+  display: flex;
+  gap: $scale-24;
+  margin-top: $scale-24;
+
+  @include down(1005px) {
+    gap: $scale-16;
+  }
+
+  @include down("mobile-large") {
+    flex-direction: column;
+    gap: $scale-12;
+  }
+}
+
+.buttonLink {
+  flex: 1;
+  display: block;
+}
+
+
+
+// ====== Hidden State (for mobile detail toggle) ======
+.hidden {
+  display: none;
+}
