@@ -24,6 +24,11 @@ export const ConsultationHero = () => {
   // Statuses: "" (idle), 'growing' (small), 'active' (green)
   const [statuses, setStatuses] = React.useState<string[]>(["", ""]);
 
+  // Force scroll to top on page mount to bypass global smooth-scroll transition bugs
+  React.useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "instant" as ScrollBehavior });
+  }, []);
+
   // Intersection Observer to detect when section is in view
   React.useEffect(() => {
     const observer = new IntersectionObserver(

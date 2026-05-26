@@ -9,6 +9,7 @@ import { Breadcrumbs } from "@/components/ui/Breadcrumbs/Breadcrumbs";
 import { translations } from "./EducationListing.translations";
 import { getMockCourses, getMockWebinars, EducationItem } from "./mockData";
 import styles from "./EducationListing.module.scss";
+import Image from "next/image";
 
 type FilterType = "all" | "level" | "goal" | "format";
 
@@ -182,10 +183,12 @@ export const EducationListing = () => {
                     } ${isDropdownOpen ? styles.dropdownOpen : ""}`}
                     onClick={() => handleActiveFilterChange(filter.key)}
                   >
-                    <img
+                    <Image
                       src={filter.iconSrc}
                       alt={filter.label}
                       className={styles.filterIcon}
+                      width={22}
+                      height={22}
                     />
                     <span className={styles.filterText}>
                       {activeOptionLabel ? activeOptionLabel : filter.label}

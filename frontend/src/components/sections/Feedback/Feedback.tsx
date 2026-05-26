@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import Link from "next/link";
 import { useTranslation } from "@/hooks/useTranslation";
 import { SectionTitle } from "@/components/ui/SectionTitle/SectionTitle";
 import { Button } from "@/components/ui/Button/Button";
@@ -9,7 +10,7 @@ import { translations, FeedbackTranslations } from "./Feedback.translations";
 import styles from "./Feedback.module.scss";
 
 export const Feedback = () => {
-  const { t } = useTranslation<FeedbackTranslations>(translations);
+  const { t, language } = useTranslation<FeedbackTranslations>(translations);
 
   const socialLinks = [
     {
@@ -146,10 +147,12 @@ export const Feedback = () => {
           </ul>
 
           <div className={styles.consultationBtnWrapper}>
-            <Button variant="primaryOutline" className={styles.consultationBtn}>
-              <span className={styles.desktopText}>{t.consultationBtn}</span>
-              <span className={styles.mobileText}>{t.consultationBtnMobile}</span>
-            </Button>
+            <Link href={`/${language}/consultation`}>
+              <Button variant="primaryOutline" className={styles.consultationBtn}>
+                <span className={styles.desktopText}>{t.consultationBtn}</span>
+                <span className={styles.mobileText}>{t.consultationBtnMobile}</span>
+              </Button>
+            </Link>
           </div>
         </div>
 
