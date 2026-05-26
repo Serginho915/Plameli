@@ -1,10 +1,10 @@
 "use client";
 
 import React, { useState } from 'react';
-import { useTranslation } from "@/hooks/useTranslation.ts";
-import { translations, FooterTranslations } from "./Footer.translations.ts";
-import { Logo } from "@/components/layout/Header/Logo/Logo.tsx";
-import { Modal } from "@/components/ui/Modal/Modal.tsx";
+import { useTranslation } from "@/hooks/useTranslation";
+import { translations, FooterTranslations } from "./Footer.translations";
+import { Logo } from "@/components/layout/Header/Logo/Logo";
+import { Modal } from "@/components/ui/Modal/Modal";
 import styles from './Footer.module.scss';
 
 export const Footer = () => {

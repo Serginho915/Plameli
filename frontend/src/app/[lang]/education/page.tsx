@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-import { EducationListing } from "@/components/sections/EducationPage/EducationListing/EducationListing.tsx";
-import { Feedback } from "@/components/sections/Feedback/Feedback.tsx";
+import { EducationListing } from "@/components/sections/EducationPage/EducationListing/EducationListing";
+import { Feedback } from "@/components/sections/Feedback/Feedback";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://plameli.com";
 

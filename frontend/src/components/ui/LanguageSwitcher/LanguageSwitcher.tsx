@@ -2,8 +2,8 @@
 
 import { useState, useEffect } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
-import { useTranslation } from '@/hooks/useTranslation.ts';
-import { i18n } from '@/i18n-config.ts';
+import { useTranslation } from '@/hooks/useTranslation';
+import { i18n } from '@/i18n-config';
 import styles from './LanguageSwitcher.module.scss';
 
 export const LanguageSwitcher = ({ variant = 'default' }: { variant?: 'default' | 'mobile' }) => {

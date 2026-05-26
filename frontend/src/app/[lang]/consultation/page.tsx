@@ -1,12 +1,12 @@
 import type { Metadata } from "next";
-import { ConsultationHero } from "@/components/sections/ConsultationPage/Hero/ConsultationHero.tsx";
-import { ForWhom } from "@/components/sections/ConsultationPage/ForWhom/ForWhom.tsx";
-import { Problems } from "@/components/sections/ConsultationPage/Problems/Problems.tsx";
-import { Stages } from "@/components/sections/ConsultationPage/Stages/Stages.tsx";
-import { GettingReady } from "@/components/sections/ConsultationPage/GettingReady/GettingReady.tsx";
-import { TrainingCTA } from "@/components/sections/ConsultationPage/TrainingCTA/TrainingCTA.tsx";
+import { ConsultationHero } from "@/components/sections/ConsultationPage/Hero/ConsultationHero";
+import { ForWhom } from "@/components/sections/ConsultationPage/ForWhom/ForWhom";
+import { Problems } from "@/components/sections/ConsultationPage/Problems/Problems";
+import { Stages } from "@/components/sections/ConsultationPage/Stages/Stages";
+import { GettingReady } from "@/components/sections/ConsultationPage/GettingReady/GettingReady";
+import { TrainingCTA } from "@/components/sections/ConsultationPage/TrainingCTA/TrainingCTA";
 import { FAQ } from "@/components/sections/FAQ/FAQ";
-import { Feedback } from "@/components/sections/Feedback/Feedback.tsx";
+import { Feedback } from "@/components/sections/Feedback/Feedback";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://plameli.com";
 

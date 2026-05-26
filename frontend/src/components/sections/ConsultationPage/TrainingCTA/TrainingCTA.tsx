@@ -3,7 +3,7 @@
 import React from "react";
 import Image from "next/image";
 import styles from "./TrainingCTA.module.scss";
-import { ActionLink } from "@/components/ui/ActionLink/ActionLink.tsx";
+import { ActionLink } from "@/components/ui/ActionLink/ActionLink";
 import { useTranslation } from "@/hooks/useTranslation";
 import { translations } from "./TrainingCTA.translations";
 

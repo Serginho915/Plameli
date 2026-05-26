@@ -2,10 +2,10 @@
 
 import React from "react";
 import Link from "next/link";
-import { useTranslation } from "@/hooks/useTranslation.ts";
-import { EducationGroup } from "@/components/ui/EducationGroup/EducationGroup.tsx";
-import { getMockCourses, getMockWebinars } from "@/components/sections/EducationPage/EducationListing/mockData.ts";
-import { translations } from "./Education.translations.ts";
+import { useTranslation } from "@/hooks/useTranslation";
+import { EducationGroup } from "@/components/ui/EducationGroup/EducationGroup";
+import { getMockCourses, getMockWebinars } from "@/components/sections/EducationPage/EducationListing/mockData";
+import { translations } from "./Education.translations";
 import styles from "./Education.module.scss";
 
 export const Education = () => {

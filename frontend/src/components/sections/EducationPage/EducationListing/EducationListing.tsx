@@ -2,12 +2,12 @@
 
 import React, { useState, useEffect, useRef, useMemo } from "react";
 import Link from "next/link";
-import { useTranslation } from "@/hooks/useTranslation.ts";
-import { EducationGroup } from "@/components/ui/EducationGroup/EducationGroup.tsx";
-import { RegisterModal } from "@/components/ui/RegisterModal/RegisterModal.tsx";
-import { Breadcrumbs } from "@/components/ui/Breadcrumbs/Breadcrumbs.tsx";
-import { translations } from "./EducationListing.translations.ts";
-import { getMockCourses, getMockWebinars, EducationItem } from "./mockData.ts";
+import { useTranslation } from "@/hooks/useTranslation";
+import { EducationGroup } from "@/components/ui/EducationGroup/EducationGroup";
+import { RegisterModal } from "@/components/ui/RegisterModal/RegisterModal";
+import { Breadcrumbs } from "@/components/ui/Breadcrumbs/Breadcrumbs";
+import { translations } from "./EducationListing.translations";
+import { getMockCourses, getMockWebinars, EducationItem } from "./mockData";
 import styles from "./EducationListing.module.scss";
 
 type FilterType = "all" | "level" | "goal" | "format";

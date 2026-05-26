@@ -1,9 +1,9 @@
 "use client";
 
 import React, { useState } from "react";
-import { ActionLink } from "@/components/ui/ActionLink/ActionLink.tsx";
-import { EducationCard } from "@/components/ui/EducationCard/EducationCard.tsx";
-import { EducationItem } from "@/components/sections/EducationPage/EducationListing/mockData.ts";
+import { ActionLink } from "@/components/ui/ActionLink/ActionLink";
+import { EducationCard } from "@/components/ui/EducationCard/EducationCard";
+import { EducationItem } from "@/components/sections/EducationPage/EducationListing/mockData";
 import styles from "./EducationGroup.module.scss";
 
 export interface EducationGroupProps {

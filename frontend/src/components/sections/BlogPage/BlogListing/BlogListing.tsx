@@ -2,12 +2,12 @@
 
 import React, { useMemo } from "react";
 import Link from "next/link";
-import { useTranslation } from "@/hooks/useTranslation.ts";
-import { Breadcrumbs } from "@/components/ui/Breadcrumbs/Breadcrumbs.tsx";
-import { BlogCard } from "@/components/ui/BlogCard/BlogCard.tsx";
-import { Feedback } from "@/components/sections/Feedback/Feedback.tsx";
-import { getMockBlogPosts } from "@/components/sections/BlogPage/BlogDetail/mockData.ts";
-import { translations, BlogListingTranslations } from "./BlogListing.translations.ts";
+import { useTranslation } from "@/hooks/useTranslation";
+import { Breadcrumbs } from "@/components/ui/Breadcrumbs/Breadcrumbs";
+import { BlogCard } from "@/components/ui/BlogCard/BlogCard";
+import { Feedback } from "@/components/sections/Feedback/Feedback";
+import { getMockBlogPosts } from "@/components/sections/BlogPage/BlogDetail/mockData";
+import { translations, BlogListingTranslations } from "./BlogListing.translations";
 import styles from "./BlogListing.module.scss";
 
 interface BlogListingProps {

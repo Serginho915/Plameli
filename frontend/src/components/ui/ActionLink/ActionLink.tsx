@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import Link from "next/link";
-import { CircleArrowIcon } from "@/components/ui/Icons/CircleArrowIcon/CircleArrowIcon.tsx";
+import { CircleArrowIcon } from "@/components/ui/Icons/CircleArrowIcon/CircleArrowIcon";
 import styles from "./ActionLink.module.scss";
 
 interface ActionLinkProps {

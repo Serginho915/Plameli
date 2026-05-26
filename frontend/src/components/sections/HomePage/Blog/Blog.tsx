@@ -2,13 +2,13 @@
 
 import React from 'react';
 import dynamic from 'next/dynamic';
-import { SectionTitle } from '@/components/ui/SectionTitle/SectionTitle.tsx';
-import { translations, BlogTranslations } from './Blog.translations.ts';
-import { useTranslation } from '@/hooks/useTranslation.ts';
+import { SectionTitle } from '@/components/ui/SectionTitle/SectionTitle';
+import { translations, BlogTranslations } from './Blog.translations';
+import { useTranslation } from '@/hooks/useTranslation';
 import styles from './Blog.module.scss';
 
 const BlogCarousel = dynamic(
-  () => import('./BlogCarousel/BlogCarousel.tsx').then((m) => m.BlogCarousel),
+  () => import('./BlogCarousel/BlogCarousel').then((m) => m.BlogCarousel),
   { ssr: false }
 );
 

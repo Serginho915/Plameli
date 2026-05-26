@@ -5,14 +5,14 @@ import dynamic from "next/dynamic";
 import Link from "next/link";
 import Image from "next/image";
 import { useParams, useRouter } from "next/navigation";
-import { getMockCourses, getMockWebinars } from "@/components/sections/EducationPage/EducationListing/mockData.ts";
-import { translations } from "@/components/sections/EducationPage/EducationListing/EducationListing.translations.ts";
-import { RegisterModal } from "@/components/ui/RegisterModal/RegisterModal.tsx";
-import { Breadcrumbs } from "@/components/ui/Breadcrumbs/Breadcrumbs.tsx";
-import { Feedback } from "@/components/sections/Feedback/Feedback.tsx";
-import { EducationProgram } from "@/components/ui/EducationProgram/EducationProgram.tsx";
-import { SectionTitle } from "@/components/ui/SectionTitle/SectionTitle.tsx";
-import { EducationCard } from "@/components/ui/EducationCard/EducationCard.tsx";
+import { getMockCourses, getMockWebinars } from "@/components/sections/EducationPage/EducationListing/mockData";
+import { translations } from "@/components/sections/EducationPage/EducationListing/EducationListing.translations";
+import { RegisterModal } from "@/components/ui/RegisterModal/RegisterModal";
+import { Breadcrumbs } from "@/components/ui/Breadcrumbs/Breadcrumbs";
+import { Feedback } from "@/components/sections/Feedback/Feedback";
+import { EducationProgram } from "@/components/ui/EducationProgram/EducationProgram";
+import { SectionTitle } from "@/components/ui/SectionTitle/SectionTitle";
+import { EducationCard } from "@/components/ui/EducationCard/EducationCard";
 import styles from "./EducationDetail.module.scss";
 
 const SimilarMaterials = dynamic(

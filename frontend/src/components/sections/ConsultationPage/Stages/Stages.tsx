@@ -2,9 +2,9 @@
 
 import React from "react";
 import Image from "next/image";
-import { useTranslation } from "@/hooks/useTranslation.ts";
-import { SectionTitle } from "@/components/ui/SectionTitle/SectionTitle.tsx";
-import { translations } from "./Stages.translations.ts";
+import { useTranslation } from "@/hooks/useTranslation";
+import { SectionTitle } from "@/components/ui/SectionTitle/SectionTitle";
+import { translations } from "./Stages.translations";
 import styles from "./Stages.module.scss";
 import stagesBg from "../../../../../public/images/Stages/stages_bg.png";
 

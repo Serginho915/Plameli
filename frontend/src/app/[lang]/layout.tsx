@@ -20,12 +20,12 @@ export const metadata: Metadata = {
   description: "Olena Shopova - consultant, trainer, business coach",
 };
 
-import { LanguageProvider } from "@/context/LanguageContext.tsx";
-import { UIProvider } from "@/context/UIContext.tsx";
-import { Header } from "@/components/layout/Header/Header.tsx";
-import { Footer } from "@/components/layout/Footer/Footer.tsx";
-import { i18n } from "@/i18n-config.ts";
-import { Language } from "@/types/language.ts";
+import { LanguageProvider } from "@/context/LanguageContext";
+import { UIProvider } from "@/context/UIContext";
+import { Header } from "@/components/layout/Header/Header";
+import { Footer } from "@/components/layout/Footer/Footer";
+import { i18n } from "@/i18n-config";
+import { Language } from "@/types/language";
 
 export async function generateStaticParams() {
   return i18n.locales.map((locale) => ({ lang: locale }));

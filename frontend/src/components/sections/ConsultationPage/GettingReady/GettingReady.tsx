@@ -1,10 +1,10 @@
 "use client";
 
 import React from "react";
-import { useTranslation } from "@/hooks/useTranslation.ts";
-import { SectionTitle } from "@/components/ui/SectionTitle/SectionTitle.tsx";
-import { BookingWidget } from "../Hero/BookingWidget/BookingWidget.tsx";
-import { translations } from "./GettingReady.translations.ts";
+import { useTranslation } from "@/hooks/useTranslation";
+import { SectionTitle } from "@/components/ui/SectionTitle/SectionTitle";
+import { BookingWidget } from "../Hero/BookingWidget/BookingWidget";
+import { translations } from "./GettingReady.translations";
 import styles from "./GettingReady.module.scss";
 
 export const GettingReady = () => {

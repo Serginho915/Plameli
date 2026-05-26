@@ -2,14 +2,14 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useTranslation } from "@/hooks/useTranslation.ts";
-import { translations } from "../ConsultationHero.translations.ts";
+import { useTranslation } from "@/hooks/useTranslation";
+import { translations } from "../ConsultationHero.translations";
 import styles from "./BookingWidget.module.scss";
-import { CheckIcon } from "@/components/ui/Icons/CheckIcon/CheckIcon.tsx";
-import { Button } from "@/components/ui/Button/Button.tsx";
-import { CalendarIcon } from "@/components/ui/Icons/CalendarIcon/CalendarIcon.tsx";
-import { UrgentIcon } from "@/components/ui/Icons/UrgentIcon/UrgentIcon.tsx";
-import { fetchAvailableSlots, AvailableSlots } from "./bookingApi.ts";
+import { CheckIcon } from "@/components/ui/Icons/CheckIcon/CheckIcon";
+import { Button } from "@/components/ui/Button/Button";
+import { CalendarIcon } from "@/components/ui/Icons/CalendarIcon/CalendarIcon";
+import { UrgentIcon } from "@/components/ui/Icons/UrgentIcon/UrgentIcon";
+import { fetchAvailableSlots, AvailableSlots } from "./bookingApi";
 
 export const BookingWidget = () => {
   const { t, language } = useTranslation(translations);

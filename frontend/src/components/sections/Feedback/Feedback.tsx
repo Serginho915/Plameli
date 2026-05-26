@@ -1,11 +1,11 @@
 "use client";
 
 import React from "react";
-import { useTranslation } from "@/hooks/useTranslation.ts";
-import { SectionTitle } from "@/components/ui/SectionTitle/SectionTitle.tsx";
-import { Button } from "@/components/ui/Button/Button.tsx";
-import { Logo } from "@/components/layout/Header/Logo/Logo.tsx";
-import { translations, FeedbackTranslations } from "./Feedback.translations.ts";
+import { useTranslation } from "@/hooks/useTranslation";
+import { SectionTitle } from "@/components/ui/SectionTitle/SectionTitle";
+import { Button } from "@/components/ui/Button/Button";
+import { Logo } from "@/components/layout/Header/Logo/Logo";
+import { translations, FeedbackTranslations } from "./Feedback.translations";
 import styles from "./Feedback.module.scss";
 
 export const Feedback = () => {

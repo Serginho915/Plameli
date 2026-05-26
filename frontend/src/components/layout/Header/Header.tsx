@@ -1,14 +1,14 @@
 'use client';
 import { useRef, useEffect } from 'react';
 import Link from 'next/link';
-import { Logo } from './Logo/Logo.tsx';
-import { Nav } from './Nav/Nav.tsx';
-import { LanguageSwitcher } from '@/components/ui/LanguageSwitcher/LanguageSwitcher.tsx';
-import { useTranslation } from '@/hooks/useTranslation.ts';
+import { Logo } from './Logo/Logo';
+import { Nav } from './Nav/Nav';
+import { LanguageSwitcher } from '@/components/ui/LanguageSwitcher/LanguageSwitcher';
+import { useTranslation } from '@/hooks/useTranslation';
 import styles from './Header.module.scss';
-import { Button } from '@/components/ui/Button/Button.tsx';
-import { Burger } from './Burger/Burger.tsx';
-import { useUI } from '@/context/UIContext.tsx';
+import { Button } from '@/components/ui/Button/Button';
+import { Burger } from './Burger/Burger';
+import { useUI } from '@/context/UIContext';
 
 export const Header = () => {
   const { language } = useTranslation();

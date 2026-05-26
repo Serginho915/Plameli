@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { BlogDetail } from "@/components/sections/BlogPage/BlogDetail/BlogDetail.tsx";
+import { BlogDetail } from "@/components/sections/BlogPage/BlogDetail/BlogDetail";
 import {
   getMockBlogPost,
   getMockBlogPosts,
-} from "@/components/sections/BlogPage/BlogDetail/mockData.ts";
-import { i18n } from "@/i18n-config.ts";
+} from "@/components/sections/BlogPage/BlogDetail/mockData";
+import { i18n } from "@/i18n-config";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://plameli.com";
 

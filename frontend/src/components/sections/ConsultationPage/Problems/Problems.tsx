@@ -2,10 +2,10 @@
 
 import React from "react";
 import Image from "next/image";
-import { useTranslation } from "@/hooks/useTranslation.ts";
-import { SectionTitle } from "@/components/ui/SectionTitle/SectionTitle.tsx";
-import { Button } from "@/components/ui/Button/Button.tsx";
-import { translations } from "./Problems.translations.ts";
+import { useTranslation } from "@/hooks/useTranslation";
+import { SectionTitle } from "@/components/ui/SectionTitle/SectionTitle";
+import { Button } from "@/components/ui/Button/Button";
+import { translations } from "./Problems.translations";
 import styles from "./Problems.module.scss";
 import expertAvatar from "../../../../../public/images/Problems/expert_avatar.png";
 

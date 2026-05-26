@@ -2,9 +2,9 @@
 
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { SectionTitle } from "@/components/ui/SectionTitle/SectionTitle.tsx";
-import { useTranslation } from "@/hooks/useTranslation.ts";
-import { translations, FAQTranslations } from "./FAQ.translations.ts";
+import { SectionTitle } from "@/components/ui/SectionTitle/SectionTitle";
+import { useTranslation } from "@/hooks/useTranslation";
+import { translations, FAQTranslations } from "./FAQ.translations";
 import styles from "./FAQ.module.scss";
 
 export const FAQ = () => {

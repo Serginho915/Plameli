@@ -1,4 +1,4 @@
-import { apiClient } from '../apiClient.ts';
+import { apiClient } from '../apiClient';
 
 export interface PageData {
   slug: string;

@@ -2,12 +2,12 @@
 
 import React, { useMemo } from "react";
 import dynamic from "next/dynamic";
-import { useTranslation } from "@/hooks/useTranslation.ts";
-import { Breadcrumbs } from "@/components/ui/Breadcrumbs/Breadcrumbs.tsx";
-import { SectionTitle } from "@/components/ui/SectionTitle/SectionTitle.tsx";
-import { Feedback } from "@/components/sections/Feedback/Feedback.tsx";
-import { BlogPost } from "./mockData.ts";
-import { translations } from "./BlogDetail.translations.ts";
+import { useTranslation } from "@/hooks/useTranslation";
+import { Breadcrumbs } from "@/components/ui/Breadcrumbs/Breadcrumbs";
+import { SectionTitle } from "@/components/ui/SectionTitle/SectionTitle";
+import { Feedback } from "@/components/sections/Feedback/Feedback";
+import { BlogPost } from "./mockData";
+import { translations } from "./BlogDetail.translations";
 import styles from "./BlogDetail.module.scss";
 
 const BlogCarousel = dynamic(

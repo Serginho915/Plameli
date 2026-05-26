@@ -2,8 +2,8 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, animate } from 'framer-motion';
-import { BlogCard } from '@/components/ui/BlogCard/BlogCard.tsx';
-import { BlogItem, BlogTranslations } from '../Blog.translations.ts';
+import { BlogCard } from '@/components/ui/BlogCard/BlogCard';
+import { BlogItem, BlogTranslations } from '../Blog.translations';
 import styles from './BlogCarousel.module.scss';
 
 interface BlogCarouselProps {

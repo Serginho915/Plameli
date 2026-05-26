@@ -2,14 +2,14 @@
 
 import React from "react";
 import Image from "next/image";
-import { useTranslation } from "@/hooks/useTranslation.ts";
-import { translations } from "./ConsultationHero.translations.ts";
+import { useTranslation } from "@/hooks/useTranslation";
+import { translations } from "./ConsultationHero.translations";
 import { useParams } from "next/navigation";
 import styles from "./ConsultationHero.module.scss";
-import { Breadcrumbs } from "@/components/ui/Breadcrumbs/Breadcrumbs.tsx";
-import { BagIcon } from "@/components/ui/Icons/BagIcon/BagIcon.tsx";
-import { VerifiedIcon } from "@/components/ui/Icons/VerifiedIcon/VerifiedIcon.tsx";
-import { BookingWidget } from "./BookingWidget/BookingWidget.tsx";
+import { Breadcrumbs } from "@/components/ui/Breadcrumbs/Breadcrumbs";
+import { BagIcon } from "@/components/ui/Icons/BagIcon/BagIcon";
+import { VerifiedIcon } from "@/components/ui/Icons/VerifiedIcon/VerifiedIcon";
+import { BookingWidget } from "./BookingWidget/BookingWidget";
 
 // Images
 import heroImg from "../../../../../public/images/Consultation/heroConsultattion.jpg";

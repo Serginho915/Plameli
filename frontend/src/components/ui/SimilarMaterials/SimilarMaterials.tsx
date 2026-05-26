@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useRef, useMemo } from "react";
 import { motion, animate } from "framer-motion";
-import { SectionTitle } from "@/components/ui/SectionTitle/SectionTitle.tsx";
+import { SectionTitle } from "@/components/ui/SectionTitle/SectionTitle";
 import styles from "./SimilarMaterials.module.scss";
 
 interface SimilarMaterialsProps {

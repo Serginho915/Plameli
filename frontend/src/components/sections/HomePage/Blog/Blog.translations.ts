@@ -1,4 +1,4 @@
-import { ComponentTranslations } from "@/hooks/useTranslation.ts";
+import { ComponentTranslations } from "@/hooks/useTranslation";
 
 export interface BlogItem {
   author: string;

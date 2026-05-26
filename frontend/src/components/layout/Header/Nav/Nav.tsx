@@ -2,9 +2,9 @@
 import React, { useState, useRef, useEffect } from 'react'
 import styles from './Nav.module.scss'
 import Link from 'next/link'
-import { useTranslation } from '@/hooks/useTranslation.ts'
-import { useUI } from '@/context/UIContext.tsx'
-import { translations } from './translations.ts'
+import { useTranslation } from '@/hooks/useTranslation'
+import { useUI } from '@/context/UIContext'
+import { translations } from './translations'
 
 export const Nav = () => {
   const { t, language } = useTranslation(translations);

@@ -2,12 +2,12 @@
 
 import React from "react";
 import Image from "next/image";
-import { useTranslation } from "@/hooks/useTranslation.ts";
-import { translations } from "./Hero.translations.ts";
+import { useTranslation } from "@/hooks/useTranslation";
+import { translations } from "./Hero.translations";
 import styles from "./Hero.module.scss";
 import heroImg from "../../../../../public/images/Hero/olenaShopova.png";
 
-import { ActionLink } from "@/components/ui/ActionLink/ActionLink.tsx";
+import { ActionLink } from "@/components/ui/ActionLink/ActionLink";
 
 export const Hero = () => {
   const { t } = useTranslation(translations);
