@@ -121,9 +121,9 @@ export const Problems = () => {
             <div className={styles.cardHeader}>
               <div className={styles.cardTop}>
                 <div className={styles.avatarGroup}>
-                  <Image src={expertAvatar} alt="Expert" className={styles.avatar} width={36} height={35} />
+                  <Image src={expertAvatar} alt="Expert" className={styles.avatar} unoptimized={true} />
                   <div className={styles.avatar} />
-                  <Image src={expertAvatar} alt="Expert" className={styles.avatar} width={36} height={36} />
+                  <Image src={expertAvatar} alt="Expert" className={styles.avatar} unoptimized={true} />
                 </div>
                 <h4 className={styles.cardTitle}>{t.cardTitle}</h4>
               </div>

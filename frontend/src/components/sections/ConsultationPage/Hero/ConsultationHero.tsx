@@ -106,13 +106,14 @@ export const ConsultationHero = () => {
             {/* Row 1 */}
             <div className={`${styles.quoteRow} ${styles.firstRow}`}>
               <div className={styles.imageBox}>
-                <Image
+                 <Image
                   src={heroImg}
                   alt="Consultation Hero"
                   width={295}
                   height={238}
                   className={styles.mainImage}
                   priority
+                  unoptimized={true}
                 />
               </div>
               <div className={styles.textBox}>
@@ -146,6 +147,7 @@ export const ConsultationHero = () => {
                   width={183}
                   height={128}
                   className={styles.secondaryImage}
+                  unoptimized={true}
                 />
               </div>
             </div>
