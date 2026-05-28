@@ -131,7 +131,11 @@
 
     .chevronIcon {
       color: var(--color-text-headings-grey, #697B91);
-      transition: color 0.2s ease, transform 0.2s ease;
+      transition: color 0.2s ease, transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+      &.chevronRotated {
+        transform: rotate(180deg);
+      }
     }
 
     &:hover {
@@ -146,6 +150,10 @@
       .chevronIcon {
         color: #F1592A;
         transform: translateY(2px);
+
+        &.chevronRotated {
+          transform: rotate(180deg) translateY(-2px);
+        }
       }
     }
 
