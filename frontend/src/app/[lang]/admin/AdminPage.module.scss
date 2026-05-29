@@ -1,0 +1,329 @@
+@use "@/styles/variables" as *;
+@use "@/styles/mixins" as *;
+
+.wrapper {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding: 24px 0 64px;
+}
+
+.authWrapper {
+  min-height: 100vh;
+  justify-content: center;
+  align-items: center;
+  padding: 24px 0;
+}
+
+.topBar {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: flex-start;
+
+  h1 {
+    color: $color-grey-800;
+    font-size: 40px;
+  }
+}
+
+.subtitle {
+  color: $color-grey-600;
+  font-size: 18px;
+  line-height: 1.3;
+  margin-top: 6px;
+}
+
+.authCard,
+.listCard,
+.formCard,
+.requestsCard {
+  border: 1px solid rgba($color-grey-300, 0.8);
+  border-radius: 24px;
+  background: linear-gradient(160deg, rgba($color-neutrals-100, 0.95), rgba($color-grey-50, 0.95));
+  box-shadow: 0 18px 46px rgba($color-grey-600, 0.14);
+}
+
+.authCard {
+  width: min(560px, 100%);
+  margin: 0 auto;
+  padding: 36px;
+}
+
+.authForm {
+  margin-top: 22px;
+  display: grid;
+  gap: 16px;
+}
+
+.userBox {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: flex-end;
+
+  span {
+    color: $color-grey-700;
+    font-weight: 600;
+  }
+}
+
+.tabs,
+.requestsTabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+
+  button {
+    border: 1px solid $color-grey-300;
+    border-radius: 18px;
+    background: rgba($color-neutrals-100, 0.75);
+    color: $color-grey-700;
+    padding: 10px 16px;
+    font-family: $font-primary;
+    cursor: pointer;
+    transition: 0.25s ease;
+
+    &:hover {
+      border-color: $accent;
+      color: $accent;
+    }
+  }
+}
+
+.activeTab {
+  background: linear-gradient(120deg, rgba($color-brand-500, 0.92), rgba($color-brand-600, 0.92)) !important;
+  color: $color-neutrals-100 !important;
+  border-color: transparent !important;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  gap: 16px;
+
+  @include down("laptop") {
+    grid-template-columns: 1fr;
+  }
+}
+
+.listCard {
+  padding: 18px;
+
+  ul {
+    display: grid;
+    gap: 8px;
+    margin-top: 14px;
+  }
+
+  li button {
+    width: 100%;
+    text-align: left;
+    border: 1px solid rgba($color-grey-300, 0.8);
+    border-radius: 14px;
+    background: rgba($color-neutrals-100, 0.8);
+    padding: 10px 12px;
+    cursor: pointer;
+    color: $color-grey-700;
+    transition: 0.2s ease;
+
+    &:hover {
+      border-color: $accent;
+      color: $accent;
+    }
+  }
+}
+
+.selectedListItem {
+  border-color: $accent !important;
+  color: $accent !important;
+  background: rgba($color-brand-100, 0.35) !important;
+}
+
+.formCard,
+.requestsCard {
+  padding: 20px;
+  display: grid;
+  gap: 14px;
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.formGrid,
+.formGridThree {
+  display: grid;
+  gap: 12px;
+}
+
+.formGrid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+
+  @include down("tablet") {
+    grid-template-columns: 1fr;
+  }
+}
+
+.formGridThree {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+
+  @include down("laptop") {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  @include down("tablet") {
+    grid-template-columns: 1fr;
+  }
+}
+
+.wrapper label {
+  display: grid;
+  gap: 6px;
+  color: $color-grey-700;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.wrapper input,
+.wrapper select,
+.wrapper textarea {
+  width: 100%;
+  border: 1px solid rgba($color-grey-300, 0.9);
+  border-radius: 12px;
+  background: rgba($color-neutrals-100, 0.92);
+  color: $color-grey-800;
+  padding: 10px 12px;
+  font-size: 14px;
+  font-family: $font-secondary;
+  outline: none;
+  transition: 0.2s ease;
+
+  &:focus {
+    border-color: rgba($accent, 0.75);
+    box-shadow: 0 0 0 3px rgba($accent, 0.15);
+  }
+}
+
+.wrapper textarea {
+  min-height: 120px;
+  resize: vertical;
+}
+
+.actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.primaryButton,
+.secondaryButton,
+.dangerButton {
+  border-radius: 14px;
+  padding: 10px 16px;
+  font-family: $font-primary;
+  border: none;
+  cursor: pointer;
+  transition: 0.25s ease;
+
+  &:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+  }
+}
+
+.primaryButton {
+  color: $color-neutrals-100;
+  background: linear-gradient(120deg, $color-brand-500, $color-brand-600);
+}
+
+.secondaryButton {
+  color: $color-grey-700;
+  background: rgba($color-neutrals-100, 0.85);
+  border: 1px solid $color-grey-300;
+}
+
+.dangerButton,
+.linkDanger {
+  color: $color-neutrals-100;
+  background: linear-gradient(120deg, $color-red-500, $color-red-700);
+}
+
+.linkDanger {
+  width: fit-content;
+  border: none;
+  border-radius: 10px;
+  padding: 8px 12px;
+  cursor: pointer;
+}
+
+.programBlock {
+  border: 1px dashed rgba($color-grey-400, 0.7);
+  border-radius: 16px;
+  padding: 14px;
+  display: grid;
+  gap: 12px;
+}
+
+.programItem {
+  border: 1px solid rgba($color-grey-300, 0.75);
+  border-radius: 14px;
+  background: rgba($color-neutrals-100, 0.72);
+  padding: 12px;
+  display: grid;
+  gap: 10px;
+}
+
+.requestsCard {
+  .requestList {
+    display: grid;
+    gap: 12px;
+  }
+}
+
+.requestItem {
+  border: 1px solid rgba($color-grey-300, 0.75);
+  border-radius: 14px;
+  background: rgba($color-neutrals-100, 0.78);
+  padding: 12px;
+  display: grid;
+  gap: 8px;
+
+  pre {
+    background: rgba($color-grey-100, 0.9);
+    border-radius: 10px;
+    padding: 10px;
+    overflow: auto;
+    font-size: 12px;
+    line-height: 1.4;
+  }
+}
+
+.requestMeta {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  color: $color-grey-700;
+}
+
+.error,
+.success {
+  border-radius: 12px;
+  padding: 10px 12px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.error {
+  background: rgba($color-red-100, 0.7);
+  color: $color-red-800;
+}
+
+.success {
+  background: rgba($color-green-100, 0.8);
+  color: $color-green-800;
+}

@@ -1,31 +1,16 @@
-import type { Metadata } from "next";
-import { Oswald, Source_Sans_3 } from "next/font/google";
-import "@/styles/globals.scss";
-
-
-const oswald = Oswald({
-  variable: "--font-oswald",
-  subsets: ["latin", "cyrillic"],
-  weight: ["200", "300", "400", "500", "600", "700"],
-});
-
-const sourceSans = Source_Sans_3({
-  variable: "--font-source-sans",
-  subsets: ["latin", "cyrillic"],
-  weight: ["300", "400", "500", "600", "700", "800", "900"],
-});
+import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: "Olena Shopova",
-  description: "Olena Shopova - consultant, trainer, business coach",
+  title: 'Olena Shopova',
+  description: 'Olena Shopova - consultant, trainer, business coach',
 };
 
-import { LanguageProvider } from "@/context/LanguageContext";
-import { UIProvider } from "@/context/UIContext";
-import { Header } from "@/components/layout/Header/Header";
-import { Footer } from "@/components/layout/Footer/Footer";
-import { i18n } from "@/i18n-config";
-import { Language } from "@/types/language";
+import { LanguageProvider } from '@/context/LanguageContext';
+import { UIProvider } from '@/context/UIContext';
+import { Header } from '@/components/layout/Header/Header';
+import { Footer } from '@/components/layout/Footer/Footer';
+import { i18n } from '@/i18n-config';
+import { Language } from '@/types/language';
 
 export async function generateStaticParams() {
   return i18n.locales.map((locale) => ({ lang: locale }));
@@ -42,18 +27,12 @@ export default async function RootLayout({
   const currentLang = lang as Language;
 
   return (
-    <html lang={lang} className={`${oswald.variable} ${sourceSans.variable}`} data-scroll-behavior="smooth">
-      <body >
-        <LanguageProvider initialLang={currentLang}>
-          <UIProvider>
-            <Header />
-            <main className='main-flex'>
-              {children}
-            </main>
-            <Footer />
-          </UIProvider>
-        </LanguageProvider>
-      </body>
-    </html>
+    <LanguageProvider initialLang={currentLang}>
+      <UIProvider>
+        <Header />
+        <main className='main-flex'>{children}</main>
+        <Footer />
+      </UIProvider>
+    </LanguageProvider>
   );
 }

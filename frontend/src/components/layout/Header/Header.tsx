@@ -1,6 +1,7 @@
 'use client';
 import { useRef, useEffect } from 'react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { Logo } from './Logo/Logo';
 import { Nav } from './Nav/Nav';
 import { LanguageSwitcher } from '@/components/ui/LanguageSwitcher/LanguageSwitcher';
@@ -11,9 +12,16 @@ import { Burger } from './Burger/Burger';
 import { useUI } from '@/context/UIContext';
 
 export const Header = () => {
+  const pathname = usePathname();
   const { language } = useTranslation();
   const { isMenuOpen, setIsMenuOpen } = useUI();
   const headerRef = useRef<HTMLElement>(null);
+
+  const isAdminRoute = /^\/(ru|bg)\/admin(\/|$)/.test(pathname);
+
+  if (isAdminRoute) {
+    return null;
+  }
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
