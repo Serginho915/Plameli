@@ -8,7 +8,7 @@ export const translations = {
     stat3Value: "с 2017 года",
     stat3Label: "Владелец бухгалтерской компании Пламели Финанс ЕООД.",
     siteLink: "Перейти на сайт",
-    siteName: "plameli.com",
+    siteName: "ledgerlab.tech",
   },
   bg: {
     title: "Plameli Finance в цифри:",
@@ -19,6 +19,6 @@ export const translations = {
     stat3Value: "от 2017 г.",
     stat3Label: "Собственик на счетоводна компания Пламели Финанс ЕООД.",
     siteLink: "Към сайта",
-    siteName: "plameli.com",
+    siteName: "ledgerlab.tech",
   },
 };

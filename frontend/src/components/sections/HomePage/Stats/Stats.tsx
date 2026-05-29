@@ -20,7 +20,7 @@ export const Stats = () => {
     {
       type: "site",
       siteName: t.siteName,
-      siteLink: "https://plameli.com",
+      siteLink: "https://ledgerlab.tech",
       siteLinkText: t.siteLink,
       siteLogo: "/images/logo.svg",
     },

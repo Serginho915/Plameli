@@ -8,7 +8,7 @@ import { TrainingCTA } from "@/components/sections/ConsultationPage/TrainingCTA/
 import { FAQ } from "@/components/sections/FAQ/FAQ";
 import { Feedback } from "@/components/sections/Feedback/Feedback";
 
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://plameli.com";
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://ledgerlab.tech";
 
 const metaByLang: Record<string, { title: string; description: string }> = {
   bg: {

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { EducationListing } from "@/components/sections/EducationPage/EducationListing/EducationListing";
 import { Feedback } from "@/components/sections/Feedback/Feedback";
 
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://plameli.com";
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://ledgerlab.tech";
 
 const metaByLang: Record<string, { title: string; description: string }> = {
   bg: {

@@ -7,7 +7,7 @@ import {
 } from "@/components/sections/BlogPage/BlogDetail/mockData";
 import { i18n } from "@/i18n-config";
 
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://plameli.com";
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://ledgerlab.tech";
 
 export async function generateMetadata({
   params,

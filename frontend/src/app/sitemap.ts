@@ -6,7 +6,7 @@ import {
   getMockWebinars,
 } from "@/components/sections/EducationPage/EducationListing/mockData";
 
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://plameli.com";
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://ledgerlab.tech";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const entries: MetadataRoute.Sitemap = [];
