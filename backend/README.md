@@ -23,5 +23,5 @@ python manage.py runserver
 
 ## Notes
 
-- Localized content supports query parameter `lang` with `ru`, `bg`, `en`.
+- Localized content supports query parameter `lang` with `ru`, `bg`.
 - Education list supports filters: `type`, `level`, `goal`, `format`.

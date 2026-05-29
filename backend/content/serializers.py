@@ -2,7 +2,7 @@ from rest_framework import serializers
 
 from .models import BlogPost, ContentPage, EducationItem
 
-SUPPORTED_LANGUAGES = {"ru", "bg", "en"}
+SUPPORTED_LANGUAGES = {"ru", "bg"}
 
 
 def get_language(context: dict) -> str:

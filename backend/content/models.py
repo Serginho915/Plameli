@@ -13,10 +13,8 @@ class ContentPage(TimeStampedModel):
 	slug = models.SlugField(unique=True)
 	title_ru = models.CharField(max_length=255)
 	title_bg = models.CharField(max_length=255)
-	title_en = models.CharField(max_length=255)
 	content_ru = models.TextField()
 	content_bg = models.TextField()
-	content_en = models.TextField()
 	is_published = models.BooleanField(default=True)
 
 	class Meta:
@@ -34,13 +32,10 @@ class BlogPost(TimeStampedModel):
 	media_src = models.CharField(max_length=500)
 	date_label_ru = models.CharField(max_length=120)
 	date_label_bg = models.CharField(max_length=120)
-	date_label_en = models.CharField(max_length=120)
 	title_ru = models.CharField(max_length=255)
 	title_bg = models.CharField(max_length=255)
-	title_en = models.CharField(max_length=255)
 	content_ru = models.JSONField(default=list)
 	content_bg = models.JSONField(default=list)
-	content_en = models.JSONField(default=list)
 	is_published = models.BooleanField(default=True)
 
 	class Meta:
@@ -95,19 +90,15 @@ class EducationItem(TimeStampedModel):
 
 	title_ru = models.CharField(max_length=255)
 	title_bg = models.CharField(max_length=255)
-	title_en = models.CharField(max_length=255)
 
 	description_ru = models.TextField()
 	description_bg = models.TextField()
-	description_en = models.TextField()
 
 	start_date_ru = models.CharField(max_length=120)
 	start_date_bg = models.CharField(max_length=120)
-	start_date_en = models.CharField(max_length=120)
 
 	price_ru = models.CharField(max_length=120)
 	price_bg = models.CharField(max_length=120)
-	price_en = models.CharField(max_length=120)
 
 	level = models.CharField(max_length=20, choices=LEVEL_CHOICES)
 	goal = models.CharField(max_length=20, choices=GOAL_CHOICES)
@@ -115,13 +106,10 @@ class EducationItem(TimeStampedModel):
 
 	level_label_ru = models.CharField(max_length=120)
 	level_label_bg = models.CharField(max_length=120)
-	level_label_en = models.CharField(max_length=120)
 	goal_label_ru = models.CharField(max_length=120)
 	goal_label_bg = models.CharField(max_length=120)
-	goal_label_en = models.CharField(max_length=120)
 	format_label_ru = models.CharField(max_length=120)
 	format_label_bg = models.CharField(max_length=120)
-	format_label_en = models.CharField(max_length=120)
 
 	is_published = models.BooleanField(default=True)
 
@@ -141,10 +129,8 @@ class EducationModule(TimeStampedModel):
 	sort_order = models.PositiveIntegerField(default=0)
 	title_ru = models.CharField(max_length=255)
 	title_bg = models.CharField(max_length=255)
-	title_en = models.CharField(max_length=255)
 	description_ru = models.TextField()
 	description_bg = models.TextField()
-	description_en = models.TextField()
 
 	class Meta:
 		ordering = ["sort_order", "id"]

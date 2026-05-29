@@ -7,14 +7,14 @@ from .models import BlogPost, ContentPage, EducationItem, EducationModule
 class ContentPageAdmin(admin.ModelAdmin):
 	list_display = ("slug", "is_published", "updated_at")
 	list_filter = ("is_published",)
-	search_fields = ("slug", "title_ru", "title_bg", "title_en")
+	search_fields = ("slug", "title_ru", "title_bg")
 
 
 @admin.register(BlogPost)
 class BlogPostAdmin(admin.ModelAdmin):
 	list_display = ("external_id", "slug", "author", "is_published", "updated_at")
 	list_filter = ("is_published",)
-	search_fields = ("external_id", "slug", "title_ru", "title_bg", "title_en")
+	search_fields = ("external_id", "slug", "title_ru", "title_bg")
 
 
 class EducationModuleInline(admin.TabularInline):
@@ -26,7 +26,7 @@ class EducationModuleInline(admin.TabularInline):
 class EducationItemAdmin(admin.ModelAdmin):
 	list_display = ("external_id", "slug", "item_type", "level", "goal", "item_format", "is_published")
 	list_filter = ("item_type", "level", "goal", "item_format", "is_published")
-	search_fields = ("external_id", "slug", "title_ru", "title_bg", "title_en")
+	search_fields = ("external_id", "slug", "title_ru", "title_bg")
 	inlines = [EducationModuleInline]
 
 # Register your models here.
