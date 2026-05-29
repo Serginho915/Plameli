@@ -11,15 +11,15 @@ python manage.py runserver
 
 ## API Base
 
-- /api/v1/content/pages/
-- /api/v1/content/blog/posts/
-- /api/v1/content/education/items/
-- /api/v1/content/education/items/courses/
-- /api/v1/content/education/items/webinars/
-- /api/v1/consultations/available-slots/
-- /api/v1/consultations/bookings/
-- /api/v1/education/registrations/
-- /api/v1/feedback/
+- /api/content/pages/
+- /api/content/blog/posts/
+- /api/content/education/items/
+- /api/content/education/items/courses/
+- /api/content/education/items/webinars/
+- /api/consultations/available-slots/
+- /api/consultations/bookings/
+- /api/education/registrations/
+- /api/feedback/
 
 ## Notes
 
