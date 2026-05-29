@@ -3,6 +3,7 @@
 import React from "react";
 import Image from "next/image";
 import { useTranslation } from "@/hooks/useTranslation";
+import { useUI } from "@/context/UIContext";
 import { SectionTitle } from "@/components/ui/SectionTitle/SectionTitle";
 import { Button } from "@/components/ui/Button/Button";
 import { translations } from "./Problems.translations";
@@ -11,6 +12,7 @@ import expertAvatar from "../../../../../public/images/Problems/expert_avatar.pn
 
 export const Problems = () => {
   const { t } = useTranslation(translations);
+  const { openBookingModal } = useUI();
   const sectionRef = React.useRef<HTMLElement>(null);
   const [isInView, setIsInView] = React.useState(false);
 
@@ -133,6 +135,7 @@ export const Problems = () => {
             <Button 
               variant="consultationMobile" 
               className={styles.ctaButton}
+              onClick={openBookingModal}
             >
               {t.ctaButton}
             </Button>

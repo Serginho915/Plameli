@@ -1,15 +1,23 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import Link from "next/link";
 import { useTranslation } from "@/hooks/useTranslation";
 import { EducationGroup } from "@/components/ui/EducationGroup/EducationGroup";
-import { getMockCourses, getMockWebinars } from "@/components/sections/EducationPage/EducationListing/mockData";
+import { RegisterModal } from "@/components/ui/RegisterModal/RegisterModal";
+import { getMockCourses, getMockWebinars, EducationItem } from "@/components/sections/EducationPage/EducationListing/mockData";
 import { translations } from "./Education.translations";
 import styles from "./Education.module.scss";
 
 export const Education = () => {
   const { t, language } = useTranslation(translations);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedItem, setSelectedItem] = useState<EducationItem | null>(null);
+
+  const handleSignUpClick = (item: EducationItem) => {
+    setSelectedItem(item);
+    setIsModalOpen(true);
+  };
 
   // Retrieve shared mock data
   const mockCourses = getMockCourses(language);
@@ -34,6 +42,7 @@ export const Education = () => {
               startLabel={t.startLabel}
               formatLabel={t.formatLabel}
               priceLabel={t.priceLabel}
+              onSignUpClick={handleSignUpClick}
             />
           </div>
 
@@ -52,6 +61,7 @@ export const Education = () => {
               startLabel={t.startLabel}
               formatLabel={t.formatLabel}
               priceLabel={t.priceLabel}
+              onSignUpClick={handleSignUpClick}
             />
           </div>
         </div>
@@ -62,6 +72,14 @@ export const Education = () => {
           </Link>
         </div>
       </div>
+      
+      <RegisterModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        item={selectedItem}
+        language={language}
+        t={t}
+      />
     </section>
   );
 };

@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useTranslation } from "@/hooks/useTranslation";
+import { useUI } from "@/context/UIContext";
 import { Button } from "@/components/ui/Button/Button";
 import { SectionTitle } from "@/components/ui/SectionTitle/SectionTitle";
 import { translations } from "./Services.translations";
@@ -15,6 +16,7 @@ import { Education } from "../Education/Education";
 export const Services = () => {
   const { t } = useTranslation(translations);
   const { lang } = useParams();
+  const { openBookingModal } = useUI();
   const [showDetails, setShowDetails] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
 
@@ -143,12 +145,13 @@ export const Services = () => {
               <Button variant="outline">{t.learnMore}</Button>
             </Link>
           )}
-          <Link
-            href={`/${lang}/consultation#form`}
+          <Button 
+            variant="filled" 
             className={styles.buttonLink}
+            onClick={openBookingModal}
           >
-            <Button variant="filled">{t.signUp}</Button>
-          </Link>
+            {t.signUp}
+          </Button>
         </div>
       </div>
 

@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTranslation } from "@/hooks/useTranslation";
+import { useUI } from "@/context/UIContext";
 import { Button } from "@/components/ui/Button/Button";
 import { translations } from "./Reviews.translations";
 import { reviewsData } from "./Reviews.data";
@@ -12,6 +13,7 @@ import { SectionTitle } from "@/components/ui/SectionTitle/SectionTitle";
 
 export const Reviews = () => {
   const { t, language } = useTranslation(translations);
+  const { openBookingModal } = useUI();
   const [currentIndex, setCurrentIndex] = useState(0);
   const [direction, setDirection] = useState(0);
 
@@ -183,7 +185,11 @@ export const Reviews = () => {
             </div>
 
             <div className={styles.ctaWrapper}>
-              <Button variant="primaryOutline" className={styles.ctaButton}>
+              <Button 
+                variant="primaryOutline" 
+                className={styles.ctaButton}
+                onClick={openBookingModal}
+              >
                 {t.cta}
               </Button>
             </div>

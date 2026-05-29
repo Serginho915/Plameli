@@ -24,6 +24,7 @@ import { LanguageProvider } from "@/context/LanguageContext";
 import { UIProvider } from "@/context/UIContext";
 import { Header } from "@/components/layout/Header/Header";
 import { Footer } from "@/components/layout/Footer/Footer";
+import { BookingModal } from "@/components/ui/BookingModal/BookingModal";
 import { i18n } from "@/i18n-config";
 import { Language } from "@/types/language";
 
@@ -51,6 +52,7 @@ export default async function RootLayout({
               {children}
             </main>
             <Footer />
+            <BookingModal />
           </UIProvider>
         </LanguageProvider>
       </body>

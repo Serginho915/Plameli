@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { ActionLink } from "@/components/ui/ActionLink/ActionLink";
 import { EducationCard } from "@/components/ui/EducationCard/EducationCard";
 import { EducationItem } from "@/components/sections/EducationPage/EducationListing/mockData";
@@ -45,6 +45,7 @@ export const EducationGroup: React.FC<EducationGroupProps> = ({
   onSignUpClick,
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
+  const groupRef = useRef<HTMLDivElement>(null);
 
   // 1. Apply hard limit first (homepage carousel cap, etc.)
   const cappedItems = limit ? items.slice(0, limit) : items;
@@ -60,8 +61,19 @@ export const EducationGroup: React.FC<EducationGroupProps> = ({
 
   const isHomepage = variant === "homepage";
 
+  const handleToggleExpand = () => {
+    if (isExpanded && groupRef.current) {
+      // Smoothly scroll back to the start of this block with an offset for the header
+      const y = groupRef.current.getBoundingClientRect().top + window.scrollY - 100;
+      setTimeout(() => {
+        window.scrollTo({ top: y, behavior: "smooth" });
+      }, 0);
+    }
+    setIsExpanded(!isExpanded);
+  };
+
   return (
-    <div className={`${styles.group} ${isHomepage ? styles.homepage : styles.listing}`}>
+    <div ref={groupRef} className={`${styles.group} ${isHomepage ? styles.homepage : styles.listing}`}>
       {/* Header */}
       <div className={styles.header}>
         <h2 className={styles.title}>{title}</h2>
@@ -110,7 +122,7 @@ export const EducationGroup: React.FC<EducationGroupProps> = ({
       {hasMore && (
         <button
           className={styles.showMoreBtn}
-          onClick={() => setIsExpanded(!isExpanded)}
+          onClick={handleToggleExpand}
           aria-label={showMoreLabel || "Показать все"}
         >
           <div className={styles.orangeLine} />

@@ -24,9 +24,19 @@ export const BookingWidget = () => {
     email: "",
     message: ""
   });
+  const getInitialViewDate = (format: "standard" | "priority") => {
+    const minDate = new Date();
+    if (format === "standard") {
+      minDate.setDate(minDate.getDate() + 14);
+    } else {
+      minDate.setDate(minDate.getDate() + 1);
+    }
+    return new Date(minDate.getFullYear(), minDate.getMonth(), 1);
+  };
+
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [selectedTime, setSelectedTime] = useState<string | null>(null);
-  const [viewDate, setViewDate] = useState(new Date(new Date().getFullYear(), new Date().getMonth(), 1));
+  const [viewDate, setViewDate] = useState(getInitialViewDate("standard"));
   const [availableSlots, setAvailableSlots] = useState<AvailableSlots>({});
   const [isLoadingSlots, setIsLoadingSlots] = useState(false);
 
@@ -62,13 +72,28 @@ export const BookingWidget = () => {
     return () => clearTimeout(timer);
   }, [currentStep]);
 
+  // Update the calendar's view month when format changes to ensure the user sees valid slots
+  useEffect(() => {
+    const minDate = new Date();
+    if (selectedFormat === "standard") {
+      minDate.setDate(minDate.getDate() + 14);
+    } else {
+      minDate.setDate(minDate.getDate() + 1);
+    }
+    setViewDate(new Date(minDate.getFullYear(), minDate.getMonth(), 1));
+  }, [selectedFormat]);
+
   // Bugfix: Clear selected date if it becomes invalid when switching formats
   useEffect(() => {
-    if (selectedDate && selectedFormat === "standard") {
+    if (selectedDate) {
       const minDate = new Date();
-      minDate.setDate(minDate.getDate() + 14);
+      if (selectedFormat === "standard") {
+        minDate.setDate(minDate.getDate() + 14);
+      } else {
+        minDate.setDate(minDate.getDate() + 1);
+      }
       minDate.setHours(0, 0, 0, 0);
-      
+
       if (selectedDate < minDate) {
         setSelectedDate(null);
         setSelectedTime(null);

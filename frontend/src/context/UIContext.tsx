@@ -6,6 +6,9 @@ interface UIContextType {
   isMenuOpen: boolean;
   setIsMenuOpen: (isOpen: boolean) => void;
   toggleMenu: () => void;
+  isBookingModalOpen: boolean;
+  openBookingModal: () => void;
+  closeBookingModal: () => void;
 }
 
 const UIContext = createContext<UIContextType | undefined>(undefined);
@@ -14,6 +17,7 @@ let globalIsMenuOpen = false;
 
 export const UIProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(globalIsMenuOpen);
+  const [isBookingModalOpen, setIsBookingModalOpen] = useState(false);
 
   const handleSetIsMenuOpen = (isOpen: boolean) => {
     globalIsMenuOpen = isOpen;
@@ -22,8 +26,18 @@ export const UIProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
 
   const toggleMenu = () => handleSetIsMenuOpen(!isMenuOpen);
 
+  const openBookingModal = () => setIsBookingModalOpen(true);
+  const closeBookingModal = () => setIsBookingModalOpen(false);
+
   return (
-    <UIContext.Provider value={{ isMenuOpen, setIsMenuOpen: handleSetIsMenuOpen, toggleMenu }}>
+    <UIContext.Provider value={{
+      isMenuOpen,
+      setIsMenuOpen: handleSetIsMenuOpen,
+      toggleMenu,
+      isBookingModalOpen,
+      openBookingModal,
+      closeBookingModal,
+    }}>
       {children}
     </UIContext.Provider>
   );
