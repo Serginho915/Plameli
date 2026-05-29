@@ -42,7 +42,7 @@ export default async function RootLayout({
   const currentLang = lang as Language;
 
   return (
-    <html lang={lang} className={`${oswald.variable} ${sourceSans.variable}`}>
+    <html lang={lang} className={`${oswald.variable} ${sourceSans.variable}`} data-scroll-behavior="smooth">
       <body >
         <LanguageProvider initialLang={currentLang}>
           <UIProvider>

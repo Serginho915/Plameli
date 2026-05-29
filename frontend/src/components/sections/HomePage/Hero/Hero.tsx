@@ -48,6 +48,7 @@ export const Hero = () => {
             height={365}
             priority
             className={styles.heroImage}
+            unoptimized={true}
           />
           {/* Forbes banner — overlay ONLY on tablet */}
           <div className={styles.forbesBannerTablet}>
