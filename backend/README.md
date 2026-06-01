@@ -11,7 +11,6 @@ python manage.py runserver
 
 ## API Base
 
-- /api/content/pages/
 - /api/content/blog/posts/
 - /api/content/education/items/
 - /api/content/education/items/courses/

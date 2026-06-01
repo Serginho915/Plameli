@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
-import { EducationItem } from "@/components/sections/EducationPage/EducationListing/mockData";
+import type { EducationItem } from "@/types/content";
 import styles from "./RegisterModal.module.scss";
 
 interface RegisterModalProps {

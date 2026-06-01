@@ -7,7 +7,8 @@ import { EducationGroup } from "@/components/ui/EducationGroup/EducationGroup";
 import { RegisterModal } from "@/components/ui/RegisterModal/RegisterModal";
 import { Breadcrumbs } from "@/components/ui/Breadcrumbs/Breadcrumbs";
 import { translations } from "./EducationListing.translations";
-import { getMockCourses, getMockWebinars, EducationItem } from "./mockData";
+import { getEducationItems } from "@/lib/services/contentService";
+import type { EducationItem } from "@/types/content";
 import styles from "./EducationListing.module.scss";
 import Image from "next/image";
 
@@ -35,6 +36,7 @@ export const EducationListing = () => {
   const { t, language } = useTranslation(translations);
   const [activeFilter, setActiveFilter] = useState<FilterType>("all");
   const [subFilter, setSubFilter] = useState<string>("all");
+  const [educationItems, setEducationItems] = useState<EducationItem[]>([]);
   
   // Manage open dropdown category state
   const [openDropdown, setOpenDropdown] = useState<FilterType | null>(null);
@@ -57,6 +59,29 @@ export const EducationListing = () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    const loadEducationItems = async () => {
+      try {
+        const data = await getEducationItems(language);
+        if (isMounted) {
+          setEducationItems(data);
+        }
+      } catch {
+        if (isMounted) {
+          setEducationItems([]);
+        }
+      }
+    };
+
+    void loadEducationItems();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [language]);
 
   const handleActiveFilterChange = (filter: FilterType) => {
     if (filter === "all") {
@@ -129,9 +154,14 @@ export const EducationListing = () => {
     return match ? match.label : null;
   };
 
-  // Retrieve localized mock courses and webinars
-  const mockCourses = useMemo(() => getMockCourses(language), [language]);
-  const mockWebinars = useMemo(() => getMockWebinars(language), [language]);
+  const courses = useMemo(
+    () => educationItems.filter((item) => item.type === "image"),
+    [educationItems]
+  );
+  const webinars = useMemo(
+    () => educationItems.filter((item) => item.type === "video"),
+    [educationItems]
+  );
 
   // Declarative high-performance filter resolver
   const filterItems = useMemo(() => {
@@ -144,8 +174,8 @@ export const EducationListing = () => {
     };
   }, [activeFilter, subFilter]);
 
-  const filteredCourses = useMemo(() => filterItems(mockCourses), [filterItems, mockCourses]);
-  const filteredWebinars = useMemo(() => filterItems(mockWebinars), [filterItems, mockWebinars]);
+  const filteredCourses = useMemo(() => filterItems(courses), [filterItems, courses]);
+  const filteredWebinars = useMemo(() => filterItems(webinars), [filterItems, webinars]);
 
   return (
     <section className={styles.section}>

@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import BlogPost, ContentPage, EducationItem
+from .models import BlogPost, EducationItem
 
 SUPPORTED_LANGUAGES = {"ru", "bg"}
 
@@ -15,21 +15,6 @@ def localized_value(obj, base_name: str, lang: str):
     if value:
         return value
     return getattr(obj, f"{base_name}_ru")
-
-
-class LocalizedPageSerializer(serializers.ModelSerializer):
-    title = serializers.SerializerMethodField()
-    content = serializers.SerializerMethodField()
-
-    class Meta:
-        model = ContentPage
-        fields = ["slug", "title", "content"]
-
-    def get_title(self, obj):
-        return localized_value(obj, "title", get_language(self.context))
-
-    def get_content(self, obj):
-        return localized_value(obj, "content", get_language(self.context))
 
 
 class LocalizedBlogPostSerializer(serializers.ModelSerializer):

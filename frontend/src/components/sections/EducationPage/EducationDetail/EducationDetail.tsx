@@ -1,11 +1,12 @@
 "use client";
 
-import React, { useState, useRef, useMemo } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import Image from "next/image";
-import { useParams, useRouter } from "next/navigation";
-import { getMockCourses, getMockWebinars } from "@/components/sections/EducationPage/EducationListing/mockData";
+import { useParams } from "next/navigation";
+import { getEducationItem, getEducationItems } from "@/lib/services/contentService";
+import type { EducationItem } from "@/types/content";
 import { translations } from "@/components/sections/EducationPage/EducationListing/EducationListing.translations";
 import { RegisterModal } from "@/components/ui/RegisterModal/RegisterModal";
 import { Breadcrumbs } from "@/components/ui/Breadcrumbs/Breadcrumbs";
@@ -22,10 +23,12 @@ const SimilarMaterials = dynamic(
 
 export const EducationDetail = () => {
   const params = useParams();
-  const router = useRouter();
 
   const language = (params?.lang as string) || "bg";
   const slug = params?.slug as string;
+  const [item, setItem] = useState<EducationItem | null>(null);
+  const [allItems, setAllItems] = useState<EducationItem[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -34,25 +37,46 @@ export const EducationDetail = () => {
 
   const t = translations[language as "ru" | "bg"] || translations.bg;
 
-  // Dynamic Lookup (Memoized)
-  const item = useMemo(() => {
-    const courses = getMockCourses(language);
-    const webinars = getMockWebinars(language);
+  useEffect(() => {
+    let isMounted = true;
 
-    const matchedCourse = courses.find((c) => c.slug === slug);
-    if (matchedCourse) return matchedCourse;
+    const loadEducationData = async () => {
+      setIsLoading(true);
+      try {
+        const [loadedItem, loadedItems] = await Promise.all([
+          getEducationItem(slug, language),
+          getEducationItems(language),
+        ]);
 
-    const matchedWebinar = webinars.find((w) => w.slug === slug);
-    if (matchedWebinar) return matchedWebinar;
+        if (!isMounted) {
+          return;
+        }
 
-    return null;
+        setItem(loadedItem);
+        setAllItems(loadedItems);
+      } catch {
+        if (isMounted) {
+          setItem(null);
+          setAllItems([]);
+        }
+      } finally {
+        if (isMounted) {
+          setIsLoading(false);
+        }
+      }
+    };
+
+    if (slug) {
+      void loadEducationData();
+    }
+
+    return () => {
+      isMounted = false;
+    };
   }, [language, slug]);
 
   const similarItems = useMemo(() => {
     if (!item) return [];
-    const courses = getMockCourses(language);
-    const webinars = getMockWebinars(language);
-    const allItems = [...courses, ...webinars];
 
     // Filter out current item and look for matching level or goal
     const matching = allItems.filter(
@@ -65,7 +89,7 @@ export const EducationDetail = () => {
 
     // Fallback: just return the first 5 items excluding the current one
     return allItems.filter((c) => c.slug !== item.slug).slice(0, 5);
-  }, [language, item]);
+  }, [allItems, item]);
 
   // Dynamic values
   const isVideo = item?.type === "video";
@@ -149,6 +173,10 @@ export const EducationDetail = () => {
   const feedbackSection = useMemo(() => (
     <Feedback />
   ), []);
+
+  if (isLoading) {
+    return <div className={styles.notFoundContainer}>Loading...</div>;
+  }
 
   // Fallback state if slug not found
   if (!item) {

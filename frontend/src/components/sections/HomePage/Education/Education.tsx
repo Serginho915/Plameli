@@ -1,19 +1,43 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useTranslation } from "@/hooks/useTranslation";
 import { EducationGroup } from "@/components/ui/EducationGroup/EducationGroup";
-import { getMockCourses, getMockWebinars } from "@/components/sections/EducationPage/EducationListing/mockData";
+import { getEducationItems } from "@/lib/services/contentService";
+import type { EducationItem } from "@/types/content";
 import { translations } from "./Education.translations";
 import styles from "./Education.module.scss";
 
 export const Education = () => {
   const { t, language } = useTranslation(translations);
+  const [items, setItems] = useState<EducationItem[]>([]);
 
-  // Retrieve shared mock data
-  const mockCourses = getMockCourses(language);
-  const mockWebinars = getMockWebinars(language);
+  useEffect(() => {
+    let isMounted = true;
+
+    const loadItems = async () => {
+      try {
+        const data = await getEducationItems(language);
+        if (isMounted) {
+          setItems(data);
+        }
+      } catch {
+        if (isMounted) {
+          setItems([]);
+        }
+      }
+    };
+
+    void loadItems();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [language]);
+
+  const mockWebinars = useMemo(() => items.filter((item) => item.type === "video"), [items]);
+  const mockCourses = useMemo(() => items.filter((item) => item.type === "image"), [items]);
 
   return (
     <section className={styles.education}>

@@ -9,21 +9,6 @@ class TimeStampedModel(models.Model):
 		abstract = True
 
 
-class ContentPage(TimeStampedModel):
-	slug = models.SlugField(unique=True)
-	title_ru = models.CharField(max_length=255)
-	title_bg = models.CharField(max_length=255)
-	content_ru = models.TextField()
-	content_bg = models.TextField()
-	is_published = models.BooleanField(default=True)
-
-	class Meta:
-		ordering = ["slug"]
-
-	def __str__(self):
-		return self.slug
-
-
 class BlogPost(TimeStampedModel):
 	external_id = models.CharField(max_length=32, unique=True)
 	slug = models.SlugField(unique=True)

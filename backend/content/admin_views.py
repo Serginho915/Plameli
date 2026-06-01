@@ -6,10 +6,9 @@ from rest_framework.views import APIView
 
 from .admin_serializers import (
     BlogPostAdminSerializer,
-    ContentPageAdminSerializer,
     EducationItemAdminSerializer,
 )
-from .models import BlogPost, ContentPage, EducationItem
+from .models import BlogPost, EducationItem
 
 
 class AdminMeAPIView(APIView):
@@ -25,14 +24,6 @@ class AdminMeAPIView(APIView):
                 "is_superuser": request.user.is_superuser,
             }
         )
-
-
-class ContentPageAdminViewSet(viewsets.ModelViewSet):
-    authentication_classes = [BasicAuthentication]
-    permission_classes = [IsAdminUser]
-    queryset = ContentPage.objects.all().order_by("slug")
-    serializer_class = ContentPageAdminSerializer
-    lookup_field = "id"
 
 
 class BlogPostAdminViewSet(viewsets.ModelViewSet):

@@ -1,4 +1,18 @@
-const API_BASE_URL = (process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api').replace(/\/$/, '');
+const DEFAULT_API_URL = 'http://localhost:8000/api';
+
+function resolveApiBaseUrl(): string {
+  const isServer = typeof window === 'undefined';
+  const serverApiUrl = process.env.INTERNAL_API_URL;
+  const publicApiUrl = process.env.NEXT_PUBLIC_API_URL;
+
+  if (isServer && serverApiUrl) {
+    return serverApiUrl.replace(/\/$/, '');
+  }
+
+  return (publicApiUrl || DEFAULT_API_URL).replace(/\/$/, '');
+}
+
+const API_BASE_URL = resolveApiBaseUrl();
 
 function buildApiUrl(endpoint: string): string {
   const normalizedEndpoint = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;

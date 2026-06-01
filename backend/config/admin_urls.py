@@ -4,7 +4,6 @@ from rest_framework.routers import DefaultRouter
 from content.admin_views import (
     AdminMeAPIView,
     BlogPostAdminViewSet,
-    ContentPageAdminViewSet,
     EducationItemAdminViewSet,
 )
 from interactions.admin_views import (
@@ -14,7 +13,6 @@ from interactions.admin_views import (
 )
 
 content_router = DefaultRouter()
-content_router.register("pages", ContentPageAdminViewSet, basename="admin-content-pages")
 content_router.register("blog-posts", BlogPostAdminViewSet, basename="admin-content-blog-posts")
 content_router.register("education-items", EducationItemAdminViewSet, basename="admin-content-education-items")
 

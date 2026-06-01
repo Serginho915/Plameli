@@ -2,27 +2,15 @@ from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
-from .models import BlogPost, ContentPage, EducationItem
+from .models import BlogPost, EducationItem
 from .serializers import (
 	LocalizedBlogPostSerializer,
 	LocalizedEducationItemSerializer,
-	LocalizedPageSerializer,
 )
 
 
 def get_lang(request):
 	return request.query_params.get("lang", "ru")
-
-
-class ContentPageViewSet(viewsets.ReadOnlyModelViewSet):
-	queryset = ContentPage.objects.filter(is_published=True)
-	serializer_class = LocalizedPageSerializer
-	lookup_field = "slug"
-
-	def get_serializer_context(self):
-		context = super().get_serializer_context()
-		context["lang"] = get_lang(self.request)
-		return context
 
 
 class BlogPostViewSet(viewsets.ReadOnlyModelViewSet):

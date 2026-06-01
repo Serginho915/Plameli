@@ -1,10 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { BlogDetail } from "@/components/sections/BlogPage/BlogDetail/BlogDetail";
-import {
-  getMockBlogPost,
-  getMockBlogPosts,
-} from "@/components/sections/BlogPage/BlogDetail/mockData";
+import { getBlogPost, getBlogPosts } from "@/lib/services/contentService";
 import { i18n } from "@/i18n-config";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://ledgerlab.tech";
@@ -15,7 +12,7 @@ export async function generateMetadata({
   params: Promise<{ lang: string; slug: string }>;
 }): Promise<Metadata> {
   const { lang, slug } = await params;
-  const post = getMockBlogPost(slug, lang);
+  const post = await getBlogPost(slug, lang);
 
   if (!post) {
     return { title: "Not Found" };
@@ -43,16 +40,21 @@ export async function generateMetadata({
   };
 }
 
-// Pre-generate paths for all mock posts at build time
-// When switching to API: replace with `await fetchAllSlugs(locale)`
 export async function generateStaticParams() {
   const paths: { lang: string; slug: string }[] = [];
 
-  i18n.locales.forEach((locale) => {
-    getMockBlogPosts(locale).forEach((post) => {
-      paths.push({ lang: locale, slug: post.slug });
-    });
-  });
+  await Promise.all(
+    i18n.locales.map(async (locale) => {
+      try {
+        const posts = await getBlogPosts(locale);
+        posts.forEach((post) => {
+          paths.push({ lang: locale, slug: post.slug });
+        });
+      } catch {
+        // Keep dynamic fallback working when API is unavailable at build time.
+      }
+    })
+  );
 
   return paths;
 }
@@ -64,15 +66,14 @@ export default async function BlogDetailPage({
 }) {
   const { lang, slug } = await params;
 
-  // Data layer — currently mock, future: await fetchBlogPost(slug, lang)
-  const post = getMockBlogPost(slug, lang);
-  const allPosts = getMockBlogPosts(lang);
+  const [post, allPosts] = await Promise.all([
+    getBlogPost(slug, lang),
+    getBlogPosts(lang),
+  ]);
 
-  // Redirect to 404 if slug doesn't exist in the data source
   if (!post) {
     notFound();
   }
 
-  // Pass pre-fetched data as props — BlogDetail is a pure display component
   return <BlogDetail post={post} allPosts={allPosts} language={lang} />;
 }

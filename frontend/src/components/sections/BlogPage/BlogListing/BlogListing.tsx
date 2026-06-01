@@ -1,12 +1,13 @@
 "use client";
 
-import React, { useMemo } from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { useTranslation } from "@/hooks/useTranslation";
 import { Breadcrumbs } from "@/components/ui/Breadcrumbs/Breadcrumbs";
 import { BlogCard } from "@/components/ui/BlogCard/BlogCard";
 import { Feedback } from "@/components/sections/Feedback/Feedback";
-import { getMockBlogPosts } from "@/components/sections/BlogPage/BlogDetail/mockData";
+import { getBlogPosts } from "@/lib/services/contentService";
+import type { BlogPost } from "@/types/content";
 import { translations, BlogListingTranslations } from "./BlogListing.translations";
 import styles from "./BlogListing.module.scss";
 
@@ -16,8 +17,30 @@ interface BlogListingProps {
 
 export const BlogListing: React.FC<BlogListingProps> = ({ language }) => {
   const { t } = useTranslation<BlogListingTranslations>(translations);
+  const [posts, setPosts] = useState<BlogPost[]>([]);
 
-  const posts = useMemo(() => getMockBlogPosts(language), [language]);
+  useEffect(() => {
+    let isMounted = true;
+
+    const loadPosts = async () => {
+      try {
+        const data = await getBlogPosts(language);
+        if (isMounted) {
+          setPosts(data);
+        }
+      } catch {
+        if (isMounted) {
+          setPosts([]);
+        }
+      }
+    };
+
+    void loadPosts();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [language]);
 
   const breadcrumbItems = [
     { label: t.breadcrumbHome, href: `/${language}` },

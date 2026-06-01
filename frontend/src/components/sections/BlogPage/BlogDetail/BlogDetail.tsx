@@ -6,7 +6,7 @@ import { useTranslation } from "@/hooks/useTranslation";
 import { Breadcrumbs } from "@/components/ui/Breadcrumbs/Breadcrumbs";
 import { SectionTitle } from "@/components/ui/SectionTitle/SectionTitle";
 import { Feedback } from "@/components/sections/Feedback/Feedback";
-import { BlogPost } from "./mockData";
+import type { BlogPost } from "@/types/content";
 import { translations } from "./BlogDetail.translations";
 import styles from "./BlogDetail.module.scss";
 

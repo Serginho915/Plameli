@@ -1,14 +1,10 @@
 import type { MetadataRoute } from "next";
 import { i18n } from "@/i18n-config";
-import { getMockBlogPosts } from "@/components/sections/BlogPage/BlogDetail/mockData";
-import {
-  getMockCourses,
-  getMockWebinars,
-} from "@/components/sections/EducationPage/EducationListing/mockData";
+import { getBlogPosts, getEducationItems } from "@/lib/services/contentService";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://ledgerlab.tech";
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const entries: MetadataRoute.Sitemap = [];
 
   // Static pages per locale
@@ -32,46 +28,52 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
   // Blog posts per locale
   for (const locale of i18n.locales) {
-    const posts = getMockBlogPosts(locale);
-    for (const post of posts) {
-      entries.push({
-        url: `${BASE_URL}/${locale}/blog/${post.slug}`,
-        lastModified: new Date(),
-        changeFrequency: "monthly",
-        priority: 0.7,
-        alternates: {
-          languages: Object.fromEntries(
-            i18n.locales.map((l) => [
-              l,
-              `${BASE_URL}/${l}/blog/${post.slug}`,
-            ])
-          ),
-        },
-      });
+    try {
+      const posts = await getBlogPosts(locale);
+      for (const post of posts) {
+        entries.push({
+          url: `${BASE_URL}/${locale}/blog/${post.slug}`,
+          lastModified: new Date(),
+          changeFrequency: "monthly",
+          priority: 0.7,
+          alternates: {
+            languages: Object.fromEntries(
+              i18n.locales.map((l) => [
+                l,
+                `${BASE_URL}/${l}/blog/${post.slug}`,
+              ])
+            ),
+          },
+        });
+      }
+    } catch {
+      // Skip dynamic blog URLs when API is unavailable.
     }
   }
 
   // Education pages per locale (courses + webinars)
   for (const locale of i18n.locales) {
-    const courses = getMockCourses(locale);
-    const webinars = getMockWebinars(locale);
-    const allEducation = [...courses, ...webinars];
+    try {
+      const allEducation = await getEducationItems(locale);
 
-    for (const item of allEducation) {
-      entries.push({
-        url: `${BASE_URL}/${locale}/education/${item.slug}`,
-        lastModified: new Date(),
-        changeFrequency: "monthly",
-        priority: 0.7,
-        alternates: {
-          languages: Object.fromEntries(
-            i18n.locales.map((l) => [
-              l,
-              `${BASE_URL}/${l}/education/${item.slug}`,
-            ])
-          ),
-        },
-      });
+      for (const item of allEducation) {
+        entries.push({
+          url: `${BASE_URL}/${locale}/education/${item.slug}`,
+          lastModified: new Date(),
+          changeFrequency: "monthly",
+          priority: 0.7,
+          alternates: {
+            languages: Object.fromEntries(
+              i18n.locales.map((l) => [
+                l,
+                `${BASE_URL}/${l}/education/${item.slug}`,
+              ])
+            ),
+          },
+        });
+      }
+    } catch {
+      // Skip dynamic education URLs when API is unavailable.
     }
   }
 

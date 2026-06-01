@@ -1,36 +1,15 @@
 from django.core.management.base import BaseCommand
 
-from content.models import BlogPost, ContentPage, EducationItem, EducationModule
+from content.models import BlogPost, EducationItem, EducationModule
 
 
 class Command(BaseCommand):
     help = "Seed demo content for frontend-aligned APIs"
 
     def handle(self, *args, **options):
-        self._seed_pages()
         self._seed_blog_posts()
         self._seed_education_items()
         self.stdout.write(self.style.SUCCESS("Demo data seeded."))
-
-    def _seed_pages(self):
-        pages = [
-            {
-                "slug": "about",
-                "title_ru": "About us",
-                "title_bg": "About us",
-                "content_ru": "We help businesses with accounting in Bulgaria.",
-                "content_bg": "We help businesses with accounting in Bulgaria.",
-            },
-            {
-                "slug": "contact",
-                "title_ru": "Contact",
-                "title_bg": "Contact",
-                "content_ru": "Reach out at hello@plameli.com",
-                "content_bg": "Reach out at hello@plameli.com",
-            },
-        ]
-        for payload in pages:
-            ContentPage.objects.update_or_create(slug=payload["slug"], defaults=payload)
 
     def _seed_blog_posts(self):
         posts = [

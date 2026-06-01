@@ -1,23 +1,6 @@
 from rest_framework import serializers
 
-from .models import BlogPost, ContentPage, EducationItem, EducationModule
-
-
-class ContentPageAdminSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = ContentPage
-        fields = [
-            "id",
-            "slug",
-            "title_ru",
-            "title_bg",
-            "content_ru",
-            "content_bg",
-            "is_published",
-            "created_at",
-            "updated_at",
-        ]
-        read_only_fields = ["id", "created_at", "updated_at"]
+from .models import BlogPost, EducationItem, EducationModule
 
 
 class BlogPostAdminSerializer(serializers.ModelSerializer):

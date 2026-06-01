@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import styles from "./AdminPage.module.scss";
 
-type PanelTab = "pages" | "blog" | "education" | "requests";
+type PanelTab = "blog" | "education" | "requests";
 type RequestTab = "feedback" | "educationRegistrations" | "consultationBookings";
 
 interface AdminUser {
@@ -11,16 +11,6 @@ interface AdminUser {
   username: string;
   is_staff: boolean;
   is_superuser: boolean;
-}
-
-interface ContentPageItem {
-  id?: number;
-  slug: string;
-  title_ru: string;
-  title_bg: string;
-  content_ru: string;
-  content_bg: string;
-  is_published: boolean;
 }
 
 interface BlogPostItem {
@@ -126,15 +116,6 @@ function readSessionValue(key: string): string | null {
   return window.sessionStorage.getItem(key);
 }
 
-const emptyPage = (): ContentPageItem => ({
-  slug: "",
-  title_ru: "",
-  title_bg: "",
-  content_ru: "",
-  content_bg: "",
-  is_published: true,
-});
-
 const emptyBlogPost = (): BlogPostItem => ({
   external_id: "",
   slug: "",
@@ -193,16 +174,12 @@ function resolveApiAdminBase(): string {
 const ADMIN_API_BASE = resolveApiAdminBase();
 
 export default function AdminPage() {
-  const [tab, setTab] = useState<PanelTab>("pages");
+  const [tab, setTab] = useState<PanelTab>("blog");
   const [requestTab, setRequestTab] = useState<RequestTab>("feedback");
   const [username, setUsername] = useState(() => readSessionValue(USERNAME_KEY) || "");
   const [password, setPassword] = useState("");
   const [authHeader, setAuthHeader] = useState<string | null>(() => readSessionValue(AUTH_KEY));
   const [adminUser, setAdminUser] = useState<AdminUser | null>(null);
-
-  const [pages, setPages] = useState<ContentPageItem[]>([]);
-  const [selectedPageId, setSelectedPageId] = useState<number | "new">("new");
-  const [pageDraft, setPageDraft] = useState<ContentPageItem>(emptyPage());
 
   const [blogPosts, setBlogPosts] = useState<BlogPostItem[]>([]);
   const [selectedBlogId, setSelectedBlogId] = useState<number | "new">("new");
@@ -272,12 +249,7 @@ export default function AdminPage() {
 
       const user = await adminFetch<AdminUser>("/me/", token);
       setAdminUser(user);
-      await Promise.all([
-        loadPages(token),
-        loadBlogPosts(token),
-        loadEducationItems(token),
-        loadRequests(token),
-      ]);
+      await Promise.all([loadBlogPosts(token), loadEducationItems(token), loadRequests(token)]);
     } catch (err) {
       handleAuthError(err);
     } finally {
@@ -324,13 +296,6 @@ export default function AdminPage() {
     window.sessionStorage.removeItem(USERNAME_KEY);
   }
 
-  async function loadPages(token: string) {
-    const data = await adminFetch<ContentPageItem[]>("/content/pages/", token);
-    setPages(data);
-    setSelectedPageId("new");
-    setPageDraft(emptyPage());
-  }
-
   async function loadBlogPosts(token: string) {
     const data = await adminFetch<BlogPostItem[]>("/content/blog-posts/", token);
     setBlogPosts(data);
@@ -358,18 +323,6 @@ export default function AdminPage() {
     setFeedbackRequests(feedback);
     setEducationRegistrations(registrations);
     setConsultationBookings(bookings);
-  }
-
-  function selectPage(id: number | "new") {
-    setSelectedPageId(id);
-    if (id === "new") {
-      setPageDraft(emptyPage());
-      return;
-    }
-    const match = pages.find((item) => item.id === id);
-    if (match) {
-      setPageDraft(match);
-    }
   }
 
   function selectBlog(id: number | "new") {
@@ -442,49 +395,6 @@ export default function AdminPage() {
       ...prev,
       program: prev.program.filter((_, itemIndex) => itemIndex !== index),
     }));
-  }
-
-  async function savePage() {
-    if (!authHeader) {
-      return;
-    }
-
-    try {
-      setLoading(true);
-      setError(null);
-      const method = pageDraft.id ? "PUT" : "POST";
-      const path = pageDraft.id ? `/content/pages/${pageDraft.id}/` : "/content/pages/";
-      await adminFetch(path, authHeader, {
-        method,
-        body: JSON.stringify(pageDraft),
-      });
-      await loadPages(authHeader);
-      setSuccess("Page saved");
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to save page");
-    } finally {
-      setLoading(false);
-    }
-  }
-
-  async function deletePage() {
-    if (!authHeader || !pageDraft.id) {
-      return;
-    }
-
-    try {
-      setLoading(true);
-      setError(null);
-      await adminFetch(`/content/pages/${pageDraft.id}/`, authHeader, {
-        method: "DELETE",
-      });
-      await loadPages(authHeader);
-      setSuccess("Page deleted");
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to delete page");
-    } finally {
-      setLoading(false);
-    }
   }
 
   async function saveBlogPost() {
@@ -651,9 +561,6 @@ export default function AdminPage() {
       </div>
 
       <nav className={styles.tabs}>
-        <button className={tab === "pages" ? styles.activeTab : ""} onClick={() => setTab("pages")} type="button">
-          Pages
-        </button>
         <button className={tab === "blog" ? styles.activeTab : ""} onClick={() => setTab("blog")} type="button">
           Blog
         </button>
@@ -667,102 +574,6 @@ export default function AdminPage() {
 
       {error ? <p className={styles.error}>{error}</p> : null}
       {success ? <p className={styles.success}>{success}</p> : null}
-
-      {tab === "pages" ? (
-        <div className={styles.grid}>
-          <aside className={styles.listCard}>
-            <div className={styles.sectionHeader}>
-              <h2>Content Pages</h2>
-              <button type="button" onClick={() => selectPage("new")} className={styles.secondaryButton}>
-                New
-              </button>
-            </div>
-            <ul>
-              {pages.map((item) => (
-                <li key={item.id}>
-                  <button
-                    type="button"
-                    className={selectedPageId === item.id ? styles.selectedListItem : ""}
-                    onClick={() => selectPage(item.id as number)}
-                  >
-                    {item.slug}
-                  </button>
-                </li>
-              ))}
-            </ul>
-          </aside>
-
-          <div className={styles.formCard}>
-            <h2>{pageDraft.id ? "Edit page" : "Create page"}</h2>
-            <div className={styles.formGrid}>
-              <label>
-                Slug
-                <input value={pageDraft.slug} onChange={(event) => setPageDraft({ ...pageDraft, slug: event.target.value })} />
-              </label>
-              <label>
-                Published
-                <select
-                  value={String(pageDraft.is_published)}
-                  onChange={(event) =>
-                    setPageDraft({ ...pageDraft, is_published: event.target.value === "true" })
-                  }
-                >
-                  <option value="true">Yes</option>
-                  <option value="false">No</option>
-                </select>
-              </label>
-            </div>
-
-            <div className={styles.formGrid}>
-              <label>
-                Title RU
-                <input
-                  value={pageDraft.title_ru}
-                  onChange={(event) => setPageDraft({ ...pageDraft, title_ru: event.target.value })}
-                />
-              </label>
-              <label>
-                Title BG
-                <input
-                  value={pageDraft.title_bg}
-                  onChange={(event) => setPageDraft({ ...pageDraft, title_bg: event.target.value })}
-                />
-              </label>
-            </div>
-
-            <div className={styles.formGrid}>
-              <label>
-                Content RU
-                <textarea
-                  value={pageDraft.content_ru}
-                  onChange={(event) => setPageDraft({ ...pageDraft, content_ru: event.target.value })}
-                />
-              </label>
-              <label>
-                Content BG
-                <textarea
-                  value={pageDraft.content_bg}
-                  onChange={(event) => setPageDraft({ ...pageDraft, content_bg: event.target.value })}
-                />
-              </label>
-            </div>
-
-            <div className={styles.actions}>
-              <button type="button" className={styles.primaryButton} onClick={savePage} disabled={loading}>
-                Save
-              </button>
-              <button
-                type="button"
-                className={styles.dangerButton}
-                onClick={deletePage}
-                disabled={loading || !pageDraft.id}
-              >
-                Delete
-              </button>
-            </div>
-          </div>
-        </div>
-      ) : null}
 
       {tab === "blog" ? (
         <div className={styles.grid}>

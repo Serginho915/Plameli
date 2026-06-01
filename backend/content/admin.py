@@ -1,13 +1,6 @@
 from django.contrib import admin
 
-from .models import BlogPost, ContentPage, EducationItem, EducationModule
-
-
-@admin.register(ContentPage)
-class ContentPageAdmin(admin.ModelAdmin):
-	list_display = ("slug", "is_published", "updated_at")
-	list_filter = ("is_published",)
-	search_fields = ("slug", "title_ru", "title_bg")
+from .models import BlogPost, EducationItem, EducationModule
 
 
 @admin.register(BlogPost)

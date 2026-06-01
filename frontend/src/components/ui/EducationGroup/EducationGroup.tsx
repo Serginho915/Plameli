@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import { ActionLink } from "@/components/ui/ActionLink/ActionLink";
 import { EducationCard } from "@/components/ui/EducationCard/EducationCard";
-import { EducationItem } from "@/components/sections/EducationPage/EducationListing/mockData";
+import type { EducationItem } from "@/types/content";
 import styles from "./EducationGroup.module.scss";
 
 export interface EducationGroupProps {
