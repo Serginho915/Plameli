@@ -1,16 +1,66 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import Link from "next/link";
 import { useTranslation } from "@/hooks/useTranslation";
 import { SectionTitle } from "@/components/ui/SectionTitle/SectionTitle";
 import { Button } from "@/components/ui/Button/Button";
-import { Logo } from "@/components/layout/Header/Logo/Logo";
+import { apiClient } from "@/lib/apiClient";
 import { translations, FeedbackTranslations } from "./Feedback.translations";
 import styles from "./Feedback.module.scss";
 
+interface FeedbackRequestPayload {
+  language: "ru" | "bg";
+  name: string;
+  email: string;
+  message: string;
+  phone: string;
+  source: string;
+}
+
 export const Feedback = () => {
   const { t, language } = useTranslation<FeedbackTranslations>(translations);
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [message, setMessage] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [formStatus, setFormStatus] = useState<"success" | "error" | null>(null);
+
+  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+
+    if (isSubmitting) {
+      return;
+    }
+
+    setIsSubmitting(true);
+    setFormStatus(null);
+
+    try {
+      const payload: FeedbackRequestPayload = {
+        language,
+        name: name.trim(),
+        email: email.trim(),
+        message: message.trim(),
+        phone: "",
+        source: "feedback-section",
+      };
+
+      await apiClient<{ id: number; status: string }>("/feedback/", {
+        method: "POST",
+        body: JSON.stringify(payload),
+      });
+
+      setName("");
+      setEmail("");
+      setMessage("");
+      setFormStatus("success");
+    } catch {
+      setFormStatus("error");
+    } finally {
+      setIsSubmitting(false);
+    }
+  }
 
   const socialLinks = [
     {
@@ -164,16 +214,39 @@ export const Feedback = () => {
               <p className={styles.formSubtitle}>{t.formSubtitle}</p>
             </div>
 
-            <form className={styles.form} onSubmit={(e) => e.preventDefault()}>
+            <form className={styles.form} onSubmit={handleSubmit}>
               <div className={styles.inputsStack}>
-                <input type="text" placeholder={t.formNamePlaceholder} className={styles.inputField} />
-                <input type="email" placeholder={t.formEmailPlaceholder} className={styles.inputField} />
-                <textarea placeholder={t.formQuestionPlaceholder} className={styles.textareaField} />
+                <input
+                  type="text"
+                  placeholder={t.formNamePlaceholder}
+                  className={styles.inputField}
+                  value={name}
+                  onChange={(event) => setName(event.target.value)}
+                  required
+                />
+                <input
+                  type="email"
+                  placeholder={t.formEmailPlaceholder}
+                  className={styles.inputField}
+                  value={email}
+                  onChange={(event) => setEmail(event.target.value)}
+                  required
+                />
+                <textarea
+                  placeholder={t.formQuestionPlaceholder}
+                  className={styles.textareaField}
+                  value={message}
+                  onChange={(event) => setMessage(event.target.value)}
+                  required
+                />
               </div>
 
-              <Button type="submit" variant="outline" className={styles.submitBtn}>
-                {t.formSubmitBtn}
+              <Button type="submit" variant="outline" className={styles.submitBtn} disabled={isSubmitting}>
+                {isSubmitting ? t.formSubmitting : t.formSubmitBtn}
               </Button>
+
+              {formStatus === "success" ? <p className={`${styles.formStatus} ${styles.formStatusSuccess}`}>{t.formSuccess}</p> : null}
+              {formStatus === "error" ? <p className={`${styles.formStatus} ${styles.formStatusError}`}>{t.formError}</p> : null}
             </form>
           </div>
         </div>

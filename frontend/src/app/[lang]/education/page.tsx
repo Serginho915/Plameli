@@ -1,6 +1,11 @@
 import type { Metadata } from "next";
 import { EducationListing } from "@/components/sections/EducationPage/EducationListing/EducationListing";
 import { Feedback } from "@/components/sections/Feedback/Feedback";
+import { i18n } from "@/i18n-config";
+
+export async function generateStaticParams() {
+  return i18n.locales.map((lang) => ({ lang }));
+}
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://ledgerlab.tech";
 

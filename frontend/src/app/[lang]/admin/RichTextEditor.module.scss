@@ -1,0 +1,94 @@
+.editorField {
+  display: grid;
+  gap: 10px;
+}
+
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.toolbarButton {
+  min-width: 42px;
+  border: 1px solid rgba(148, 163, 184, 0.6);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.95);
+  color: #1f2937;
+  padding: 8px 12px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s ease;
+
+  &:hover {
+    border-color: rgba(20, 184, 166, 0.8);
+    color: #0f766e;
+  }
+}
+
+.toolbarButtonActive {
+  background: linear-gradient(120deg, #14b8a6, #0f766e);
+  border-color: transparent;
+  color: #ffffff;
+}
+
+.editorSurface {
+  border: 1px solid rgba(148, 163, 184, 0.55);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.96);
+  padding: 14px 16px;
+  min-height: 320px;
+}
+
+.editorSurface :global(.ProseMirror) {
+  min-height: 290px;
+  outline: none;
+  color: #111827;
+  font-size: 16px;
+  line-height: 1.7;
+}
+
+.editorSurface :global(.ProseMirror p) {
+  margin: 0 0 1em;
+}
+
+.editorSurface :global(.ProseMirror h2),
+.editorSurface :global(.ProseMirror h3) {
+  margin: 1.2em 0 0.6em;
+  line-height: 1.25;
+}
+
+.editorSurface :global(.ProseMirror h2) {
+  font-size: 1.8rem;
+}
+
+.editorSurface :global(.ProseMirror h3) {
+  font-size: 1.4rem;
+}
+
+.editorSurface :global(.ProseMirror ul),
+.editorSurface :global(.ProseMirror ol) {
+  padding-left: 1.4rem;
+  margin: 0 0 1em;
+}
+
+.editorSurface :global(.ProseMirror blockquote) {
+  border-left: 4px solid rgba(20, 184, 166, 0.45);
+  margin: 1.1em 0;
+  padding-left: 1rem;
+  color: #475569;
+}
+
+.editorSurface :global(.ProseMirror img) {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  border-radius: 14px;
+  margin: 1.2em auto;
+}
+
+.editorSurface :global(.ProseMirror a) {
+  color: #0f766e;
+  text-decoration: underline;
+}

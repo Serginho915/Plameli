@@ -12,6 +12,9 @@ import { Footer } from '@/components/layout/Footer/Footer';
 import { i18n } from '@/i18n-config';
 import { Language } from '@/types/language';
 
+export const dynamic = 'force-dynamic';
+export const dynamicParams = true;
+
 export async function generateStaticParams() {
   return i18n.locales.map((locale) => ({ lang: locale }));
 }

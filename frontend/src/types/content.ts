@@ -1,3 +1,9 @@
+export interface ContentPageData {
+  slug: string;
+  title: string;
+  content: string;
+}
+
 export interface BlogPost {
   id: string;
   slug: string;

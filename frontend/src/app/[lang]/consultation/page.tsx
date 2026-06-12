@@ -7,6 +7,11 @@ import { GettingReady } from "@/components/sections/ConsultationPage/GettingRead
 import { TrainingCTA } from "@/components/sections/ConsultationPage/TrainingCTA/TrainingCTA";
 import { FAQ } from "@/components/sections/FAQ/FAQ";
 import { Feedback } from "@/components/sections/Feedback/Feedback";
+import { i18n } from "@/i18n-config";
+
+export async function generateStaticParams() {
+  return i18n.locales.map((lang) => ({ lang }));
+}
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://ledgerlab.tech";
 

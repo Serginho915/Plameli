@@ -16,6 +16,9 @@ export interface FeedbackTranslations {
   formEmailPlaceholder: string;
   formQuestionPlaceholder: string;
   formSubmitBtn: string;
+  formSubmitting: string;
+  formSuccess: string;
+  formError: string;
   euProjectInfo: string;
   privacyPolicy: string;
   cookies: string;
@@ -40,6 +43,9 @@ export const translations: ComponentTranslations<FeedbackTranslations> = {
     formEmailPlaceholder: "Email",
     formQuestionPlaceholder: "Задайте вопрос",
     formSubmitBtn: "Отправить",
+    formSubmitting: "Отправка...",
+    formSuccess: "Спасибо! Сообщение отправлено.",
+    formError: "Не удалось отправить сообщение. Попробуйте еще раз.",
     euProjectInfo: "EU Project Information",
     privacyPolicy: "Privacy policy",
     cookies: "Cookies",
@@ -62,6 +68,9 @@ export const translations: ComponentTranslations<FeedbackTranslations> = {
     formEmailPlaceholder: "Имейл",
     formQuestionPlaceholder: "Задайте въпрос",
     formSubmitBtn: "Изпрати",
+    formSubmitting: "Изпращане...",
+    formSuccess: "Благодарим! Съобщението е изпратено.",
+    formError: "Неуспешно изпращане. Моля, опитайте отново.",
     euProjectInfo: "EU Project Information",
     privacyPolicy: "Политика за поверителност",
     cookies: "Бисквитки",

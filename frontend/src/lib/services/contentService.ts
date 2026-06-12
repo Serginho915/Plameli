@@ -1,5 +1,5 @@
 import { apiClient } from "@/lib/apiClient";
-import type { BlogPost, EducationItem } from "@/types/content";
+import type { BlogPost, ContentPageData, EducationItem } from "@/types/content";
 
 interface ApiBlogPost {
   id: string;
@@ -9,7 +9,13 @@ interface ApiBlogPost {
   author: string;
   date: string;
   media_src: string;
-  content: string[];
+  content: string[] | string | null;
+}
+
+interface ApiContentPage {
+  slug: string;
+  title: string;
+  content: string;
 }
 
 interface ApiEducationModule {
@@ -36,6 +42,21 @@ interface ApiEducationItem {
   program: ApiEducationModule[];
 }
 
+function normalizeStringArray(value: unknown): string[] {
+  if (Array.isArray(value)) {
+    return value.filter((item): item is string => typeof item === "string");
+  }
+
+  if (typeof value === "string") {
+    return value
+      .split(/\n{2,}|\r\n{2,}/)
+      .map((part) => part.trim())
+      .filter(Boolean);
+  }
+
+  return [];
+}
+
 function normalizeLang(lang: string): "ru" | "bg" {
   return lang === "ru" ? "ru" : "bg";
 }
@@ -54,15 +75,17 @@ function mapBlogPost(item: ApiBlogPost): BlogPost {
     id: item.id,
     slug: item.slug,
     title: item.title,
-    tags: item.tags,
+    tags: normalizeStringArray(item.tags),
     author: item.author,
     date: item.date,
     mediaSrc: item.media_src,
-    content: item.content,
+    content: normalizeStringArray(item.content),
   };
 }
 
 function mapEducationItem(item: ApiEducationItem): EducationItem {
+  const safeFormat = typeof item.format === "string" ? item.format : "";
+
   return {
     id: item.id,
     slug: item.slug,
@@ -71,7 +94,7 @@ function mapEducationItem(item: ApiEducationItem): EducationItem {
     poster: item.poster || undefined,
     title: item.title,
     startDate: item.startDate,
-    format: item.format,
+    format: safeFormat,
     price: item.price,
     level: item.level,
     goal: item.goal,
@@ -109,6 +132,21 @@ export async function getEducationItem(slug: string, lang: string): Promise<Educ
   try {
     const data = await apiClient<ApiEducationItem>(withLang(`/content/education/items/${slug}/`, lang));
     return mapEducationItem(data);
+  } catch (err) {
+    if (isNotFoundError(err)) {
+      return null;
+    }
+    throw err;
+  }
+}
+
+export async function getContentPages(lang: string): Promise<ContentPageData[]> {
+  return apiClient<ApiContentPage[]>(withLang("/content/pages/", lang));
+}
+
+export async function getContentPage(slug: string, lang: string): Promise<ContentPageData | null> {
+  try {
+    return await apiClient<ApiContentPage>(withLang(`/content/pages/${slug}/`, lang));
   } catch (err) {
     if (isNotFoundError(err)) {
       return null;

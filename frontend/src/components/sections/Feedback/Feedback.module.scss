@@ -105,6 +105,20 @@
     }
 }
 
+.formStatus {
+  margin: 8px 0 0;
+  font-size: 14px;
+  line-height: 20px;
+}
+
+.formStatusSuccess {
+  color: #0f766e;
+}
+
+.formStatusError {
+  color: #b42318;
+}
+
 .leftColumn {
   flex: 1;
   display: flex;
