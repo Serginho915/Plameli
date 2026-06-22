@@ -1,4 +1,18 @@
+from uuid import uuid4
+
 from django.db import models
+
+
+def generate_external_id(prefix: str) -> str:
+	return f"{prefix}_{uuid4().hex[:16]}"
+
+
+def generate_blog_external_id() -> str:
+	return generate_external_id("blog")
+
+
+def generate_education_external_id() -> str:
+	return generate_external_id("edu")
 
 
 class TimeStampedModel(models.Model):
@@ -10,17 +24,16 @@ class TimeStampedModel(models.Model):
 
 
 class BlogPost(TimeStampedModel):
-	external_id = models.CharField(max_length=32, unique=True)
+	external_id = models.CharField(max_length=32, unique=True, default=generate_blog_external_id, editable=False)
 	slug = models.SlugField(unique=True)
 	author = models.CharField(max_length=255)
 	tags = models.JSONField(default=list)
-	media_src = models.CharField(max_length=500)
-	date_label_ru = models.CharField(max_length=120)
-	date_label_bg = models.CharField(max_length=120)
+	media_src = models.CharField(max_length=500, blank=True, default="")
+	published_at = models.DateField()
 	title_ru = models.CharField(max_length=255)
 	title_bg = models.CharField(max_length=255)
-	content_ru = models.JSONField(default=list)
-	content_bg = models.JSONField(default=list)
+	content_ru = models.TextField(blank=True, default="")
+	content_bg = models.TextField(blank=True, default="")
 	is_published = models.BooleanField(default=True)
 
 	class Meta:
@@ -67,11 +80,11 @@ class EducationItem(TimeStampedModel):
 		(FORMAT_OFFLINE, "Offline"),
 	]
 
-	external_id = models.CharField(max_length=32, unique=True)
+	external_id = models.CharField(max_length=32, unique=True, default=generate_education_external_id, editable=False)
 	item_type = models.CharField(max_length=16, choices=TYPE_CHOICES)
 	slug = models.SlugField(unique=True)
-	media_src = models.CharField(max_length=500)
-	poster = models.CharField(max_length=500, blank=True)
+	image_src = models.CharField(max_length=500, blank=True, default="")
+	video_src = models.CharField(max_length=500, blank=True, default="")
 
 	title_ru = models.CharField(max_length=255)
 	title_bg = models.CharField(max_length=255)
@@ -79,22 +92,13 @@ class EducationItem(TimeStampedModel):
 	description_ru = models.TextField()
 	description_bg = models.TextField()
 
-	start_date_ru = models.CharField(max_length=120)
-	start_date_bg = models.CharField(max_length=120)
+	start_date = models.DateField()
 
-	price_ru = models.CharField(max_length=120)
-	price_bg = models.CharField(max_length=120)
+	price = models.CharField(max_length=120)
 
 	level = models.CharField(max_length=20, choices=LEVEL_CHOICES)
 	goal = models.CharField(max_length=20, choices=GOAL_CHOICES)
 	item_format = models.CharField(max_length=20, choices=FORMAT_CHOICES)
-
-	level_label_ru = models.CharField(max_length=120)
-	level_label_bg = models.CharField(max_length=120)
-	goal_label_ru = models.CharField(max_length=120)
-	goal_label_bg = models.CharField(max_length=120)
-	format_label_ru = models.CharField(max_length=120)
-	format_label_bg = models.CharField(max_length=120)
 
 	is_published = models.BooleanField(default=True)
 

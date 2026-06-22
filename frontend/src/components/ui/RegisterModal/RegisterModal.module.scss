@@ -645,3 +645,12 @@
     box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.15);
   }
 }
+
+.submitErrorText {
+  color: #c0392b;
+  font-size: 14px;
+  font-family: $font-secondary;
+  font-weight: 500;
+  margin: 0;
+  text-align: center;
+}

@@ -4,7 +4,7 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import Image from "next/image";
-import { useParams } from "next/navigation";
+import { useParams, useSearchParams } from "next/navigation";
 import { getEducationItem, getEducationItems } from "@/lib/services/contentService";
 import type { EducationItem } from "@/types/content";
 import { translations } from "@/components/sections/EducationPage/EducationListing/EducationListing.translations";
@@ -23,6 +23,7 @@ const SimilarMaterials = dynamic(
 
 export const EducationDetail = () => {
   const params = useParams();
+  const searchParams = useSearchParams();
 
   const language = (params?.lang as string) || "bg";
   const slug = params?.slug as string;
@@ -33,9 +34,22 @@ export const EducationDetail = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
   const [showControls, setShowControls] = useState(false);
+  const [paymentBanner, setPaymentBanner] = useState<"success" | "cancelled" | null>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
 
   const t = translations[language as "ru" | "bg"] || translations.bg;
+
+  // Show payment result banner when redirected back from Stripe
+  useEffect(() => {
+    const paymentParam = searchParams?.get("payment");
+    if (paymentParam === "success" || paymentParam === "cancelled") {
+      setPaymentBanner(paymentParam);
+      // Clean up the query param without triggering a full navigation
+      const url = new URL(window.location.href);
+      url.searchParams.delete("payment");
+      window.history.replaceState(null, "", url.toString());
+    }
+  }, [searchParams]);
 
   useEffect(() => {
     let isMounted = true;
@@ -224,6 +238,43 @@ export const EducationDetail = () => {
 
   return (
     <>
+      {paymentBanner === "success" ? (
+        <div className={styles.paymentBanner} role="status">
+          <span className={styles.paymentBannerIcon}>✓</span>
+          <span>
+            {language === "ru"
+              ? "Оплата прошла успешно! Мы свяжемся с вами в ближайшее время."
+              : "Плащането беше успешно! Ще се свържем с вас в най-кратък срок."}
+          </span>
+          <button
+            type="button"
+            className={styles.paymentBannerClose}
+            aria-label="Close"
+            onClick={() => setPaymentBanner(null)}
+          >
+            ×
+          </button>
+        </div>
+      ) : null}
+
+      {paymentBanner === "cancelled" ? (
+        <div className={`${styles.paymentBanner} ${styles.paymentBannerCancelled}`} role="status">
+          <span>
+            {language === "ru"
+              ? "Оплата была отменена. Вы можете попробовать снова."
+              : "Плащането беше отменено. Можете да опитате отново."}
+          </span>
+          <button
+            type="button"
+            className={styles.paymentBannerClose}
+            aria-label="Close"
+            onClick={() => setPaymentBanner(null)}
+          >
+            ×
+          </button>
+        </div>
+      ) : null}
+
       <div className={styles.container}>
         {/* Reusable breadcrumbs component */}
         <Breadcrumbs items={breadcrumbItems} className={styles.breadcrumbs} />

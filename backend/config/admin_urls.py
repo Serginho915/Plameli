@@ -3,6 +3,7 @@ from rest_framework.routers import DefaultRouter
 
 from content.admin_views import (
     AdminMeAPIView,
+    BlogAssetUploadAPIView,
     BlogPostAdminViewSet,
     EducationItemAdminViewSet,
 )
@@ -31,6 +32,7 @@ requests_router.register(
 
 urlpatterns = [
     path("me/", AdminMeAPIView.as_view(), name="admin-me"),
+    path("content/blog-assets/", BlogAssetUploadAPIView.as_view(), name="admin-content-blog-assets"),
     path("content/", include(content_router.urls)),
     path("requests/", include(requests_router.urls)),
 ]

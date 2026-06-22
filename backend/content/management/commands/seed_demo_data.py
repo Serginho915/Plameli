@@ -1,4 +1,5 @@
 from django.core.management.base import BaseCommand
+from django.utils.dateparse import parse_date
 
 from content.models import BlogPost, EducationItem, EducationModule
 
@@ -14,119 +15,77 @@ class Command(BaseCommand):
     def _seed_blog_posts(self):
         posts = [
             {
-                "external_id": "b1",
                 "slug": "how-to-start",
                 "author": "Olena Shopova",
                 "tags": ["career", "education"],
                 "media_src": "/images/Blog/how-to-start.png",
-                "date_label_ru": "5 March 2026",
-                "date_label_bg": "5 March 2026",
+                "published_at": parse_date("2026-03-05"),
                 "title_ru": "How to start accounting career in Bulgaria",
                 "title_bg": "How to start accounting career in Bulgaria",
-                "content_ru": [
-                    "Demand for accounting specialists in Bulgaria is strong.",
-                    "This guide explains practical first steps.",
-                ],
-                "content_bg": [
-                    "Demand for accounting specialists in Bulgaria is strong.",
-                    "This guide explains practical first steps.",
-                ],
+                "content_ru": "<p>Demand for accounting specialists in Bulgaria is strong.</p><p>This guide explains practical first steps.</p>",
+                "content_bg": "<p>Demand for accounting specialists in Bulgaria is strong.</p><p>This guide explains practical first steps.</p>",
             },
             {
-                "external_id": "b2",
                 "slug": "taxes-2024",
                 "author": "Olena Shopova",
                 "tags": ["taxes", "freelance"],
                 "media_src": "/images/Blog/taxes-2024.png",
-                "date_label_ru": "12 March 2026",
-                "date_label_bg": "12 March 2026",
+                "published_at": parse_date("2026-03-12"),
                 "title_ru": "Taxation for freelancers",
                 "title_bg": "Taxation for freelancers",
-                "content_ru": [
-                    "Freelance work gives flexibility but requires tax compliance.",
-                    "This article covers declaration and VAT basics.",
-                ],
-                "content_bg": [
-                    "Freelance work gives flexibility but requires tax compliance.",
-                    "This article covers declaration and VAT basics.",
-                ],
+                "content_ru": "<p>Freelance work gives flexibility but requires tax compliance.</p><p>This article covers declaration and VAT basics.</p>",
+                "content_bg": "<p>Freelance work gives flexibility but requires tax compliance.</p><p>This article covers declaration and VAT basics.</p>",
             },
             {
-                "external_id": "b3",
                 "slug": "company-registration",
                 "author": "Olena Shopova",
                 "tags": ["business", "legal"],
                 "media_src": "/images/Blog/company-registration.png",
-                "date_label_ru": "18 March 2026",
-                "date_label_bg": "18 March 2026",
+                "published_at": parse_date("2026-03-18"),
                 "title_ru": "Company registration in Bulgaria",
                 "title_bg": "Company registration in Bulgaria",
-                "content_ru": [
-                    "Bulgaria offers low tax rates and practical setup process.",
-                    "Follow this checklist to register faster.",
-                ],
-                "content_bg": [
-                    "Bulgaria offers low tax rates and practical setup process.",
-                    "Follow this checklist to register faster.",
-                ],
+                "content_ru": "<p>Bulgaria offers low tax rates and practical setup process.</p><p>Follow this checklist to register faster.</p>",
+                "content_bg": "<p>Bulgaria offers low tax rates and practical setup process.</p><p>Follow this checklist to register faster.</p>",
             },
         ]
         for payload in posts:
-            BlogPost.objects.update_or_create(external_id=payload["external_id"], defaults=payload)
+            BlogPost.objects.update_or_create(slug=payload["slug"], defaults=payload)
 
     def _seed_education_items(self):
         items = [
             {
-                "external_id": "c1",
                 "item_type": EducationItem.TYPE_COURSE,
                 "slug": "osnovy-finansovogo-ucheta",
-                "media_src": "/images/Education/course.png",
-                "poster": "",
+                "image_src": "/images/Education/course.png",
+                "video_src": "",
                 "title_ru": "Accounting fundamentals",
                 "title_bg": "Accounting fundamentals",
                 "description_ru": "Entry-level accounting program with practical modules.",
                 "description_bg": "Entry-level accounting program with practical modules.",
-                "start_date_ru": "12 Apr 2026",
-                "start_date_bg": "12 Apr 2026",
-                "price_ru": "150",
-                "price_bg": "150",
+                "start_date": parse_date("2026-04-12"),
+                "price": "150",
                 "level": EducationItem.LEVEL_BEGINNER,
                 "goal": EducationItem.GOAL_PROFESSION,
                 "item_format": EducationItem.FORMAT_ONLINE,
-                "level_label_ru": "For beginners",
-                "level_label_bg": "For beginners",
-                "goal_label_ru": "Accounting profession",
-                "goal_label_bg": "Accounting profession",
-                "format_label_ru": "Online",
-                "format_label_bg": "Online",
                 "modules": [
                     ("Accounting basics", "Core rules and practical records."),
                     ("Tax basics", "Main taxes and declarations."),
                 ],
             },
             {
-                "external_id": "w1",
                 "item_type": EducationItem.TYPE_WEBINAR,
                 "slug": "nalogovye-deklaracii-2026",
-                "media_src": "https://vjs.zencdn.net/v/oceans.mp4",
-                "poster": "/images/Education/webinar.png",
+                "image_src": "/images/Education/webinar.png",
+                "video_src": "https://vjs.zencdn.net/v/oceans.mp4",
                 "title_ru": "Tax declaration updates 2026",
                 "title_bg": "Tax declaration updates 2026",
                 "description_ru": "Live webinar about upcoming declaration changes.",
                 "description_bg": "Live webinar about upcoming declaration changes.",
-                "start_date_ru": "12 Apr 2026",
-                "start_date_bg": "12 Apr 2026",
-                "price_ru": "15",
-                "price_bg": "15",
+                "start_date": parse_date("2026-04-12"),
+                "price": "15",
                 "level": EducationItem.LEVEL_EXPERIENCED,
                 "goal": EducationItem.GOAL_TAXES,
                 "item_format": EducationItem.FORMAT_LIVE,
-                "level_label_ru": "Experienced",
-                "level_label_bg": "Experienced",
-                "goal_label_ru": "Taxes and optimization",
-                "goal_label_bg": "Taxes and optimization",
-                "format_label_ru": "Live",
-                "format_label_bg": "Live",
                 "modules": [
                     ("Law updates", "Main legal changes by topic."),
                     ("Filing practice", "How to submit forms correctly."),
@@ -137,7 +96,7 @@ class Command(BaseCommand):
         for payload in items:
             modules = payload.pop("modules")
             obj, _ = EducationItem.objects.update_or_create(
-                external_id=payload["external_id"],
+                slug=payload["slug"],
                 defaults=payload,
             )
             obj.program.all().delete()

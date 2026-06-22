@@ -34,6 +34,7 @@ export const RegisterModal: React.FC<RegisterModalProps> = ({
 
   const [isSuccess, setIsSuccess] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
 
   // Manage body scroll locking and escape key listener directly
   useEffect(() => {
@@ -61,6 +62,7 @@ export const RegisterModal: React.FC<RegisterModalProps> = ({
       setErrors({ name: "", email: "", phone: "" });
       setIsSuccess(false);
       setIsSubmitting(false);
+      setSubmitError(null);
     }
   }, [isOpen, item]);
 
@@ -90,25 +92,44 @@ export const RegisterModal: React.FC<RegisterModalProps> = ({
     return valid;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!validate()) return;
 
     setIsSubmitting(true);
-    setTimeout(() => {
-      setIsSubmitting(false);
-      setIsSuccess(true);
-      console.log("Registered successfully for education item:", {
-        itemId: item.id,
-        title: item.title,
-        type: item.type,
-        user: {
+    setSubmitError(null);
+
+    try {
+      const apiBase = (process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000/api").replace(/\/$/, "");
+      const response = await fetch(`${apiBase}/interactions/stripe/create-checkout/`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          language,
           name: formData.name,
           email: formData.email,
           phone: `+359${formData.phone}`,
-        },
+          itemSlug: item.slug,
+          itemTitle: item.title,
+          itemType: item.type,
+          itemId: item.id,
+        }),
       });
-    }, 1200);
+
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}`);
+      }
+
+      const data = (await response.json()) as { url: string };
+      window.location.href = data.url;
+    } catch {
+      setIsSubmitting(false);
+      setSubmitError(
+        language === "ru"
+          ? "Не удалось начать оплату. Попробуйте ещё раз."
+          : "Не можа да стартира плащането. Опитайте отново.",
+      );
+    }
   };
 
   const posterSrc = item?.type === "video" ? item.poster : undefined;
@@ -305,6 +326,10 @@ export const RegisterModal: React.FC<RegisterModalProps> = ({
                   : (item.type === "video" ? t.payBtnWebinar : t.payBtn)}
               </span>
             </button>
+
+            {submitError ? (
+              <p className={styles.submitErrorText}>{submitError}</p>
+            ) : null}
           </form>
         )}
       </div>

@@ -1,6 +1,56 @@
 @use "@/styles/variables" as *;
 @use "@/styles/mixins" as *;
 
+.paymentBanner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  max-width: 1360px;
+  margin: 0 auto 20px;
+  padding: 14px 20px;
+  border-radius: 14px;
+  background: #e6f9ec;
+  border: 1px solid #a8e6b8;
+  color: #1c6a21;
+  font-size: 15px;
+  font-weight: 500;
+
+  span:first-child {
+    flex-shrink: 0;
+  }
+
+  span:nth-child(2) {
+    flex: 1;
+  }
+}
+
+.paymentBannerIcon {
+  font-size: 18px;
+}
+
+.paymentBannerCancelled {
+  background: #fff3f3;
+  border-color: #f5b8b8;
+  color: #c0392b;
+}
+
+.paymentBannerClose {
+  margin-left: auto;
+  flex-shrink: 0;
+  background: none;
+  border: none;
+  font-size: 22px;
+  line-height: 1;
+  cursor: pointer;
+  color: inherit;
+  opacity: 0.7;
+  padding: 0 4px;
+
+  &:hover {
+    opacity: 1;
+  }
+}
+
 .container {
   max-width: 1360px;
   margin: 0 auto;

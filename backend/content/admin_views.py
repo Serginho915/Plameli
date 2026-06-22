@@ -7,6 +7,7 @@ from rest_framework.views import APIView
 from .admin_serializers import (
     BlogPostAdminSerializer,
     EducationItemAdminSerializer,
+    store_uploaded_file,
 )
 from .models import BlogPost, EducationItem
 
@@ -24,6 +25,21 @@ class AdminMeAPIView(APIView):
                 "is_superuser": request.user.is_superuser,
             }
         )
+
+
+class BlogAssetUploadAPIView(APIView):
+    authentication_classes = [BasicAuthentication]
+    permission_classes = [IsAdminUser]
+
+    def post(self, request):
+        file_obj = request.FILES.get("file")
+
+        if file_obj is None:
+            return Response({"detail": "File is required."}, status=400)
+
+        path = store_uploaded_file(file_obj, "blog/content")
+        absolute_url = request.build_absolute_uri(path)
+        return Response({"url": absolute_url})
 
 
 class BlogPostAdminViewSet(viewsets.ModelViewSet):

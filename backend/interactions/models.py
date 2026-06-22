@@ -50,6 +50,7 @@ class EducationRegistration(TimeStampedModel):
 	email = models.EmailField()
 	phone = models.CharField(max_length=32)
 	status = models.CharField(max_length=16, choices=STATUS_CHOICES, default=STATUS_NEW)
+	stripe_session_id = models.CharField(max_length=255, blank=True, default="", db_index=True)
 	payload = models.JSONField(default=dict, blank=True)
 
 	def __str__(self):
