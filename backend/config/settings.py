@@ -21,7 +21,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-izos(5d95-mmya6a-j@+wmq-b+k!41!qs1nn+b&efb)%kq!x0x"
+SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY", "django-insecure-development-only")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get("DJANGO_DEBUG", "true").lower() in {"1", "true", "yes", "on"}
@@ -30,6 +30,17 @@ DEBUG = os.environ.get("DJANGO_DEBUG", "true").lower() in {"1", "true", "yes", "
 STRIPE_SECRET_KEY = os.environ.get("STRIPE_SECRET_KEY", "")
 STRIPE_WEBHOOK_SECRET = os.environ.get("STRIPE_WEBHOOK_SECRET", "")
 FRONTEND_URL = os.environ.get("FRONTEND_URL", "http://localhost:3000")
+
+# Google Calendar consultation booking
+GOOGLE_CALENDAR_ID = os.environ.get("GOOGLE_CALENDAR_ID", "")
+GOOGLE_CLIENT_ID = os.environ.get("GOOGLE_CLIENT_ID", "")
+GOOGLE_CLIENT_SECRET = os.environ.get("GOOGLE_CLIENT_SECRET", "")
+GOOGLE_REFRESH_TOKEN = os.environ.get("GOOGLE_REFRESH_TOKEN", "")
+CONSULTATION_TIMEZONE = os.environ.get("CONSULTATION_TIMEZONE", "Europe/Sofia")
+CONSULTATION_SLOT_DAYS = os.environ.get("CONSULTATION_SLOT_DAYS", "1,2,3,4")
+CONSULTATION_SLOT_TIMES = os.environ.get("CONSULTATION_SLOT_TIMES", "13:00,14:30")
+CONSULTATION_DURATION_MINUTES = os.environ.get("CONSULTATION_DURATION_MINUTES", "60")
+CONSULTATION_LOOKAHEAD_DAYS = os.environ.get("CONSULTATION_LOOKAHEAD_DAYS", "30")
 
 
 def _csv_env(name: str, default: list[str]) -> list[str]:

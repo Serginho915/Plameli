@@ -13,6 +13,8 @@ urlpatterns = [
     path("education/registrations/", EducationRegistrationCreateAPIView.as_view(), name="education-registration-create"),
     path("consultations/bookings/", ConsultationBookingCreateAPIView.as_view(), name="consultation-booking-create"),
     path("consultations/available-slots/", AvailableSlotsAPIView.as_view(), name="consultation-available-slots"),
+    path("consultation/book", ConsultationBookingCreateAPIView.as_view(), name="consultation-book"),
+    path("consultation/availability", AvailableSlotsAPIView.as_view(), name="consultation-availability"),
     path("stripe/create-checkout/", StripeCreateCheckoutView.as_view(), name="stripe-create-checkout"),
     path("stripe/webhook/", StripeWebhookView.as_view(), name="stripe-webhook"),
 ]

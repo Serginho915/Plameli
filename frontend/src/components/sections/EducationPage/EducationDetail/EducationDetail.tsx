@@ -12,7 +12,6 @@ import { RegisterModal } from "@/components/ui/RegisterModal/RegisterModal";
 import { Breadcrumbs } from "@/components/ui/Breadcrumbs/Breadcrumbs";
 import { Feedback } from "@/components/sections/Feedback/Feedback";
 import { EducationProgram } from "@/components/ui/EducationProgram/EducationProgram";
-import { SectionTitle } from "@/components/ui/SectionTitle/SectionTitle";
 import { EducationCard } from "@/components/ui/EducationCard/EducationCard";
 import styles from "./EducationDetail.module.scss";
 
@@ -34,7 +33,10 @@ export const EducationDetail = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
   const [showControls, setShowControls] = useState(false);
-  const [paymentBanner, setPaymentBanner] = useState<"success" | "cancelled" | null>(null);
+  const [paymentBanner, setPaymentBanner] = useState<"success" | "cancelled" | null>(() => {
+    const paymentParam = searchParams?.get("payment");
+    return paymentParam === "success" || paymentParam === "cancelled" ? paymentParam : null;
+  });
   const videoRef = useRef<HTMLVideoElement>(null);
 
   const t = translations[language as "ru" | "bg"] || translations.bg;
@@ -43,7 +45,6 @@ export const EducationDetail = () => {
   useEffect(() => {
     const paymentParam = searchParams?.get("payment");
     if (paymentParam === "success" || paymentParam === "cancelled") {
-      setPaymentBanner(paymentParam);
       // Clean up the query param without triggering a full navigation
       const url = new URL(window.location.href);
       url.searchParams.delete("payment");
@@ -89,21 +90,18 @@ export const EducationDetail = () => {
     };
   }, [language, slug]);
 
-  const similarItems = useMemo(() => {
-    if (!item) return [];
-
-    // Filter out current item and look for matching level or goal
-    const matching = allItems.filter(
-      (c) => c.slug !== item.slug && (c.level === item.level || c.goal === item.goal)
-    );
-
-    if (matching.length > 0) {
-      return matching.slice(0, 5);
-    }
-
-    // Fallback: just return the first 5 items excluding the current one
-    return allItems.filter((c) => c.slug !== item.slug).slice(0, 5);
-  }, [allItems, item]);
+  const matchingItems = item
+    ? allItems.filter(
+        (candidate) =>
+          candidate.slug !== item.slug &&
+          (candidate.level === item.level || candidate.goal === item.goal)
+      )
+    : [];
+  const similarItems = matchingItems.length > 0
+    ? matchingItems.slice(0, 5)
+    : item
+      ? allItems.filter((candidate) => candidate.slug !== item.slug).slice(0, 5)
+      : [];
 
   // Dynamic values
   const isVideo = item?.type === "video";
@@ -382,6 +380,7 @@ export const EducationDetail = () => {
 
       {/* Decoupled symmetrical course registration modal popup */}
       <RegisterModal
+        key={`${item?.id ?? "none"}-${isModalOpen}`}
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         item={item}

@@ -556,7 +556,7 @@ function formatRequestCell(
     return value ? new Date(value).toLocaleString(locale) : "-";
   }
 
-  const value = (item as Record<string, unknown>)[key];
+  const value = (item as unknown as Record<string, unknown>)[key];
 
   if (value === null || value === undefined) {
     return "-";

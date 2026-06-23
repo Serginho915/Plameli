@@ -19,10 +19,6 @@ export const Header = () => {
 
   const isAdminRoute = /^\/(ru|bg)\/admin(\/|$)/.test(pathname);
 
-  if (isAdminRoute) {
-    return null;
-  }
-
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (headerRef.current && !headerRef.current.contains(event.target as Node)) {
@@ -41,6 +37,10 @@ export const Header = () => {
       };
     }
   }, [isMenuOpen, setIsMenuOpen]);
+
+  if (isAdminRoute) {
+    return null;
+  }
 
   return (
     <header className={styles.header} ref={headerRef}>

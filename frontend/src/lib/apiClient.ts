@@ -14,6 +14,17 @@ function resolveApiBaseUrl(): string {
 
 const API_BASE_URL = resolveApiBaseUrl();
 
+export class ApiError extends Error {
+  constructor(
+    public status: number,
+    public code: string,
+    message: string,
+  ) {
+    super(message);
+    this.name = 'ApiError';
+  }
+}
+
 function buildApiUrl(endpoint: string): string {
   const normalizedEndpoint = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
 
@@ -42,9 +53,14 @@ export async function apiClient<T>(
   });
 
   if (!response.ok) {
-    const errorBody = await response.text().catch(() => '');
-    throw new Error(
-      `API request failed with ${response.status} ${response.statusText}${errorBody ? `: ${errorBody}` : ''}`
+    const errorBody = await response.json().catch(() => ({})) as {
+      code?: string;
+      detail?: string;
+    };
+    throw new ApiError(
+      response.status,
+      errorBody.code || 'api_error',
+      errorBody.detail || `API request failed with ${response.status} ${response.statusText}`,
     );
   }
 

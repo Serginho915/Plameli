@@ -10,7 +10,7 @@ interface RegisterModalProps {
   onClose: () => void;
   item: EducationItem | null;
   language: string;
-  t: any;
+  t: Record<string, string>;
 }
 
 export const RegisterModal: React.FC<RegisterModalProps> = ({
@@ -54,17 +54,6 @@ export const RegisterModal: React.FC<RegisterModalProps> = ({
       window.removeEventListener("keydown", handleEsc);
     };
   }, [isOpen, onClose]);
-
-  // Reset form when modal opens or item changes
-  useEffect(() => {
-    if (isOpen) {
-      setFormData({ name: "", email: "", phone: "" });
-      setErrors({ name: "", email: "", phone: "" });
-      setIsSuccess(false);
-      setIsSubmitting(false);
-      setSubmitError(null);
-    }
-  }, [isOpen, item]);
 
   if (!isOpen || !item) return null;
 

@@ -9,7 +9,8 @@ import { CheckIcon } from "@/components/ui/Icons/CheckIcon/CheckIcon";
 import { Button } from "@/components/ui/Button/Button";
 import { CalendarIcon } from "@/components/ui/Icons/CalendarIcon/CalendarIcon";
 import { UrgentIcon } from "@/components/ui/Icons/UrgentIcon/UrgentIcon";
-import { fetchAvailableSlots, AvailableSlots } from "./bookingApi";
+import { ApiError } from "@/lib/apiClient";
+import { bookConsultation, fetchAvailableSlots, AvailableSlots } from "./bookingApi";
 
 export const BookingWidget = () => {
   const { t, language } = useTranslation(translations);
@@ -29,6 +30,10 @@ export const BookingWidget = () => {
   const [viewDate, setViewDate] = useState(new Date(new Date().getFullYear(), new Date().getMonth(), 1));
   const [availableSlots, setAvailableSlots] = useState<AvailableSlots>({});
   const [isLoadingSlots, setIsLoadingSlots] = useState(false);
+  const [availabilityError, setAvailabilityError] = useState("");
+  const [bookingError, setBookingError] = useState("");
+  const [isBooking, setIsBooking] = useState(false);
+  const [bookingComplete, setBookingComplete] = useState(false);
 
   const [contentHeight, setContentHeight] = useState<number | "auto">("auto");
   const contentRef = useRef<HTMLDivElement | null>(null);
@@ -62,34 +67,22 @@ export const BookingWidget = () => {
     return () => clearTimeout(timer);
   }, [currentStep]);
 
-  // Bugfix: Clear selected date if it becomes invalid when switching formats
-  useEffect(() => {
-    if (selectedDate && selectedFormat === "standard") {
-      const minDate = new Date();
-      minDate.setDate(minDate.getDate() + 14);
-      minDate.setHours(0, 0, 0, 0);
-      
-      if (selectedDate < minDate) {
-        setSelectedDate(null);
-        setSelectedTime(null);
-      }
-    }
-  }, [selectedFormat, selectedDate]);
-
   useEffect(() => {
     const loadSlots = async () => {
       setIsLoadingSlots(true);
+      setAvailabilityError("");
       try {
-        const data = await fetchAvailableSlots(viewDate.getFullYear(), viewDate.getMonth());
+        const data = await fetchAvailableSlots();
         setAvailableSlots(data);
       } catch (error) {
         console.error("Failed to load slots:", error);
+        setAvailabilityError(t.bookingWidget.availabilityError);
       } finally {
         setIsLoadingSlots(false);
       }
     };
     loadSlots();
-  }, [viewDate]);
+  }, [t.bookingWidget.availabilityError]);
 
   const isStepValid = (step: number) => {
     switch (step) {
@@ -159,6 +152,45 @@ export const BookingWidget = () => {
     }
   };
 
+  const handleBooking = async () => {
+    if (!selectedDate || !selectedTime || isBooking) return;
+    const dateKey = `${selectedDate.getFullYear()}-${String(selectedDate.getMonth() + 1).padStart(2, "0")}-${String(selectedDate.getDate()).padStart(2, "0")}`;
+    const slot = (availableSlots[dateKey] || []).find(item => item.time === selectedTime);
+    if (!slot) {
+      setBookingError(t.bookingWidget.slotUnavailable);
+      return;
+    }
+
+    setIsBooking(true);
+    setBookingError("");
+    try {
+      await bookConsultation({
+        slotStart: slot.start,
+        name: formData.name.trim(),
+        email: formData.email.trim(),
+        phone: `+359${formData.phone}`,
+        message: formData.message.trim(),
+        consultationFormat: selectedFormat,
+        meetingType,
+        language,
+      });
+      setBookingComplete(true);
+    } catch (error) {
+      const isConflict = error instanceof ApiError && error.status === 409;
+      setBookingError(isConflict ? t.bookingWidget.slotUnavailable : t.bookingWidget.bookingError);
+      if (isConflict) {
+        setSelectedTime(null);
+        try {
+          setAvailableSlots(await fetchAvailableSlots());
+        } catch {
+          setAvailabilityError(t.bookingWidget.availabilityError);
+        }
+      }
+    } finally {
+      setIsBooking(false);
+    }
+  };
+
   const changeMonth = (offset: number) => {
     setViewDate(new Date(viewDate.getFullYear(), viewDate.getMonth() + offset, 1));
   };
@@ -169,13 +201,7 @@ export const BookingWidget = () => {
     const firstDay = new Date(year, month, 1);
     const lastDay = new Date(year, month + 1, 0);
     
-    // Define min date based on format
     const minDate = new Date();
-    if (selectedFormat === "standard") {
-      minDate.setDate(minDate.getDate() + 14);
-    } else {
-      minDate.setDate(minDate.getDate() + 1);
-    }
     minDate.setHours(0, 0, 0, 0);
     
     // Get padding from prev month (0 = Sun, 1 = Mon...)
@@ -236,10 +262,16 @@ export const BookingWidget = () => {
     return days;
   };
 
-  const monthNames = [
-    "Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", 
-    "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"
-  ];
+  const calendarLocale = language === "ru" ? "ru-RU" : language === "bg" ? "bg-BG" : "en-US";
+  const calendarMonth = new Intl.DateTimeFormat(calendarLocale, {
+    month: "long",
+    year: "numeric",
+  }).format(viewDate);
+  const weekDays = {
+    ru: ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс"],
+    bg: ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Нд"],
+    en: ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"],
+  }[language as "ru" | "bg" | "en"] || ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"];
 
   const formatDate = (date: Date | null) => {
     if (!date) return "";
@@ -263,7 +295,6 @@ export const BookingWidget = () => {
     return `${currentNames.days[date.getDay()]}, ${date.getDate()} ${currentNames.months[date.getMonth()]}`;
   };
 
-  const currentPrice = selectedFormat === "standard" ? t.bookingWidget.priceStandard : t.bookingWidget.pricePriority;
   const currentFormatName = selectedFormat === "standard" ? t.bookingWidget.formatStandard : t.bookingWidget.formatPriority;
 
   const stepTitles = [
@@ -506,7 +537,7 @@ export const BookingWidget = () => {
                       >
                         <div className={styles.calendarHeader}>
                           <div className={styles.monthYear}>
-                            {monthNames[viewDate.getMonth()]} {viewDate.getFullYear()}
+                            {calendarMonth}
                           </div>
                           <div className={styles.calendarNav}>
                             <button className={styles.navBtn} onClick={(e) => { e.stopPropagation(); changeMonth(-1); }}>
@@ -524,7 +555,7 @@ export const BookingWidget = () => {
                         
                         <div className={styles.calendarBody}>
                           <div className={styles.weekDays}>
-                            {['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'].map(day => (
+                            {weekDays.map(day => (
                               <div key={day} className={styles.weekDay}>{day}</div>
                             ))}
                           </div>
@@ -543,6 +574,7 @@ export const BookingWidget = () => {
                                     e.stopPropagation();
                                     if (item.current && !item.isWeekend && !item.isPast) {
                                       setSelectedDate(new Date(viewDate.getFullYear(), item.month, item.day));
+                                      setSelectedTime(null);
                                       // Removed automatic closing on select
                                     }
                                   }}
@@ -576,13 +608,13 @@ export const BookingWidget = () => {
                         const dateKey = `${selectedDate.getFullYear()}-${String(selectedDate.getMonth() + 1).padStart(2, '0')}-${String(selectedDate.getDate()).padStart(2, '0')}`;
                         const slots = availableSlots[dateKey] || [];
                         
-                        return slots.map(time => (
+                        return slots.map(slot => (
                           <button 
-                            key={time}
-                            className={`${styles.timeSlot} ${selectedTime === time ? styles.active : ''}`}
-                            onClick={() => setSelectedTime(time)}
+                            key={slot.start}
+                            className={`${styles.timeSlot} ${selectedTime === slot.time ? styles.active : ''}`}
+                            onClick={() => setSelectedTime(slot.time)}
                           >
-                            {time}
+                            {slot.time}
                           </button>
                         ));
                       })()}
@@ -591,6 +623,8 @@ export const BookingWidget = () => {
                   </motion.div>
                 )}
               </AnimatePresence>
+              {isLoadingSlots && <div className={styles.statusMessage}>{t.bookingWidget.loadingSlots}</div>}
+              {availabilityError && <div className={styles.errorMessage}>{availabilityError}</div>}
             </div>
 
             <div className={styles.navigationRow}>
@@ -611,6 +645,14 @@ export const BookingWidget = () => {
         );
 
       case 3:
+        if (bookingComplete) {
+          return (
+            <div className={styles.successMessage} role="status">
+              <CheckIcon pure />
+              <p>{t.bookingWidget.bookingSuccess}</p>
+            </div>
+          );
+        }
         return (
           <div className={styles.stepContent}>
             <div className={styles.summaryGrid}>
@@ -634,11 +676,6 @@ export const BookingWidget = () => {
               </div>
             </div>
 
-            <div className={styles.paymentRow}>
-              <span className={styles.paymentLabel}>{t.bookingWidget.labelTotalAmount}</span>
-              <span className={styles.paymentValue}>{currentPrice} (EUR)</span>
-            </div>
-
             <div className={styles.navigationRow}>
               <button className={styles.backBtn} onClick={handleBack}>
                 <svg width="11" height="19" viewBox="0 0 11 19" fill="none">
@@ -647,12 +684,14 @@ export const BookingWidget = () => {
               </button>
               <Button 
                 variant="consultationMobile" 
-                onClick={() => { if (isStepValid(3)) console.log("Pay", { format: selectedFormat, formData, selectedDate, selectedTime }); else setShowErrors(true); }}
+                onClick={handleBooking}
                 className={styles.submitBtn}
+                disabled={isBooking}
               >
-                {t.bookingWidget.btnPay}
+                {isBooking ? t.bookingWidget.bookingInProgress : t.bookingWidget.btnBook}
               </Button>
             </div>
+            {bookingError && <div className={styles.errorMessage}>{bookingError}</div>}
           </div>
         );
 

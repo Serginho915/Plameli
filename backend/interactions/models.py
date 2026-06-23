@@ -94,7 +94,18 @@ class ConsultationBooking(TimeStampedModel):
 	selected_time = models.CharField(max_length=16)
 	total_amount_eur = models.DecimalField(max_digits=10, decimal_places=2)
 	status = models.CharField(max_length=16, choices=STATUS_CHOICES, default=STATUS_NEW)
+	google_event_id = models.CharField(max_length=255, blank=True, default="")
+	google_event_url = models.URLField(blank=True, default="")
 	payload = models.JSONField(default=dict, blank=True)
+
+	class Meta:
+		constraints = [
+			models.UniqueConstraint(
+				fields=["selected_date", "selected_time"],
+				condition=~models.Q(status="cancelled"),
+				name="unique_active_consultation_slot",
+			)
+		]
 
 	def __str__(self):
 		return f"booking:{self.email}:{self.selected_date}:{self.selected_time}"

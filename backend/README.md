@@ -24,3 +24,14 @@ python manage.py runserver
 
 - Localized content supports query parameter `lang` with `ru`, `bg`.
 - Education list supports filters: `type`, `level`, `goal`, `format`.
+# Google Calendar consultation booking
+
+Consultation availability and booking use an OAuth 2.0 refresh token on the
+server. Create a Google OAuth client of type **Web application**, grant the
+calendar scope, generate a refresh token for the Google account that owns the
+calendar, and fill the `GOOGLE_*` values from the root `.env.example`.
+
+`GOOGLE_CALENDAR_ID` may be `primary` or a calendar ID from Google Calendar
+settings. The refresh-token account must have write access to that calendar.
+The configured timezone, weekdays, start times, duration, and look-ahead
+window are controlled by the `CONSULTATION_*` variables.

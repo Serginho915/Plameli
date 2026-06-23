@@ -12,12 +12,12 @@ const LanguageContext = createContext<LanguageContextType | undefined>(undefined
 
 export const LanguageProvider: React.FC<{ children: ReactNode; initialLang: Language }> = ({ children, initialLang }) => {
   const [language, setLanguage] = useState<Language>(initialLang || 'bg');
+  const [previousInitialLang, setPreviousInitialLang] = useState(initialLang);
 
-  useEffect(() => {
-    if (initialLang && initialLang !== language) {
-      setLanguage(initialLang);
-    }
-  }, [initialLang]);
+  if (initialLang !== previousInitialLang) {
+    setPreviousInitialLang(initialLang);
+    setLanguage(initialLang);
+  }
 
   useEffect(() => {
     document.documentElement.lang = language;

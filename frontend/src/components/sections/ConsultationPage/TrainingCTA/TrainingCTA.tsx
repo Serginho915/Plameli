@@ -24,7 +24,7 @@ export const TrainingCTA = () => {
               <ActionLink href="/education" text={t.btnText} variant="outline" />
               
               <div className={styles.featuresList}>
-                {t.features.map((feature: any, index: number) => (
+                {t.features.map((feature, index) => (
                   <div key={index} className={styles.featureItem}>
                     <div className={styles.iconWrapper}>
                       {feature.iconType === 'black' && (

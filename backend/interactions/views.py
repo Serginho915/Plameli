@@ -1,10 +1,15 @@
-from calendar import monthrange
-from datetime import date
-
+from django.db import IntegrityError, transaction
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from .google_calendar import (
+	CalendarConfigurationError,
+	CalendarUnavailableError,
+	available_slots,
+	create_event,
+	is_slot_free,
+)
 from .serializers import (
 	ConsultationBookingCreateSerializer,
 	EducationRegistrationCreateSerializer,
@@ -32,12 +37,48 @@ class ConsultationBookingCreateAPIView(APIView):
 	def post(self, request):
 		serializer = ConsultationBookingCreateSerializer(data=request.data)
 		serializer.is_valid(raise_exception=True)
-		instance = serializer.save()
+		slot = serializer.validated_data["slot"]
+		try:
+			if not is_slot_free(slot):
+				return Response(
+					{"code": "slot_unavailable", "detail": "This consultation slot is no longer available."},
+					status=status.HTTP_409_CONFLICT,
+				)
+			try:
+				with transaction.atomic():
+					instance = serializer.save()
+			except IntegrityError:
+				return Response(
+					{"code": "slot_unavailable", "detail": "This consultation slot is no longer available."},
+					status=status.HTTP_409_CONFLICT,
+				)
+
+			try:
+				event = create_event(slot, request.data)
+			except Exception:
+				instance.delete()
+				raise
+
+			instance.google_event_id = event.get("id", "")
+			instance.google_event_url = event.get("htmlLink", "")
+			instance.payload = {**instance.payload, "google_event_id": instance.google_event_id}
+			instance.save(update_fields=["google_event_id", "google_event_url", "payload", "updated_at"])
+		except CalendarConfigurationError as exc:
+			return Response(
+				{"code": "calendar_not_configured", "detail": str(exc)},
+				status=status.HTTP_503_SERVICE_UNAVAILABLE,
+			)
+		except CalendarUnavailableError as exc:
+			return Response(
+				{"code": "calendar_unavailable", "detail": str(exc)},
+				status=status.HTTP_503_SERVICE_UNAVAILABLE,
+			)
+
 		return Response(
 			{
 				"id": instance.id,
 				"status": "created",
-				"amount": str(instance.total_amount_eur),
+				"eventId": instance.google_event_id,
 			},
 			status=status.HTTP_201_CREATED,
 		)
@@ -46,31 +87,17 @@ class ConsultationBookingCreateAPIView(APIView):
 class AvailableSlotsAPIView(APIView):
 	def get(self, request):
 		try:
-			year = int(request.query_params.get("year", date.today().year))
-			month = int(request.query_params.get("month", date.today().month))
-		except ValueError:
-			return Response({"detail": "Invalid year or month."}, status=status.HTTP_400_BAD_REQUEST)
-
-		if month < 1 or month > 12:
-			return Response({"detail": "Month must be between 1 and 12."}, status=status.HTTP_400_BAD_REQUEST)
-
-		day_count = monthrange(year, month)[1]
-		slots = {}
-		for day in range(1, day_count + 1):
-			current = date(year, month, day)
-			day_of_week = current.weekday()  # Monday=0
-			key = current.isoformat()
-			if day_of_week >= 5:
-				slots[key] = []
-				continue
-
-			if day % 3 == 0:
-				slots[key] = ["09:00", "11:00", "14:00", "16:00"]
-			elif day % 2 == 0:
-				slots[key] = ["10:00", "12:00", "15:00", "17:00"]
-			else:
-				slots[key] = ["09:00", "10:00", "13:00", "15:00", "18:00"]
-
-		return Response(slots)
+			slots = available_slots()
+		except CalendarConfigurationError as exc:
+			return Response(
+				{"code": "calendar_not_configured", "detail": str(exc)},
+				status=status.HTTP_503_SERVICE_UNAVAILABLE,
+			)
+		except CalendarUnavailableError as exc:
+			return Response(
+				{"code": "calendar_unavailable", "detail": str(exc)},
+				status=status.HTTP_503_SERVICE_UNAVAILABLE,
+			)
+		return Response({"slots": [slot.as_dict() for slot in slots]})
 
 # Create your views here.

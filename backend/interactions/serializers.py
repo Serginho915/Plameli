@@ -1,9 +1,10 @@
-from datetime import date
+from datetime import datetime
 from decimal import Decimal
 
 from rest_framework import serializers
 
 from content.models import EducationItem
+from .google_calendar import validate_slot_start
 
 from .models import ConsultationBooking, EducationRegistration, FeedbackRequest
 
@@ -63,11 +64,10 @@ class EducationRegistrationCreateSerializer(serializers.Serializer):
 
 
 class ConsultationBookingCreateSerializer(serializers.Serializer):
-    language = serializers.CharField(default="ru", required=False)
+    language = serializers.ChoiceField(choices=["bg", "ru", "en"], default="bg", required=False)
     consultationFormat = serializers.ChoiceField(choices=["standard", "priority"])
     meetingType = serializers.ChoiceField(choices=["sofia", "zoom"])
-    selectedDate = serializers.DateField()
-    selectedTime = serializers.CharField(max_length=16)
+    slotStart = serializers.CharField()
     name = serializers.CharField(max_length=255)
     phone = serializers.CharField(max_length=32)
     email = serializers.EmailField()
@@ -79,19 +79,27 @@ class ConsultationBookingCreateSerializer(serializers.Serializer):
             raise serializers.ValidationError("Phone number is too short.")
         return value
 
-    def validate_selectedDate(self, value):
-        if value < date.today():
-            raise serializers.ValidationError("Date cannot be in the past.")
-        return value
+    def validate(self, attrs):
+        try:
+            slot_start = datetime.fromisoformat(attrs["slotStart"].replace("Z", "+00:00"))
+            if slot_start.tzinfo is None:
+                raise ValueError("slotStart must include a timezone offset.")
+            attrs["slotStart"] = slot_start
+            attrs["slot"] = validate_slot_start(slot_start)
+        except (TypeError, ValueError) as exc:
+            raise serializers.ValidationError({"slotStart": str(exc)}) from exc
+        return attrs
 
     def create(self, validated_data):
+        slot = validated_data.pop("slot")
+        validated_data.pop("slotStart")
         amount = Decimal("50.00") if validated_data["consultationFormat"] == "standard" else Decimal("85.00")
         return ConsultationBooking.objects.create(
             language=validated_data.get("language", "ru"),
             consultation_format=validated_data["consultationFormat"],
             meeting_type=validated_data["meetingType"],
-            selected_date=validated_data["selectedDate"],
-            selected_time=validated_data["selectedTime"],
+            selected_date=slot.start.date(),
+            selected_time=slot.start.strftime("%H:%M"),
             name=validated_data["name"],
             phone=validated_data["phone"],
             email=validated_data["email"],
