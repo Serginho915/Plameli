@@ -22,7 +22,7 @@ type ConsultationFormat = "standard" | "priority";
 
 const getMinimumSelectableDate = (format: ConsultationFormat) => {
   const minDate = new Date();
-  minDate.setDate(minDate.getDate() + (format === "standard" ? 14 : 1));
+  minDate.setDate(minDate.getDate() + (format === "standard" ? 2 : 1));
   minDate.setHours(0, 0, 0, 0);
   return minDate;
 };

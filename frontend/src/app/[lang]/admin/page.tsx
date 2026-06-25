@@ -1154,7 +1154,7 @@ export default function AdminPage() {
 
   if (!adminUser) {
     return (
-      <section className={`${styles.wrapper} ${styles.authWrapper}`}>
+      <section className={`${styles.wrapper} ${styles.authWrapper} adminFullBleed`}>
         <div className={styles.authCard}>
           <h1>{t.loginTitle}</h1>
           <form onSubmit={onLoginSubmit} className={styles.authForm}>
@@ -1193,11 +1193,11 @@ export default function AdminPage() {
   }
 
   return (
-    <section className={styles.wrapper}>
+    <section className={`${styles.wrapper} adminFullBleed`}>
       <div className={styles.topBar}>
         <div className={styles.titleWithLogo}>
-          <h1>{t.adminTitle}</h1>
           <Logo />
+          <h1>{t.adminTitle}</h1>
         </div>
 
         <div className={styles.userBox}>
