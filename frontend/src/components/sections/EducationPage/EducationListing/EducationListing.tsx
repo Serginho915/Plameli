@@ -34,13 +34,8 @@ const filterIcons: Record<FilterType, string> = {
 
 export const EducationListing = () => {
   const { t, language } = useTranslation(translations);
-<<<<<<< HEAD
-  const [activeFilter, setActiveFilter] = useState<FilterType>("all");
-  const [subFilter, setSubFilter] = useState<string>("all");
   const [educationItems, setEducationItems] = useState<EducationItem[]>([]);
-=======
   const [activeFilters, setActiveFilters] = useState<Partial<Record<Exclude<FilterType, "all">, string>>>({});
->>>>>>> 27529bf47543a498954ed3977ae4620b1f73eaf4
   
   // Manage open dropdown category state
   const [openDropdown, setOpenDropdown] = useState<FilterType | null>(null);

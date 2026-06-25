@@ -21,7 +21,7 @@ interface FeedbackRequestPayload {
 
 export const Feedback = () => {
   const { t, language } = useTranslation<FeedbackTranslations>(translations);
-<<<<<<< HEAD
+  const { openBookingModal } = useUI();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
@@ -63,9 +63,6 @@ export const Feedback = () => {
       setIsSubmitting(false);
     }
   }
-=======
-  const { openBookingModal } = useUI();
->>>>>>> 27529bf47543a498954ed3977ae4620b1f73eaf4
 
   const socialLinks = [
     {

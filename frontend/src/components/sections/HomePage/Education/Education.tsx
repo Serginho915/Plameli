@@ -1,28 +1,18 @@
 "use client";
 
-<<<<<<< HEAD
 import React, { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useTranslation } from "@/hooks/useTranslation";
 import { EducationGroup } from "@/components/ui/EducationGroup/EducationGroup";
+import { RegisterModal } from "@/components/ui/RegisterModal/RegisterModal";
 import { getEducationItems } from "@/lib/services/contentService";
 import type { EducationItem } from "@/types/content";
-=======
-import React, { useState } from "react";
-import Link from "next/link";
-import { useTranslation } from "@/hooks/useTranslation";
-import { EducationGroup } from "@/components/ui/EducationGroup/EducationGroup";
-import { RegisterModal } from "@/components/ui/RegisterModal/RegisterModal";
-import { getMockCourses, getMockWebinars, EducationItem } from "@/components/sections/EducationPage/EducationListing/mockData";
->>>>>>> 27529bf47543a498954ed3977ae4620b1f73eaf4
 import { translations } from "./Education.translations";
 import styles from "./Education.module.scss";
 
 export const Education = () => {
   const { t, language } = useTranslation(translations);
-<<<<<<< HEAD
   const [items, setItems] = useState<EducationItem[]>([]);
-=======
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState<EducationItem | null>(null);
 
@@ -30,7 +20,6 @@ export const Education = () => {
     setSelectedItem(item);
     setIsModalOpen(true);
   };
->>>>>>> 27529bf47543a498954ed3977ae4620b1f73eaf4
 
   useEffect(() => {
     let isMounted = true;

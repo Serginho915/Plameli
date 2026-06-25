@@ -87,13 +87,18 @@ export const BookingWidget = () => {
     return () => clearTimeout(timer);
   }, [currentStep]);
 
-<<<<<<< HEAD
   useEffect(() => {
     if (!paymentResult) return;
     const sessionId = searchParams.get("session_id");
     if (paymentResult === "cancelled" && sessionId) {
       void cancelConsultationCheckout(sessionId).catch(() => undefined);
-=======
+    }
+    const url = new URL(window.location.href);
+    url.searchParams.delete("payment");
+    url.searchParams.delete("session_id");
+    window.history.replaceState(null, "", url.toString());
+  }, [paymentResult, searchParams]);
+
   // Update the calendar's view month when format changes to ensure the user sees valid slots
   useEffect(() => {
     const minDate = new Date();
@@ -120,13 +125,8 @@ export const BookingWidget = () => {
         setSelectedDate(null);
         setSelectedTime(null);
       }
->>>>>>> 27529bf47543a498954ed3977ae4620b1f73eaf4
     }
-    const url = new URL(window.location.href);
-    url.searchParams.delete("payment");
-    url.searchParams.delete("session_id");
-    window.history.replaceState(null, "", url.toString());
-  }, [paymentResult, searchParams]);
+  }, [selectedDate, selectedFormat]);
 
   useEffect(() => {
     const loadSlots = async () => {
