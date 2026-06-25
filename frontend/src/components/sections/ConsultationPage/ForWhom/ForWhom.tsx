@@ -8,10 +8,10 @@ import { translations } from "./ForWhom.translations";
 import styles from "./ForWhom.module.scss";
 
 const iconPaths = [
-  "/icons/forWhom/icon1.svg",
-  "/icons/forWhom/icon2.svg",
-  "/icons/forWhom/icon3.svg",
-  "/icons/forWhom/icon4.svg"
+  "/icons/ForWhom/icon1.svg",
+  "/icons/ForWhom/icon2.svg",
+  "/icons/ForWhom/icon3.svg",
+  "/icons/ForWhom/icon4.svg"
 ];
 
 interface CardItem {

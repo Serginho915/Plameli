@@ -26,10 +26,10 @@ const filterPredicates: Record<
 
 // Filter icon paths from the public directory
 const filterIcons: Record<FilterType, string> = {
-  all: "/icons/education/Vector1.svg",
-  level: "/icons/education/vector2.svg",
-  goal: "/icons/education/vector3.svg",
-  format: "/icons/education/Vecto4r.svg",
+  all: "/icons/Education/Vector1.svg",
+  level: "/icons/Education/vector2.svg",
+  goal: "/icons/Education/vector3.svg",
+  format: "/icons/Education/Vecto4r.svg",
 };
 
 export const EducationListing = () => {

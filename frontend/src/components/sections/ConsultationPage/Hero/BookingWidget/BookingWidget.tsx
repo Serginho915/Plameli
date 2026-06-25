@@ -18,13 +18,27 @@ import {
   AvailableSlots,
 } from "./bookingApi";
 
+type ConsultationFormat = "standard" | "priority";
+
+const getMinimumSelectableDate = (format: ConsultationFormat) => {
+  const minDate = new Date();
+  minDate.setDate(minDate.getDate() + (format === "standard" ? 14 : 1));
+  minDate.setHours(0, 0, 0, 0);
+  return minDate;
+};
+
+const getInitialViewDate = (format: ConsultationFormat) => {
+  const minDate = getMinimumSelectableDate(format);
+  return new Date(minDate.getFullYear(), minDate.getMonth(), 1);
+};
+
 export const BookingWidget = () => {
   const { t, language } = useTranslation(translations);
   const searchParams = useSearchParams();
   const [currentStep, setCurrentStep] = useState(0);
   const [prevStep, setPrevStep] = useState(0);
   const [direction, setDirection] = useState(1); // 1 = forward, -1 = back
-  const [selectedFormat, setSelectedFormat] = useState<"standard" | "priority">("standard");
+  const [selectedFormat, setSelectedFormat] = useState<ConsultationFormat>("standard");
   const [meetingType, setMeetingType] = useState<"sofia" | "zoom">("sofia");
   const [formData, setFormData] = useState({
     name: "",
@@ -32,15 +46,6 @@ export const BookingWidget = () => {
     email: "",
     message: ""
   });
-  const getInitialViewDate = (format: "standard" | "priority") => {
-    const minDate = new Date();
-    if (format === "standard") {
-      minDate.setDate(minDate.getDate() + 14);
-    } else {
-      minDate.setDate(minDate.getDate() + 1);
-    }
-    return new Date(minDate.getFullYear(), minDate.getMonth(), 1);
-  };
 
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [selectedTime, setSelectedTime] = useState<string | null>(null);
@@ -101,25 +106,13 @@ export const BookingWidget = () => {
 
   // Update the calendar's view month when format changes to ensure the user sees valid slots
   useEffect(() => {
-    const minDate = new Date();
-    if (selectedFormat === "standard") {
-      minDate.setDate(minDate.getDate() + 14);
-    } else {
-      minDate.setDate(minDate.getDate() + 1);
-    }
-    setViewDate(new Date(minDate.getFullYear(), minDate.getMonth(), 1));
+    setViewDate(getInitialViewDate(selectedFormat));
   }, [selectedFormat]);
 
   // Bugfix: Clear selected date if it becomes invalid when switching formats
   useEffect(() => {
     if (selectedDate) {
-      const minDate = new Date();
-      if (selectedFormat === "standard") {
-        minDate.setDate(minDate.getDate() + 14);
-      } else {
-        minDate.setDate(minDate.getDate() + 1);
-      }
-      minDate.setHours(0, 0, 0, 0);
+      const minDate = getMinimumSelectableDate(selectedFormat);
 
       if (selectedDate < minDate) {
         setSelectedDate(null);
@@ -262,8 +255,7 @@ export const BookingWidget = () => {
     const firstDay = new Date(year, month, 1);
     const lastDay = new Date(year, month + 1, 0);
     
-    const minDate = new Date();
-    minDate.setHours(0, 0, 0, 0);
+    const minDate = getMinimumSelectableDate(selectedFormat);
     
     // Get padding from prev month (0 = Sun, 1 = Mon...)
     // We want Mon = 0, Sun = 6
