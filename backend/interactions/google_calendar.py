@@ -235,3 +235,17 @@ def create_event(slot: ConsultationSlot, booking_data: dict) -> dict:
         )
     except (HttpError, GoogleAuthError, OSError) as exc:
         raise CalendarUnavailableError("The calendar event could not be created.") from exc
+
+
+def delete_event(event_id: str) -> None:
+    event_id = (event_id or "").strip()
+    if not event_id:
+        return
+    try:
+        _service().events().delete(calendarId=settings.GOOGLE_CALENDAR_ID, eventId=event_id).execute()
+    except HttpError as exc:
+        if getattr(exc, "status_code", None) in {404, 410} or getattr(getattr(exc, "resp", None), "status", None) in {404, 410}:
+            return
+        raise CalendarUnavailableError("The calendar event could not be deleted.") from exc
+    except (GoogleAuthError, OSError) as exc:
+        raise CalendarUnavailableError("The calendar event could not be deleted.") from exc

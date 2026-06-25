@@ -17,6 +17,7 @@ from rest_framework.views import APIView
 
 from content.models import EducationItem
 
+from .booking_cancellation import cancel_consultation_booking
 from .google_calendar import ConsultationSlot, create_event, is_slot_free
 from .models import ConsultationBooking, EducationRegistration
 from .serializers import ConsultationBookingCreateSerializer, EducationRegistrationCreateSerializer
@@ -239,8 +240,7 @@ class StripeConsultationCheckoutView(APIView):
 				payment_intent_data={"metadata": metadata},
 			)
 		except stripe.error.StripeError as exc:
-			booking.status = ConsultationBooking.STATUS_CANCELLED
-			booking.save(update_fields=["status", "updated_at"])
+			cancel_consultation_booking(booking)
 			return _stripe_error_response(exc)
 
 		booking.stripe_session_id = session.id
@@ -272,8 +272,7 @@ class StripeConsultationCancelView(APIView):
 		if booking is None:
 			return Response(status=status.HTTP_204_NO_CONTENT)
 
-		booking.status = ConsultationBooking.STATUS_CANCELLED
-		booking.save(update_fields=["status", "updated_at"])
+		cancel_consultation_booking(booking)
 		if _is_configured_secret(settings.STRIPE_SECRET_KEY):
 			stripe.api_key = settings.STRIPE_SECRET_KEY
 			try:
@@ -403,7 +402,9 @@ class StripeWebhookView(APIView):
 		metadata = session.get("metadata") or {}
 		if metadata.get("purchase_type") != "consultation":
 			return
-		ConsultationBooking.objects.filter(
+		booking = ConsultationBooking.objects.filter(
 			id=metadata.get("booking_id"),
 			status=ConsultationBooking.STATUS_NEW,
-		).update(status=ConsultationBooking.STATUS_CANCELLED)
+		).first()
+		if booking is not None:
+			cancel_consultation_booking(booking)

@@ -1,5 +1,6 @@
 from django.contrib import admin
 
+from .google_calendar import delete_event
 from .models import ConsultationBooking, EducationRegistration, FeedbackRequest
 
 
@@ -30,5 +31,19 @@ class ConsultationBookingAdmin(admin.ModelAdmin):
 	)
 	search_fields = ("name", "email")
 	list_filter = ("consultation_format", "meeting_type", "status", "language")
+
+	def save_model(self, request, obj, form, change):
+		if change and obj.status == ConsultationBooking.STATUS_CANCELLED:
+			previous = ConsultationBooking.objects.filter(pk=obj.pk).first()
+			if previous and previous.status != ConsultationBooking.STATUS_CANCELLED and previous.google_event_id:
+				delete_event(previous.google_event_id)
+				obj.google_event_id = ""
+				obj.google_event_url = ""
+				obj.payload = {
+					**(obj.payload or {}),
+					"google_event_id": "",
+					"google_event_deleted": True,
+				}
+		super().save_model(request, obj, form, change)
 
 # Register your models here.

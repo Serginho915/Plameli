@@ -11,6 +11,7 @@ from rest_framework.test import APIClient
 from .google_calendar import ConsultationSlot, available_slots, candidate_slots
 from content.models import EducationItem
 
+from .booking_cancellation import cancel_consultation_booking
 from .models import ConsultationBooking, EducationRegistration
 from .stripe_views import StripeWebhookView
 
@@ -85,6 +86,37 @@ class CandidateSlotsTests(TestCase):
         )
 
         self.assertEqual(available_slots(), [])
+
+    @patch("interactions.booking_cancellation.delete_event")
+    def test_cancelled_booking_deletes_google_event_and_releases_slot(self, delete_event_mock):
+        slot = ConsultationSlot(
+            start=datetime(2026, 7, 6, 13, 0, tzinfo=ZoneInfo("Europe/Sofia")),
+            end=datetime(2026, 7, 6, 14, 0, tzinfo=ZoneInfo("Europe/Sofia")),
+        )
+        booking = ConsultationBooking.objects.create(
+            language="bg",
+            consultation_format="standard",
+            meeting_type="zoom",
+            selected_date=slot.start.date(),
+            selected_time=slot.start.strftime("%H:%M"),
+            name="Paid Client",
+            phone="+359888123456",
+            email="paid@example.com",
+            total_amount_eur="150.00",
+            status=ConsultationBooking.STATUS_PAID,
+            google_event_id="google-event-id",
+            google_event_url="https://calendar.google.com/event",
+            payload={"slotStart": slot.start.isoformat(), "google_event_id": "google-event-id"},
+        )
+
+        cancel_consultation_booking(booking)
+
+        booking.refresh_from_db()
+        delete_event_mock.assert_called_once_with("google-event-id")
+        self.assertEqual(booking.status, ConsultationBooking.STATUS_CANCELLED)
+        self.assertEqual(booking.google_event_id, "")
+        self.assertEqual(booking.google_event_url, "")
+        self.assertTrue(booking.payload["google_event_deleted"])
 
 
 @override_settings(
