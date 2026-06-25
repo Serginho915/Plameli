@@ -34,9 +34,13 @@ const filterIcons: Record<FilterType, string> = {
 
 export const EducationListing = () => {
   const { t, language } = useTranslation(translations);
+<<<<<<< HEAD
   const [activeFilter, setActiveFilter] = useState<FilterType>("all");
   const [subFilter, setSubFilter] = useState<string>("all");
   const [educationItems, setEducationItems] = useState<EducationItem[]>([]);
+=======
+  const [activeFilters, setActiveFilters] = useState<Partial<Record<Exclude<FilterType, "all">, string>>>({});
+>>>>>>> 27529bf47543a498954ed3977ae4620b1f73eaf4
   
   // Manage open dropdown category state
   const [openDropdown, setOpenDropdown] = useState<FilterType | null>(null);
@@ -85,8 +89,7 @@ export const EducationListing = () => {
 
   const handleActiveFilterChange = (filter: FilterType) => {
     if (filter === "all") {
-      setActiveFilter("all");
-      setSubFilter("all");
+      setActiveFilters({});
       setOpenDropdown(null);
     } else {
       setOpenDropdown(openDropdown === filter ? null : filter);
@@ -94,12 +97,18 @@ export const EducationListing = () => {
   };
 
   const handleOptionSelect = (category: FilterType, value: string) => {
+    if (category === "all") return;
     if (value === "all") {
-      setActiveFilter("all");
-      setSubFilter("all");
+      setActiveFilters((prev) => {
+        const next = { ...prev };
+        delete next[category as Exclude<FilterType, "all">];
+        return next;
+      });
     } else {
-      setActiveFilter(category);
-      setSubFilter(value);
+      setActiveFilters((prev) => ({
+        ...prev,
+        [category]: value,
+      }));
     }
     setOpenDropdown(null);
   };
@@ -148,9 +157,11 @@ export const EducationListing = () => {
 
   // Helper to fetch selected sub-filter text label for display on the active pill
   const getActiveOptionLabel = (key: FilterType) => {
-    if (activeFilter !== key || subFilter === "all") return null;
+    if (key === "all") return null;
+    const value = activeFilters[key as Exclude<FilterType, "all">];
+    if (!value || value === "all") return null;
     const subFiltersList = getSubFiltersForCategory(key);
-    const match = subFiltersList.find((sf) => sf.value === subFilter);
+    const match = subFiltersList.find((sf) => sf.value === value);
     return match ? match.label : null;
   };
 
@@ -166,13 +177,18 @@ export const EducationListing = () => {
   // Declarative high-performance filter resolver
   const filterItems = useMemo(() => {
     return <T extends EducationItem>(items: T[]): T[] => {
-      if (activeFilter === "all" || subFilter === "all") {
+      if (Object.keys(activeFilters).length === 0) {
         return items;
       }
-      const predicate = filterPredicates[activeFilter];
-      return predicate ? items.filter((item) => predicate(item, subFilter)) : items;
+      return items.filter((item) => {
+        return Object.entries(activeFilters).every(([key, value]) => {
+          if (!value || value === "all") return true;
+          const predicate = filterPredicates[key as Exclude<FilterType, "all">];
+          return predicate ? predicate(item, value as string) : true;
+        });
+      });
     };
-  }, [activeFilter, subFilter]);
+  }, [activeFilters]);
 
   const filteredCourses = useMemo(() => filterItems(courses), [filterItems, courses]);
   const filteredWebinars = useMemo(() => filterItems(webinars), [filterItems, webinars]);
@@ -204,12 +220,16 @@ export const EducationListing = () => {
               const hasSubfilters = filter.key !== "all";
               const subFiltersList = getSubFiltersForCategory(filter.key);
               const isDropdownOpen = openDropdown === filter.key;
+              
+              const isActivePill = filter.key === "all" 
+                ? Object.keys(activeFilters).length === 0 
+                : !!activeFilters[filter.key as Exclude<FilterType, "all">];
 
               return (
                 <li key={filter.key} className={styles.filterWrapper}>
                   <button
                     className={`${styles.filterPill} ${
-                      activeFilter === filter.key ? styles.active : ""
+                      isActivePill ? styles.active : ""
                     } ${isDropdownOpen ? styles.dropdownOpen : ""}`}
                     onClick={() => handleActiveFilterChange(filter.key)}
                   >
@@ -247,7 +267,8 @@ export const EducationListing = () => {
                     <ul className={styles.dropdownMenu}>
                       {subFiltersList.map((sf) => {
                         const isOptionActive =
-                          activeFilter === filter.key && subFilter === sf.value;
+                          (sf.value === "all" && !activeFilters[filter.key as Exclude<FilterType, "all">]) ||
+                          activeFilters[filter.key as Exclude<FilterType, "all">] === sf.value;
                         return (
                           <li key={sf.value}>
                             <button

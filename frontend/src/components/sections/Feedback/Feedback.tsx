@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { useTranslation } from "@/hooks/useTranslation";
+import { useUI } from "@/context/UIContext";
 import { SectionTitle } from "@/components/ui/SectionTitle/SectionTitle";
 import { Button } from "@/components/ui/Button/Button";
 import { apiClient } from "@/lib/apiClient";
@@ -20,6 +21,7 @@ interface FeedbackRequestPayload {
 
 export const Feedback = () => {
   const { t, language } = useTranslation<FeedbackTranslations>(translations);
+<<<<<<< HEAD
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
@@ -61,6 +63,9 @@ export const Feedback = () => {
       setIsSubmitting(false);
     }
   }
+=======
+  const { openBookingModal } = useUI();
+>>>>>>> 27529bf47543a498954ed3977ae4620b1f73eaf4
 
   const socialLinks = [
     {
@@ -197,12 +202,14 @@ export const Feedback = () => {
           </ul>
 
           <div className={styles.consultationBtnWrapper}>
-            <Link href={`/${language}/consultation`}>
-              <Button variant="primaryOutline" className={styles.consultationBtn}>
-                <span className={styles.desktopText}>{t.consultationBtn}</span>
-                <span className={styles.mobileText}>{t.consultationBtnMobile}</span>
-              </Button>
-            </Link>
+            <Button 
+              variant="primaryOutline" 
+              className={styles.consultationBtn}
+              onClick={openBookingModal}
+            >
+              <span className={styles.desktopText}>{t.consultationBtn}</span>
+              <span className={styles.mobileText}>{t.consultationBtnMobile}</span>
+            </Button>
           </div>
         </div>
 

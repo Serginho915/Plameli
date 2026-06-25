@@ -135,22 +135,34 @@
 
 // Step container — no overflow:hidden, no clipping
 .stepContainer {
+  //padding-top: 32px;
   position: relative;
   width: 100%;
+
+
+  // @include down("laptop") {
+  //   padding-top: 24px;
+  // }
+
+  // @include down("tablet") {
+  //   padding-top: 16px;
+  // }
 }
 
 .stepContent {
   display: flex;
   flex-direction: column;
   gap: 32px;
-  padding: 0;
+  padding-top: 32px;
 
   @include down("laptop") {
     gap: 16px;
+    padding-top: 24px;
   }
 
   @include down(480px) {
     gap: 16px;
+    padding-top: 16px;
   }
 }
 
@@ -469,7 +481,6 @@
   display: flex;
   flex-direction: column;
   gap: 12px;
-  padding-bottom: 24px;
 }
 
 .formField {
@@ -634,7 +645,7 @@
   display: flex;
   flex-direction: column;
   gap: 16px;
-  padding-bottom: 16px;
+  //padding-bottom: 16px;
 }
 
 .calendarWrapper {
@@ -831,6 +842,7 @@
     font-size: 18px;
     line-height: 24px;
   }
+
   cursor: pointer;
   transition: $transition-base;
   text-align: center;

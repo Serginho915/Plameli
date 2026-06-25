@@ -1,0 +1,83 @@
+@use "@/styles/variables" as *;
+@use "@/styles/mixins" as *;
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(3, 2, 19, 0.4);
+  backdrop-filter: blur(8px);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.modalContainer {
+  position: relative;
+  width: 100%;
+  max-width: 563px;
+  background: transparent;
+  display: flex;
+  flex-direction: column;
+  max-height: 90vh;
+  
+  @include down("laptop") {
+    max-width: 486px;
+  }
+  
+  @include down(480px) {
+    max-height: 95vh;
+    border-radius: 16px 16px 0 0;
+    margin-top: auto;
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+}
+
+.closeBtn {
+  position: absolute;
+  top: -48px;
+  right: 0;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: white;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 10;
+  transition: $transition-base;
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+
+  &:hover {
+    background: #f1592a;
+    
+    svg path {
+      stroke: white;
+    }
+  }
+
+  svg {
+    width: 20px;
+    height: 20px;
+    
+    path {
+      transition: $transition-base;
+    }
+  }
+}
+
+.content {
+  flex: 1;
+  overflow-y: auto;
+  
+  /* Hide scrollbar for Chrome, Safari and Opera */
+  &::-webkit-scrollbar {
+    display: none;
+  }
+  /* Hide scrollbar for IE, Edge and Firefox */
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}

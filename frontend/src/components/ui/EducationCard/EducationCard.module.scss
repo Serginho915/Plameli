@@ -133,7 +133,8 @@
 .metaRow {
   display: flex;
   justify-content: space-between;
-  align-items: flex-end;
+  align-items: center;
+  gap: 8px;
 }
 
 .metaLabel {
@@ -142,6 +143,7 @@
   font-family: $font-secondary;
   font-weight: 400;
   line-height: 24px;
+  flex-shrink: 1;
 }
 
 .metaValue {
@@ -156,6 +158,9 @@
   font-weight: 500;
   line-height: 24px;
   letter-spacing: 0.4px;
+  white-space: nowrap;
+  flex-shrink: 0;
+  text-align: center;
 
   &.price {
     font-size: 22px;

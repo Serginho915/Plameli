@@ -32,9 +32,19 @@ export const BookingWidget = () => {
     email: "",
     message: ""
   });
+  const getInitialViewDate = (format: "standard" | "priority") => {
+    const minDate = new Date();
+    if (format === "standard") {
+      minDate.setDate(minDate.getDate() + 14);
+    } else {
+      minDate.setDate(minDate.getDate() + 1);
+    }
+    return new Date(minDate.getFullYear(), minDate.getMonth(), 1);
+  };
+
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [selectedTime, setSelectedTime] = useState<string | null>(null);
-  const [viewDate, setViewDate] = useState(new Date(new Date().getFullYear(), new Date().getMonth(), 1));
+  const [viewDate, setViewDate] = useState(getInitialViewDate("standard"));
   const [availableSlots, setAvailableSlots] = useState<AvailableSlots>({});
   const [isLoadingSlots, setIsLoadingSlots] = useState(false);
   const [availabilityError, setAvailabilityError] = useState("");
@@ -77,11 +87,40 @@ export const BookingWidget = () => {
     return () => clearTimeout(timer);
   }, [currentStep]);
 
+<<<<<<< HEAD
   useEffect(() => {
     if (!paymentResult) return;
     const sessionId = searchParams.get("session_id");
     if (paymentResult === "cancelled" && sessionId) {
       void cancelConsultationCheckout(sessionId).catch(() => undefined);
+=======
+  // Update the calendar's view month when format changes to ensure the user sees valid slots
+  useEffect(() => {
+    const minDate = new Date();
+    if (selectedFormat === "standard") {
+      minDate.setDate(minDate.getDate() + 14);
+    } else {
+      minDate.setDate(minDate.getDate() + 1);
+    }
+    setViewDate(new Date(minDate.getFullYear(), minDate.getMonth(), 1));
+  }, [selectedFormat]);
+
+  // Bugfix: Clear selected date if it becomes invalid when switching formats
+  useEffect(() => {
+    if (selectedDate) {
+      const minDate = new Date();
+      if (selectedFormat === "standard") {
+        minDate.setDate(minDate.getDate() + 14);
+      } else {
+        minDate.setDate(minDate.getDate() + 1);
+      }
+      minDate.setHours(0, 0, 0, 0);
+
+      if (selectedDate < minDate) {
+        setSelectedDate(null);
+        setSelectedTime(null);
+      }
+>>>>>>> 27529bf47543a498954ed3977ae4620b1f73eaf4
     }
     const url = new URL(window.location.href);
     url.searchParams.delete("payment");
