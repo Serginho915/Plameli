@@ -90,7 +90,7 @@ export const RegisterModal: React.FC<RegisterModalProps> = ({
 
     try {
       const apiBase = (process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000/api").replace(/\/$/, "");
-      const response = await fetch(`${apiBase}/interactions/stripe/create-checkout/`, {
+      const response = await fetch(`${apiBase}/stripe/create-checkout/`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -113,11 +113,7 @@ export const RegisterModal: React.FC<RegisterModalProps> = ({
       window.location.href = data.url;
     } catch {
       setIsSubmitting(false);
-      setSubmitError(
-        language === "ru"
-          ? "Не удалось начать оплату. Попробуйте ещё раз."
-          : "Не можа да стартира плащането. Опитайте отново.",
-      );
+      setSubmitError(t.paymentError);
     }
   };
 
@@ -173,7 +169,7 @@ export const RegisterModal: React.FC<RegisterModalProps> = ({
             </div>
             <p className={styles.successMsg}>{t.successMsg}</p>
             <button className={styles.successCloseBtn} onClick={onClose}>
-              {language === "ru" ? "Закрыть" : "Затвори"}
+              {t.close}
             </button>
           </div>
         ) : (
@@ -310,9 +306,7 @@ export const RegisterModal: React.FC<RegisterModalProps> = ({
               disabled={isSubmitting}
             >
               <span className={styles.submitText}>
-                {isSubmitting
-                  ? (language === "ru" ? "Обработка..." : "Обработка...")
-                  : (item.type === "video" ? t.payBtnWebinar : t.payBtn)}
+                {item.type === "video" ? t.payBtnWebinar : t.payBtn}
               </span>
             </button>
 

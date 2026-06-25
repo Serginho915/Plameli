@@ -153,9 +153,28 @@ def available_slots() -> list[ConsultationSlot]:
     if not slots:
         return []
     busy_periods = _busy_periods(slots[0].start, slots[-1].end)
+    from django.utils import timezone as django_timezone
+
+    from .models import ConsultationBooking
+
+    ConsultationBooking.objects.filter(
+        status=ConsultationBooking.STATUS_NEW,
+        checkout_expires_at__isnull=False,
+        checkout_expires_at__lte=django_timezone.now(),
+    ).update(status=ConsultationBooking.STATUS_CANCELLED)
+    reserved_slots = set(
+        ConsultationBooking.objects.filter(
+            status=ConsultationBooking.STATUS_NEW,
+            stripe_session_id__gt="",
+            checkout_expires_at__gt=django_timezone.now(),
+            selected_date__range=(slots[0].start.date(), slots[-1].start.date()),
+        )
+        .values_list("selected_date", "selected_time")
+    )
     return [
         slot
         for slot in slots
+        if (slot.start.date(), slot.start.strftime("%H:%M")) not in reserved_slots
         if not any(slot.start < busy_end and slot.end > busy_start for busy_start, busy_end in busy_periods)
     ]
 

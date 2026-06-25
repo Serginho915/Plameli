@@ -29,6 +29,17 @@ DEBUG = os.environ.get("DJANGO_DEBUG", "true").lower() in {"1", "true", "yes", "
 # Stripe
 STRIPE_SECRET_KEY = os.environ.get("STRIPE_SECRET_KEY", "")
 STRIPE_WEBHOOK_SECRET = os.environ.get("STRIPE_WEBHOOK_SECRET", "")
+STRIPE_CURRENCY = os.environ.get("STRIPE_CURRENCY", "eur").lower()
+STRIPE_PAYMENT_METHOD_TYPES = os.environ.get("STRIPE_PAYMENT_METHOD_TYPES", "card")
+STRIPE_CHECKOUT_EXPIRES_MINUTES = os.environ.get("STRIPE_CHECKOUT_EXPIRES_MINUTES", "30")
+STRIPE_CONSULTATION_STANDARD_PRICE_EUR = os.environ.get(
+    "STRIPE_CONSULTATION_STANDARD_PRICE_EUR",
+    "150.00",
+)
+STRIPE_CONSULTATION_PRIORITY_PRICE_EUR = os.environ.get(
+    "STRIPE_CONSULTATION_PRIORITY_PRICE_EUR",
+    "250.00",
+)
 FRONTEND_URL = os.environ.get("FRONTEND_URL", "http://localhost:3000")
 
 # Google Calendar consultation booking

@@ -1,8 +1,14 @@
 import re
+import time
+from datetime import datetime, timedelta, timezone as datetime_timezone
+from decimal import Decimal, InvalidOperation, ROUND_HALF_UP
+from zoneinfo import ZoneInfo
 
 import stripe
 from django.conf import settings
+from django.db import IntegrityError, transaction
 from django.http import HttpResponse
+from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework import status
@@ -11,185 +17,393 @@ from rest_framework.views import APIView
 
 from content.models import EducationItem
 
-from .models import EducationRegistration
+from .google_calendar import ConsultationSlot, create_event, is_slot_free
+from .models import ConsultationBooking, EducationRegistration
+from .serializers import ConsultationBookingCreateSerializer, EducationRegistrationCreateSerializer
 
 
-def _parse_price_to_cents(price_str: str) -> int:
-	"""Extract the first numeric value from a price string and convert to cents.
+ZERO_DECIMAL_CURRENCIES = {
+	"bif", "clp", "djf", "gnf", "jpy", "kmf", "krw", "mga", "pyg", "rwf",
+	"ugx", "vnd", "vuv", "xaf", "xof", "xpf",
+}
 
-	Handles formats like "150", "150 EUR", "150.00", "1 500", "1.500,00".
-	"""
-	if not price_str:
-		return 0
-	# Remove non-breaking spaces and regular spaces used as thousands separators
-	cleaned = price_str.replace("\u00a0", "").replace(" ", "")
-	match = re.search(r"\d+(?:[.,]\d+)?", cleaned)
-	if not match:
-		return 0
+
+def _is_configured_secret(value: str) -> bool:
+	return bool(value and "REPLACE_ME" not in value)
+
+
+def _stripe_error_response(exc: Exception) -> Response:
+	message = getattr(exc, "user_message", None) or "Payment could not be started."
+	return Response(
+		{"code": "payment_error", "detail": message},
+		status=status.HTTP_400_BAD_REQUEST,
+	)
+
+
+def _payment_method_types() -> list[str]:
+	return [
+		value.strip()
+		for value in settings.STRIPE_PAYMENT_METHOD_TYPES.split(",")
+		if value.strip()
+	] or ["card"]
+
+
+def _checkout_expiration_timestamp() -> int:
 	try:
-		return int(float(match.group(0).replace(",", ".")) * 100)
-	except (ValueError, TypeError):
-		return 0
+		minutes = int(settings.STRIPE_CHECKOUT_EXPIRES_MINUTES)
+	except (TypeError, ValueError):
+		minutes = 30
+	minutes = min(max(minutes, 30), 1440)
+	return int(time.time()) + minutes * 60
+
+
+def _amount_to_minor_units(amount: Decimal) -> int:
+	currency = settings.STRIPE_CURRENCY.lower()
+	factor = Decimal("1") if currency in ZERO_DECIMAL_CURRENCIES else Decimal("100")
+	return int((amount * factor).quantize(Decimal("1"), rounding=ROUND_HALF_UP))
+
+
+def _parse_price(price: str) -> Decimal:
+	if not price:
+		return Decimal("0")
+	cleaned = re.sub(r"[^\d,.\-]", "", price.replace("\u00a0", "").replace(" ", ""))
+	if not cleaned:
+		return Decimal("0")
+	if "," in cleaned and "." in cleaned:
+		if cleaned.rfind(",") > cleaned.rfind("."):
+			cleaned = cleaned.replace(".", "").replace(",", ".")
+		else:
+			cleaned = cleaned.replace(",", "")
+	elif "," in cleaned:
+		parts = cleaned.split(",")
+		cleaned = "".join(parts[:-1]) + "." + parts[-1] if len(parts[-1]) <= 2 else "".join(parts)
+	elif cleaned.count(".") > 1:
+		parts = cleaned.split(".")
+		cleaned = "".join(parts[:-1]) + "." + parts[-1] if len(parts[-1]) <= 2 else "".join(parts)
+	try:
+		return Decimal(cleaned)
+	except InvalidOperation:
+		return Decimal("0")
+
+
+def _frontend_url(path: str, payment_result: str, include_session_id: bool = False) -> str:
+	base = settings.FRONTEND_URL.rstrip("/")
+	separator = "&" if "?" in path else "?"
+	url = f"{base}{path}{separator}payment={payment_result}"
+	if include_session_id:
+		url += "&session_id={CHECKOUT_SESSION_ID}"
+	return url
 
 
 class StripeCreateCheckoutView(APIView):
-	"""Create a Stripe Checkout Session for an education registration.
-
-	Expected POST body:
-	  language, name, email, phone, itemSlug, itemTitle, itemType, itemId
-	Returns:
-	  { "url": "https://checkout.stripe.com/..." }
-	"""
+	"""Create a Stripe Checkout Session for a published course or webinar."""
 
 	def post(self, request):
-		if not settings.STRIPE_SECRET_KEY:
+		if not _is_configured_secret(settings.STRIPE_SECRET_KEY):
 			return Response(
-				{"detail": "Payment service not configured."},
+				{"code": "payment_not_configured", "detail": "Payment service is not configured."},
 				status=status.HTTP_503_SERVICE_UNAVAILABLE,
 			)
 
-		stripe.api_key = settings.STRIPE_SECRET_KEY
-		data = request.data
-
-		language = str(data.get("language", "ru")).strip()
-		name = str(data.get("name", "")).strip()
-		email = str(data.get("email", "")).strip()
-		phone = str(data.get("phone", "")).strip()
-		item_slug = str(data.get("itemSlug", "")).strip()
-		item_id = str(data.get("itemId", "")).strip()
-
-		# Resolve education item
+		serializer = EducationRegistrationCreateSerializer(data=request.data)
+		serializer.is_valid(raise_exception=True)
+		data = serializer.validated_data
+		item_slug = data.get("itemSlug", "")
+		item_id = data.get("itemId", "")
 		item = None
 		if item_slug:
 			item = EducationItem.objects.filter(slug=item_slug, is_published=True).first()
 		if item is None and item_id:
 			item = EducationItem.objects.filter(external_id=item_id, is_published=True).first()
-
 		if item is None:
 			return Response(
-				{"detail": "Education item not found."},
+				{"code": "education_item_not_found", "detail": "Education item not found."},
 				status=status.HTTP_404_NOT_FOUND,
 			)
 
-		amount_cents = _parse_price_to_cents(item.price)
-		if amount_cents <= 0:
+		amount = _parse_price(item.price)
+		amount_minor = _amount_to_minor_units(amount)
+		if amount_minor <= 0:
 			return Response(
-				{"detail": "Invalid item price."},
+				{"code": "invalid_price", "detail": "Education item price is invalid."},
 				status=status.HTTP_400_BAD_REQUEST,
 			)
 
+		language = data.get("language", "bg")
 		product_name = item.title_bg if language == "bg" else item.title_ru
-		frontend_url = settings.FRONTEND_URL.rstrip("/")
-		success_url = f"{frontend_url}/{language}/education/{item.slug}?payment=success"
-		cancel_url = f"{frontend_url}/{language}/education/{item.slug}?payment=cancelled"
+		return_path = f"/{language}/education/{item.slug}"
+		metadata = {
+			"purchase_type": "education",
+			"name": data["name"],
+			"email": data["email"],
+			"phone": data["phone"],
+			"language": language,
+			"item_slug": item.slug,
+			"item_title": product_name,
+			"item_type": item.item_type,
+			"item_id": item.external_id,
+		}
 
+		stripe.api_key = settings.STRIPE_SECRET_KEY
 		try:
 			session = stripe.checkout.Session.create(
-				payment_method_types=["card"],
-				line_items=[
-					{
-						"price_data": {
-							"currency": "eur",
-							"product_data": {"name": product_name},
-							"unit_amount": amount_cents,
-						},
-						"quantity": 1,
-					}
-				],
+				payment_method_types=_payment_method_types(),
+				line_items=[{
+					"price_data": {
+						"currency": settings.STRIPE_CURRENCY,
+						"product_data": {"name": product_name},
+						"unit_amount": amount_minor,
+					},
+					"quantity": 1,
+				}],
 				mode="payment",
-				customer_email=email or None,
-				success_url=success_url,
-				cancel_url=cancel_url,
-				metadata={
-					"name": name,
-					"email": email,
-					"phone": phone,
-					"language": language,
-					"item_slug": item.slug,
-					"item_title": product_name,
-					"item_type": item.item_type,
-					"item_id": item.external_id,
-				},
+				submit_type="pay",
+				customer_email=data["email"],
+				success_url=_frontend_url(return_path, "success"),
+				cancel_url=_frontend_url(return_path, "cancelled"),
+				metadata=metadata,
+				payment_intent_data={"metadata": metadata},
 			)
 		except stripe.error.StripeError as exc:
-			return Response({"detail": str(exc)}, status=status.HTTP_400_BAD_REQUEST)
+			return _stripe_error_response(exc)
 
-		return Response({"url": session.url})
+		return Response({"url": session.url, "sessionId": session.id})
+
+
+class StripeConsultationCheckoutView(APIView):
+	"""Reserve a consultation slot and create its Stripe Checkout Session."""
+
+	def post(self, request):
+		if not _is_configured_secret(settings.STRIPE_SECRET_KEY):
+			return Response(
+				{"code": "payment_not_configured", "detail": "Payment service is not configured."},
+				status=status.HTTP_503_SERVICE_UNAVAILABLE,
+			)
+
+		serializer = ConsultationBookingCreateSerializer(data=request.data)
+		serializer.is_valid(raise_exception=True)
+		slot = serializer.validated_data["slot"]
+		if not is_slot_free(slot):
+			return Response(
+				{"code": "slot_unavailable", "detail": "This consultation slot is no longer available."},
+				status=status.HTTP_409_CONFLICT,
+			)
+
+		try:
+			with transaction.atomic():
+				booking = serializer.save()
+		except IntegrityError:
+			return Response(
+				{"code": "slot_unavailable", "detail": "This consultation slot is no longer available."},
+				status=status.HTTP_409_CONFLICT,
+			)
+
+		language = booking.language
+		product_names = {
+			"bg": "Индивидуална консултация",
+			"ru": "Индивидуальная консультация",
+			"en": "Individual consultation",
+		}
+		format_names = {
+			"standard": {"bg": "Стандарт", "ru": "Стандарт", "en": "Standard"},
+			"priority": {"bg": "Приоритет", "ru": "Приоритет", "en": "Priority"},
+		}
+		product_name = f"{product_names.get(language, product_names['bg'])} — {format_names[booking.consultation_format].get(language, format_names[booking.consultation_format]['bg'])}"
+		metadata = {
+			"purchase_type": "consultation",
+			"booking_id": str(booking.id),
+			"language": language,
+		}
+		return_path = f"/{language}/consultation"
+
+		stripe.api_key = settings.STRIPE_SECRET_KEY
+		try:
+			session = stripe.checkout.Session.create(
+				payment_method_types=_payment_method_types(),
+				line_items=[{
+					"price_data": {
+						"currency": settings.STRIPE_CURRENCY,
+						"product_data": {"name": product_name},
+						"unit_amount": _amount_to_minor_units(booking.total_amount_eur),
+					},
+					"quantity": 1,
+				}],
+				mode="payment",
+				submit_type="book",
+				customer_email=booking.email,
+				client_reference_id=f"consultation:{booking.id}",
+				success_url=_frontend_url(return_path, "success", include_session_id=True),
+				cancel_url=_frontend_url(return_path, "cancelled", include_session_id=True),
+				expires_at=_checkout_expiration_timestamp(),
+				metadata=metadata,
+				payment_intent_data={"metadata": metadata},
+			)
+		except stripe.error.StripeError as exc:
+			booking.status = ConsultationBooking.STATUS_CANCELLED
+			booking.save(update_fields=["status", "updated_at"])
+			return _stripe_error_response(exc)
+
+		booking.stripe_session_id = session.id
+		booking.checkout_expires_at = datetime.fromtimestamp(session.expires_at, tz=datetime_timezone.utc)
+		booking.payload = {**booking.payload, "stripe_session_id": session.id}
+		booking.save(update_fields=[
+			"stripe_session_id",
+			"checkout_expires_at",
+			"payload",
+			"updated_at",
+		])
+		return Response({"url": session.url, "sessionId": session.id})
+
+
+class StripeConsultationCancelView(APIView):
+	"""Release a pending consultation reservation when Checkout is cancelled."""
+
+	def post(self, request):
+		session_id = str(request.data.get("sessionId", "")).strip()
+		if not session_id:
+			return Response(
+				{"code": "session_id_required", "detail": "sessionId is required."},
+				status=status.HTTP_400_BAD_REQUEST,
+			)
+		booking = ConsultationBooking.objects.filter(
+			stripe_session_id=session_id,
+			status=ConsultationBooking.STATUS_NEW,
+		).first()
+		if booking is None:
+			return Response(status=status.HTTP_204_NO_CONTENT)
+
+		booking.status = ConsultationBooking.STATUS_CANCELLED
+		booking.save(update_fields=["status", "updated_at"])
+		if _is_configured_secret(settings.STRIPE_SECRET_KEY):
+			stripe.api_key = settings.STRIPE_SECRET_KEY
+			try:
+				stripe.checkout.Session.expire(session_id)
+			except stripe.error.StripeError:
+				pass
+		return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 @method_decorator(csrf_exempt, name="dispatch")
 class StripeWebhookView(APIView):
-	"""Receive Stripe webhook events.
-
-	On checkout.session.completed: create an EducationRegistration.
-	The stripe_session_id field is used to guarantee idempotency.
-	"""
-
 	authentication_classes = []
 	permission_classes = []
 
 	def post(self, request):
-		if not settings.STRIPE_SECRET_KEY:
+		if (
+			not _is_configured_secret(settings.STRIPE_SECRET_KEY)
+			or not _is_configured_secret(settings.STRIPE_WEBHOOK_SECRET)
+		):
 			return HttpResponse(status=503)
 
 		stripe.api_key = settings.STRIPE_SECRET_KEY
-		webhook_secret = settings.STRIPE_WEBHOOK_SECRET
-
-		payload = request.body
-		sig_header = request.META.get("HTTP_STRIPE_SIGNATURE", "")
-
 		try:
-			event = stripe.Webhook.construct_event(payload, sig_header, webhook_secret)
-		except ValueError:
-			return HttpResponse(status=400)
-		except stripe.error.SignatureVerificationError:
+			event = stripe.Webhook.construct_event(
+				request.body,
+				request.META.get("HTTP_STRIPE_SIGNATURE", ""),
+				settings.STRIPE_WEBHOOK_SECRET,
+			)
+		except (ValueError, stripe.error.SignatureVerificationError):
 			return HttpResponse(status=400)
 
-		if event["type"] == "checkout.session.completed":
-			session = event["data"]["object"]
-			self._handle_checkout_complete(session)
+		event_type = event["type"]
+		session = event["data"]["object"]
+		if event_type in {"checkout.session.completed", "checkout.session.async_payment_succeeded"}:
+			if session.get("payment_status") == "paid":
+				self._handle_paid_session(session)
+		elif event_type in {"checkout.session.expired", "checkout.session.async_payment_failed"}:
+			self._handle_failed_session(session)
 
 		return HttpResponse(status=200)
 
-	def _handle_checkout_complete(self, session: dict) -> None:
-		session_id = session.get("id", "")
-		if not session_id:
-			return
-
-		# Idempotency guard — skip duplicate webhook deliveries
-		if EducationRegistration.objects.filter(stripe_session_id=session_id).exists():
-			return
-
+	def _handle_paid_session(self, session: dict) -> None:
 		metadata = session.get("metadata") or {}
-		name = metadata.get("name", "")
-		email = metadata.get("email", "")
-		phone = metadata.get("phone", "")
-		language = metadata.get("language", "ru")
+		if metadata.get("purchase_type") == "consultation":
+			self._complete_consultation(session, metadata)
+		elif metadata.get("purchase_type") == "education":
+			self._complete_education(session, metadata)
+
+	def _complete_education(self, session: dict, metadata: dict) -> None:
+		session_id = session.get("id", "")
+		if not session_id or EducationRegistration.objects.filter(stripe_session_id=session_id).exists():
+			return
 		item_slug = metadata.get("item_slug", "")
-		item_title = metadata.get("item_title", "")
-		item_type = metadata.get("item_type", "")
-		item_id = metadata.get("item_id", "")
+		education_item = EducationItem.objects.filter(slug=item_slug).first() if item_slug else None
+		try:
+			EducationRegistration.objects.create(
+				language=metadata.get("language", "bg"),
+				education_item=education_item,
+				item_external_id=metadata.get("item_id", ""),
+				item_slug=item_slug,
+				item_title=metadata.get("item_title", ""),
+				item_type=metadata.get("item_type", ""),
+				name=metadata.get("name", ""),
+				email=metadata.get("email", ""),
+				phone=metadata.get("phone", ""),
+				stripe_session_id=session_id,
+				payload={
+					"source": "stripe_checkout",
+					"stripe_session_id": session_id,
+					"payment_intent": session.get("payment_intent", ""),
+					"amount_total": session.get("amount_total"),
+					"currency": session.get("currency", settings.STRIPE_CURRENCY),
+				},
+			)
+		except IntegrityError:
+			return
 
-		education_item = None
-		if item_slug:
-			education_item = EducationItem.objects.filter(slug=item_slug).first()
+	def _complete_consultation(self, session: dict, metadata: dict) -> None:
+		booking_id = metadata.get("booking_id")
+		if not booking_id:
+			return
+		with transaction.atomic():
+			booking = ConsultationBooking.objects.select_for_update().filter(id=booking_id).first()
+			if booking is None or booking.status == ConsultationBooking.STATUS_CANCELLED:
+				return
+			if booking.status == ConsultationBooking.STATUS_PAID and booking.google_event_id:
+				return
 
-		EducationRegistration.objects.create(
-			language=language,
-			education_item=education_item,
-			item_external_id=item_id,
-			item_slug=item_slug,
-			item_title=item_title,
-			item_type=item_type,
-			name=name,
-			email=email,
-			phone=phone,
-			stripe_session_id=session_id,
-			payload={
+			slot_start = datetime.fromisoformat(booking.payload["slotStart"].replace("Z", "+00:00"))
+			local_start = slot_start.astimezone(ZoneInfo(settings.CONSULTATION_TIMEZONE))
+			slot = ConsultationSlot(
+				start=local_start,
+				end=local_start + timedelta(minutes=int(settings.CONSULTATION_DURATION_MINUTES)),
+			)
+			event = create_event(slot, {
+				"language": booking.language,
+				"name": booking.name,
+				"email": booking.email,
+				"phone": booking.phone,
+				"consultationFormat": booking.consultation_format,
+				"meetingType": booking.meeting_type,
+				"message": booking.message,
+			})
+			booking.status = ConsultationBooking.STATUS_PAID
+			booking.stripe_payment_intent = session.get("payment_intent", "") or ""
+			booking.google_event_id = event.get("id", "")
+			booking.google_event_url = event.get("htmlLink", "")
+			booking.payload = {
+				**booking.payload,
 				"source": "stripe_checkout",
-				"stripe_session_id": session_id,
-				"payment_intent": session.get("payment_intent", ""),
+				"stripe_session_id": session.get("id", ""),
+				"payment_intent": booking.stripe_payment_intent,
 				"amount_total": session.get("amount_total"),
-				"currency": session.get("currency", "eur"),
-			},
-		)
+				"currency": session.get("currency", settings.STRIPE_CURRENCY),
+				"google_event_id": booking.google_event_id,
+			}
+			booking.save(update_fields=[
+				"status",
+				"stripe_payment_intent",
+				"google_event_id",
+				"google_event_url",
+				"payload",
+				"updated_at",
+			])
+
+	def _handle_failed_session(self, session: dict) -> None:
+		metadata = session.get("metadata") or {}
+		if metadata.get("purchase_type") != "consultation":
+			return
+		ConsultationBooking.objects.filter(
+			id=metadata.get("booking_id"),
+			status=ConsultationBooking.STATUS_NEW,
+		).update(status=ConsultationBooking.STATUS_CANCELLED)

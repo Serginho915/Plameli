@@ -27,9 +27,8 @@ export interface BookingPayload {
 }
 
 export interface BookingResponse {
-  id: number;
-  status: "created";
-  eventId: string;
+  url: string;
+  sessionId: string;
 }
 
 export const fetchAvailableSlots = async (): Promise<AvailableSlots> => {
@@ -44,4 +43,10 @@ export const bookConsultation = (payload: BookingPayload): Promise<BookingRespon
   apiClient<BookingResponse>("/consultation/book", {
     method: "POST",
     body: JSON.stringify(payload),
+  });
+
+export const cancelConsultationCheckout = (sessionId: string): Promise<null> =>
+  apiClient<null>("/stripe/consultation-cancel/", {
+    method: "POST",
+    body: JSON.stringify({ sessionId }),
   });

@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useSearchParams } from "next/navigation";
 import { useTranslation } from "@/hooks/useTranslation";
 import { translations } from "../ConsultationHero.translations";
 import styles from "./BookingWidget.module.scss";
@@ -10,10 +11,16 @@ import { Button } from "@/components/ui/Button/Button";
 import { CalendarIcon } from "@/components/ui/Icons/CalendarIcon/CalendarIcon";
 import { UrgentIcon } from "@/components/ui/Icons/UrgentIcon/UrgentIcon";
 import { ApiError } from "@/lib/apiClient";
-import { bookConsultation, fetchAvailableSlots, AvailableSlots } from "./bookingApi";
+import {
+  bookConsultation,
+  cancelConsultationCheckout,
+  fetchAvailableSlots,
+  AvailableSlots,
+} from "./bookingApi";
 
 export const BookingWidget = () => {
   const { t, language } = useTranslation(translations);
+  const searchParams = useSearchParams();
   const [currentStep, setCurrentStep] = useState(0);
   const [prevStep, setPrevStep] = useState(0);
   const [direction, setDirection] = useState(1); // 1 = forward, -1 = back
@@ -33,7 +40,10 @@ export const BookingWidget = () => {
   const [availabilityError, setAvailabilityError] = useState("");
   const [bookingError, setBookingError] = useState("");
   const [isBooking, setIsBooking] = useState(false);
-  const [bookingComplete, setBookingComplete] = useState(false);
+  const [paymentResult, setPaymentResult] = useState<"success" | "cancelled" | null>(() => {
+    const value = searchParams.get("payment");
+    return value === "success" || value === "cancelled" ? value : null;
+  });
 
   const [contentHeight, setContentHeight] = useState<number | "auto">("auto");
   const contentRef = useRef<HTMLDivElement | null>(null);
@@ -66,6 +76,18 @@ export const BookingWidget = () => {
     }, 800);
     return () => clearTimeout(timer);
   }, [currentStep]);
+
+  useEffect(() => {
+    if (!paymentResult) return;
+    const sessionId = searchParams.get("session_id");
+    if (paymentResult === "cancelled" && sessionId) {
+      void cancelConsultationCheckout(sessionId).catch(() => undefined);
+    }
+    const url = new URL(window.location.href);
+    url.searchParams.delete("payment");
+    url.searchParams.delete("session_id");
+    window.history.replaceState(null, "", url.toString());
+  }, [paymentResult, searchParams]);
 
   useEffect(() => {
     const loadSlots = async () => {
@@ -164,7 +186,7 @@ export const BookingWidget = () => {
     setIsBooking(true);
     setBookingError("");
     try {
-      await bookConsultation({
+      const checkout = await bookConsultation({
         slotStart: slot.start,
         name: formData.name.trim(),
         email: formData.email.trim(),
@@ -174,7 +196,7 @@ export const BookingWidget = () => {
         meetingType,
         language,
       });
-      setBookingComplete(true);
+      window.location.assign(checkout.url);
     } catch (error) {
       const isConflict = error instanceof ApiError && error.status === 409;
       setBookingError(isConflict ? t.bookingWidget.slotUnavailable : t.bookingWidget.bookingError);
@@ -645,14 +667,6 @@ export const BookingWidget = () => {
         );
 
       case 3:
-        if (bookingComplete) {
-          return (
-            <div className={styles.successMessage} role="status">
-              <CheckIcon pure />
-              <p>{t.bookingWidget.bookingSuccess}</p>
-            </div>
-          );
-        }
         return (
           <div className={styles.stepContent}>
             <div className={styles.summaryGrid}>
@@ -676,6 +690,15 @@ export const BookingWidget = () => {
               </div>
             </div>
 
+            <div className={styles.paymentRow}>
+              <span className={styles.paymentLabel}>{t.bookingWidget.labelTotalAmount}</span>
+              <span className={styles.paymentValue}>
+                {selectedFormat === "standard"
+                  ? t.bookingWidget.priceStandard
+                  : t.bookingWidget.pricePriority}
+              </span>
+            </div>
+
             <div className={styles.navigationRow}>
               <button className={styles.backBtn} onClick={handleBack}>
                 <svg width="11" height="19" viewBox="0 0 11 19" fill="none">
@@ -688,7 +711,7 @@ export const BookingWidget = () => {
                 className={styles.submitBtn}
                 disabled={isBooking}
               >
-                {isBooking ? t.bookingWidget.bookingInProgress : t.bookingWidget.btnBook}
+                {t.bookingWidget.btnBook}
               </Button>
             </div>
             {bookingError && <div className={styles.errorMessage}>{bookingError}</div>}
@@ -700,8 +723,27 @@ export const BookingWidget = () => {
     }
   };
 
+  if (paymentResult === "success") {
+    return (
+      <div className={styles.widgetCard} id="booking-form">
+        <div className={styles.successMessage} role="status">
+          <CheckIcon pure />
+          <p>{t.bookingWidget.bookingSuccess}</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className={styles.widgetCard} id="booking-form">
+      {paymentResult === "cancelled" ? (
+        <div className={styles.errorMessage} role="status">
+          {t.bookingWidget.paymentCancelled}
+          <button type="button" onClick={() => setPaymentResult(null)}>
+            ×
+          </button>
+        </div>
+      ) : null}
       {/* Header */}
       <div className={styles.header}>
         <div className={styles.stepperRow}>

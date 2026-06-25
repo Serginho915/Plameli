@@ -20,6 +20,27 @@ python manage.py runserver
 - /api/education/registrations/
 - /api/feedback/
 
+## Stripe payments
+
+Stripe Checkout is used for consultations, courses, and webinars. Configure
+the `STRIPE_*`, `FRONTEND_URL`, and API URL values from the root `.env.example`.
+Course and webinar prices are read from the corresponding education item.
+Consultation prices, currency, payment methods, and checkout reservation time
+are controlled through `STRIPE_*` environment variables.
+
+For local webhook forwarding:
+
+```bash
+stripe listen \
+  --events checkout.session.completed,checkout.session.async_payment_succeeded,checkout.session.async_payment_failed,checkout.session.expired \
+  --forward-to localhost:8000/api/stripe/webhook/
+```
+
+Copy the resulting `whsec_...` value to `STRIPE_WEBHOOK_SECRET`. In production,
+register `https://YOUR_DOMAIN/api/stripe/webhook/` as a Stripe webhook endpoint
+for the same events. Registrations and calendar events are fulfilled only from
+a signed webhook after Stripe reports a paid Checkout Session.
+
 ## Notes
 
 - Localized content supports query parameter `lang` with `ru`, `bg`.

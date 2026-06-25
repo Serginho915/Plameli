@@ -1,6 +1,7 @@
 from datetime import datetime
 from decimal import Decimal
 
+from django.conf import settings
 from rest_framework import serializers
 
 from content.models import EducationItem
@@ -92,10 +93,25 @@ class ConsultationBookingCreateSerializer(serializers.Serializer):
 
     def create(self, validated_data):
         slot = validated_data.pop("slot")
-        validated_data.pop("slotStart")
-        amount = Decimal("50.00") if validated_data["consultationFormat"] == "standard" else Decimal("85.00")
+        slot_start = validated_data.pop("slotStart")
+        amount_setting = (
+            settings.STRIPE_CONSULTATION_STANDARD_PRICE_EUR
+            if validated_data["consultationFormat"] == "standard"
+            else settings.STRIPE_CONSULTATION_PRIORITY_PRICE_EUR
+        )
+        amount = Decimal(amount_setting)
+        payload = {
+            "slotStart": slot_start.isoformat(),
+            "language": validated_data.get("language", "bg"),
+            "consultationFormat": validated_data["consultationFormat"],
+            "meetingType": validated_data["meetingType"],
+            "name": validated_data["name"],
+            "phone": validated_data["phone"],
+            "email": validated_data["email"],
+            "message": validated_data.get("message", ""),
+        }
         return ConsultationBooking.objects.create(
-            language=validated_data.get("language", "ru"),
+            language=validated_data.get("language", "bg"),
             consultation_format=validated_data["consultationFormat"],
             meeting_type=validated_data["meetingType"],
             selected_date=slot.start.date(),
@@ -105,5 +121,5 @@ class ConsultationBookingCreateSerializer(serializers.Serializer):
             email=validated_data["email"],
             message=validated_data.get("message", ""),
             total_amount_eur=amount,
-            payload=validated_data,
+            payload=payload,
         )

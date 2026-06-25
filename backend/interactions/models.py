@@ -53,6 +53,15 @@ class EducationRegistration(TimeStampedModel):
 	stripe_session_id = models.CharField(max_length=255, blank=True, default="", db_index=True)
 	payload = models.JSONField(default=dict, blank=True)
 
+	class Meta:
+		constraints = [
+			models.UniqueConstraint(
+				fields=["stripe_session_id"],
+				condition=~models.Q(stripe_session_id=""),
+				name="unique_education_stripe_session",
+			)
+		]
+
 	def __str__(self):
 		return f"registration:{self.email}:{self.item_slug or '-'}"
 
@@ -94,6 +103,9 @@ class ConsultationBooking(TimeStampedModel):
 	selected_time = models.CharField(max_length=16)
 	total_amount_eur = models.DecimalField(max_digits=10, decimal_places=2)
 	status = models.CharField(max_length=16, choices=STATUS_CHOICES, default=STATUS_NEW)
+	stripe_session_id = models.CharField(max_length=255, blank=True, default="", db_index=True)
+	stripe_payment_intent = models.CharField(max_length=255, blank=True, default="")
+	checkout_expires_at = models.DateTimeField(null=True, blank=True)
 	google_event_id = models.CharField(max_length=255, blank=True, default="")
 	google_event_url = models.URLField(blank=True, default="")
 	payload = models.JSONField(default=dict, blank=True)
@@ -102,9 +114,14 @@ class ConsultationBooking(TimeStampedModel):
 		constraints = [
 			models.UniqueConstraint(
 				fields=["selected_date", "selected_time"],
-				condition=~models.Q(status="cancelled"),
+				condition=models.Q(status="new"),
 				name="unique_active_consultation_slot",
-			)
+			),
+			models.UniqueConstraint(
+				fields=["stripe_session_id"],
+				condition=~models.Q(stripe_session_id=""),
+				name="unique_consultation_stripe_session",
+			),
 		]
 
 	def __str__(self):
