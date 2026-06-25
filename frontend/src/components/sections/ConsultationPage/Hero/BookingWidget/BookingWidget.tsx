@@ -27,6 +27,16 @@ const getMinimumSelectableDate = (format: ConsultationFormat) => {
   return minDate;
 };
 
+const getMaximumSelectableDate = (format: ConsultationFormat) => {
+  if (format !== "standard") {
+    return null;
+  }
+  const maxDate = new Date();
+  maxDate.setDate(maxDate.getDate() + 14);
+  maxDate.setHours(23, 59, 59, 999);
+  return maxDate;
+};
+
 const getInitialViewDate = (format: ConsultationFormat) => {
   const minDate = getMinimumSelectableDate(format);
   return new Date(minDate.getFullYear(), minDate.getMonth(), 1);
@@ -113,8 +123,9 @@ export const BookingWidget = () => {
   useEffect(() => {
     if (selectedDate) {
       const minDate = getMinimumSelectableDate(selectedFormat);
+      const maxDate = getMaximumSelectableDate(selectedFormat);
 
-      if (selectedDate < minDate) {
+      if (selectedDate < minDate || (maxDate && selectedDate > maxDate)) {
         setSelectedDate(null);
         setSelectedTime(null);
       }
@@ -256,6 +267,7 @@ export const BookingWidget = () => {
     const lastDay = new Date(year, month + 1, 0);
     
     const minDate = getMinimumSelectableDate(selectedFormat);
+    const maxDate = getMaximumSelectableDate(selectedFormat);
     
     // Get padding from prev month (0 = Sun, 1 = Mon...)
     // We want Mon = 0, Sun = 6
@@ -269,7 +281,7 @@ export const BookingWidget = () => {
     for (let i = startDay - 1; i >= 0; i--) {
       const date = new Date(year, month - 1, prevLastDay - i);
       const isWeekend = date.getDay() === 0 || date.getDay() === 6;
-      const isPast = date < minDate;
+      const isPast = date < minDate || (maxDate !== null && date > maxDate);
       days.push({ day: prevLastDay - i, current: false, month: month - 1, isWeekend, isPast });
     }
     
@@ -279,7 +291,7 @@ export const BookingWidget = () => {
       const dateKey = `${year}-${String(month + 1).padStart(2, '0')}-${String(i).padStart(2, '0')}`;
       const dayOfWeek = date.getDay();
       const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
-      const isPast = date < minDate;
+      const isPast = date < minDate || (maxDate !== null && date > maxDate);
       const hasSlots = availableSlots[dateKey] && availableSlots[dateKey].length > 0;
       
       days.push({ 
@@ -299,7 +311,7 @@ export const BookingWidget = () => {
       const dateKey = `${year}-${String(month + 2).padStart(2, '0')}-${String(i).padStart(2, '0')}`;
       const dayOfWeek = date.getDay();
       const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
-      const isPast = date < minDate;
+      const isPast = date < minDate || (maxDate !== null && date > maxDate);
       const hasSlots = availableSlots[dateKey] && availableSlots[dateKey].length > 0;
       
       days.push({ 
