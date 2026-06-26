@@ -371,6 +371,30 @@ class ConsultationApiTests(TestCase):
         self.assertEqual(booking.status, ConsultationBooking.STATUS_PAID)
         self.assertEqual(booking.google_event_id, "google-event-id")
 
+    @patch("interactions.stripe_views.StripeWebhookView._complete_consultation", side_effect=RuntimeError("boom"))
+    @patch("interactions.stripe_views.stripe.checkout.Session.retrieve")
+    def test_confirm_paid_checkout_returns_handled_error_on_unexpected_failure(self, retrieve_session_mock, _):
+        retrieve_session_mock.return_value = {
+            "id": "cs_test_consultation",
+            "payment_status": "paid",
+            "payment_intent": "pi_test",
+            "amount_total": 15000,
+            "currency": "eur",
+            "metadata": {
+                "purchase_type": "consultation",
+                "booking_id": "123",
+            },
+        }
+
+        response = self.client.post(
+            "/api/stripe/consultation-confirm/",
+            {"sessionId": "cs_test_consultation"},
+            format="json",
+        )
+
+        self.assertEqual(response.status_code, 503)
+        self.assertEqual(response.data["code"], "confirmation_failed")
+
     @patch("interactions.stripe_views.stripe.checkout.Session.expire")
     def test_cancelled_checkout_releases_slot(self, expire_session_mock):
         booking = ConsultationBooking.objects.create(

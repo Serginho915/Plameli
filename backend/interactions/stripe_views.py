@@ -50,6 +50,13 @@ def _stripe_error_response(exc: Exception) -> Response:
 	)
 
 
+def _safe_session_id(session_id: str) -> str:
+	session_id = session_id or ""
+	if len(session_id) <= 16:
+		return session_id
+	return f"{session_id[:10]}...{session_id[-6:]}"
+
+
 def _payment_method_types() -> list[str]:
 	return [
 		value.strip()
@@ -308,6 +315,16 @@ class StripeConsultationConfirmView(APIView):
 	"""Confirm a paid Checkout Session and create the calendar event if needed."""
 
 	def post(self, request):
+		try:
+			return self._post(request)
+		except Exception:
+			logger.exception("Stripe consultation confirmation crashed before returning a handled response.")
+			return Response(
+				{"code": "confirmation_failed", "detail": "Paid consultation could not be confirmed."},
+				status=status.HTTP_503_SERVICE_UNAVAILABLE,
+			)
+
+	def _post(self, request):
 		session_id = str(request.data.get("sessionId", "")).strip()
 		if not session_id:
 			return Response(
@@ -320,19 +337,32 @@ class StripeConsultationConfirmView(APIView):
 				status=status.HTTP_503_SERVICE_UNAVAILABLE,
 			)
 
+		safe_session_id = _safe_session_id(session_id)
+		logger.info("Confirming paid consultation checkout session %s.", safe_session_id)
 		stripe.api_key = settings.STRIPE_SECRET_KEY
 		try:
 			session = stripe.checkout.Session.retrieve(session_id)
 		except stripe.error.StripeError as exc:
+			logger.warning("Stripe session retrieve failed for %s: %s", safe_session_id, exc)
 			return _stripe_error_response(exc)
 
 		if session.get("payment_status") != "paid":
+			logger.warning(
+				"Stripe consultation checkout session %s is not paid. payment_status=%s",
+				safe_session_id,
+				session.get("payment_status"),
+			)
 			return Response(
 				{"code": "payment_not_completed", "detail": "Checkout Session is not paid yet."},
 				status=status.HTTP_409_CONFLICT,
 			)
 		metadata = session.get("metadata") or {}
 		if metadata.get("purchase_type") != "consultation":
+			logger.warning(
+				"Stripe checkout session %s has invalid purchase_type=%s.",
+				safe_session_id,
+				metadata.get("purchase_type"),
+			)
 			return Response(
 				{"code": "invalid_session", "detail": "Checkout Session is not for a consultation."},
 				status=status.HTTP_400_BAD_REQUEST,
@@ -341,11 +371,13 @@ class StripeConsultationConfirmView(APIView):
 		try:
 			StripeWebhookView()._complete_consultation(session, metadata)
 		except CalendarConfigurationError as exc:
+			logger.exception("Calendar configuration error while confirming session %s.", safe_session_id)
 			return Response(
 				{"code": "calendar_not_configured", "detail": str(exc)},
 				status=status.HTTP_503_SERVICE_UNAVAILABLE,
 			)
 		except CalendarUnavailableError as exc:
+			logger.exception("Calendar unavailable while confirming session %s.", safe_session_id)
 			return Response(
 				{"code": "calendar_unavailable", "detail": str(exc)},
 				status=status.HTTP_503_SERVICE_UNAVAILABLE,
@@ -365,10 +397,18 @@ class StripeConsultationConfirmView(APIView):
 
 		booking = ConsultationBooking.objects.filter(stripe_session_id=session_id).first()
 		if booking is None:
+			logger.warning("No consultation booking found for paid Stripe session %s.", safe_session_id)
 			return Response(
 				{"code": "booking_not_found", "detail": "Consultation booking was not found."},
 				status=status.HTTP_404_NOT_FOUND,
 			)
+		logger.info(
+			"Confirmed consultation booking %s from Stripe session %s. status=%s event_id=%s",
+			booking.id,
+			safe_session_id,
+			booking.status,
+			booking.google_event_id or "-",
+		)
 		return Response(
 			{
 				"status": booking.status,
@@ -388,6 +428,7 @@ class StripeWebhookView(APIView):
 			not _is_configured_secret(settings.STRIPE_SECRET_KEY)
 			or not _is_configured_secret(settings.STRIPE_WEBHOOK_SECRET)
 		):
+			logger.error("Stripe webhook received but Stripe configuration is incomplete.")
 			return HttpResponse(status=503)
 
 		stripe.api_key = settings.STRIPE_SECRET_KEY
@@ -398,13 +439,28 @@ class StripeWebhookView(APIView):
 				settings.STRIPE_WEBHOOK_SECRET,
 			)
 		except (ValueError, stripe.error.SignatureVerificationError):
+			logger.warning("Rejected Stripe webhook with invalid payload or signature.")
 			return HttpResponse(status=400)
 
 		event_type = event["type"]
 		session = event["data"]["object"]
+		logger.info(
+			"Received Stripe webhook event type=%s session=%s payment_status=%s.",
+			event_type,
+			_safe_session_id(session.get("id", "")),
+			session.get("payment_status"),
+		)
 		if event_type in {"checkout.session.completed", "checkout.session.async_payment_succeeded"}:
 			if session.get("payment_status") == "paid":
-				self._handle_paid_session(session)
+				try:
+					self._handle_paid_session(session)
+				except Exception:
+					logger.exception(
+						"Failed to process paid Stripe webhook event type=%s session=%s.",
+						event_type,
+						_safe_session_id(session.get("id", "")),
+					)
+					raise
 		elif event_type in {"checkout.session.expired", "checkout.session.async_payment_failed"}:
 			self._handle_failed_session(session)
 
