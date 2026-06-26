@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from 'react';
+import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useTranslation } from "@/hooks/useTranslation";
 import { translations, FooterTranslations } from "./Footer.translations";
@@ -10,7 +11,7 @@ import styles from './Footer.module.scss';
 
 export const Footer = () => {
   const pathname = usePathname();
-  const { t } = useTranslation<FooterTranslations>(translations);
+  const { t, language } = useTranslation<FooterTranslations>(translations);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const isAdminRoute = /^\/(ru|bg)\/admin(\/|$)/.test(pathname);
@@ -38,8 +39,16 @@ export const Footer = () => {
                     {t.euProjectInfo}
                   </button>
                 </li>
-                <li className={styles.linkItem}><a href="#" className={styles.link}>{t.privacyPolicy}</a></li>
-                <li className={styles.linkItem}><a href="#" className={styles.link}>{t.cookies}</a></li>
+                <li className={styles.linkItem}>
+                  <Link href={`/${language}/privacy-policy`} className={styles.link}>
+                    {t.privacyPolicy}
+                  </Link>
+                </li>
+                <li className={styles.linkItem}>
+                  <Link href={`/${language}/cookies`} className={styles.link}>
+                    {t.cookies}
+                  </Link>
+                </li>
                 <li className={styles.linkItem}><a href="#" className={styles.link}>{t.paymentsRefunds}</a></li>
               </ul>
             </div>

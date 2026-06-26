@@ -8,7 +8,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const entries: MetadataRoute.Sitemap = [];
 
   // Static pages per locale
-  const staticPages = ["", "/consultation", "/education"];
+  const staticPages = ["", "/consultation", "/education", "/privacy-policy", "/cookies"];
 
   for (const locale of i18n.locales) {
     for (const page of staticPages) {

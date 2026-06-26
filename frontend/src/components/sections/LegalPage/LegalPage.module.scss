@@ -1,0 +1,141 @@
+@use "@/styles/variables" as *;
+@use "@/styles/mixins" as *;
+
+.legalPage {
+  padding: $scale-120 0 $scale-160;
+
+  @include down("tablet") {
+    padding: $scale-70 0 $scale-120;
+  }
+}
+
+.header {
+  max-width: 920px;
+  margin-bottom: $scale-56;
+
+  @include down("tablet") {
+    margin-bottom: $scale-40;
+  }
+}
+
+.eyebrow {
+  margin: 0 0 $scale-16;
+  color: $accent;
+  font-family: $font-secondary;
+  font-size: $font-size-body-caption;
+  line-height: $lh-body-caption;
+  font-weight: $weight-semibold;
+}
+
+.title {
+  margin: 0;
+  color: $text-primary;
+  font-family: $font-primary;
+  font-size: $font-size-h1;
+  line-height: $lh-h1;
+  font-weight: $weight-medium;
+
+  @include down("tablet") {
+    font-size: $font-size-h3;
+    line-height: $lh-h3;
+  }
+
+  @include down("mobile-large") {
+    font-size: $font-size-body-title;
+    line-height: $lh-body-title;
+  }
+}
+
+.updated {
+  margin: $scale-20 0 0;
+  color: $text-grey;
+  font-family: $font-secondary;
+  font-size: $font-size-body-caption;
+  line-height: $lh-body-caption;
+}
+
+.content {
+  max-width: 920px;
+  display: grid;
+  gap: $scale-40;
+}
+
+.section {
+  display: grid;
+  gap: $scale-16;
+}
+
+.sectionTitle {
+  margin: 0;
+  color: $text-primary;
+  font-family: $font-primary;
+  font-size: $font-size-h4;
+  line-height: $lh-h4;
+  font-weight: $weight-medium;
+}
+
+.paragraph,
+.list,
+.table {
+  color: $text-body-grey;
+  font-family: $font-secondary;
+  font-size: $font-size-body-sm;
+  line-height: $lh-body-sm;
+
+  @include down("tablet") {
+    font-size: $font-size-body-caption;
+    line-height: $lh-body-caption;
+  }
+}
+
+.paragraph {
+  margin: 0;
+}
+
+.list {
+  margin: 0;
+  padding-left: $scale-24;
+}
+
+.list li + li {
+  margin-top: $scale-8;
+}
+
+.tableWrapper {
+  overflow-x: auto;
+  border: 1px solid $color-stroke-primary;
+  border-radius: $radius-8;
+  background: $color-surface-background-secondary;
+}
+
+.table {
+  width: 100%;
+  min-width: 680px;
+  border-collapse: collapse;
+}
+
+.table th,
+.table td {
+  padding: $scale-16;
+  text-align: left;
+  vertical-align: top;
+  border-bottom: 1px solid $color-stroke-primary;
+}
+
+.table th {
+  color: $text-primary;
+  font-weight: $weight-semibold;
+}
+
+.table tr:last-child td {
+  border-bottom: 0;
+}
+
+.link {
+  color: $accent;
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
