@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
+import { apiClient } from "@/lib/apiClient";
 import type { EducationItem } from "@/types/content";
 import styles from "./RegisterModal.module.scss";
 
@@ -89,10 +90,8 @@ export const RegisterModal: React.FC<RegisterModalProps> = ({
     setSubmitError(null);
 
     try {
-      const apiBase = (process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000/api").replace(/\/$/, "");
-      const response = await fetch(`${apiBase}/stripe/create-checkout/`, {
+      const data = await apiClient<{ url: string }>("/stripe/create-checkout/", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           language,
           name: formData.name,
@@ -104,12 +103,6 @@ export const RegisterModal: React.FC<RegisterModalProps> = ({
           itemId: item.id,
         }),
       });
-
-      if (!response.ok) {
-        throw new Error(`HTTP ${response.status}`);
-      }
-
-      const data = (await response.json()) as { url: string };
       window.location.href = data.url;
     } catch {
       setIsSubmitting(false);

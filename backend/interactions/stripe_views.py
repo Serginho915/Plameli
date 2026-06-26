@@ -87,8 +87,21 @@ def _parse_price(price: str) -> Decimal:
 		return Decimal("0")
 
 
-def _frontend_url(path: str, payment_result: str, include_session_id: bool = False) -> str:
-	base = settings.FRONTEND_URL.rstrip("/")
+def _request_public_base_url(request) -> str:
+	host = request.headers.get("X-Forwarded-Host") or request.get_host()
+	host = host.split(",")[0].strip()
+	hostname = host.split(":", 1)[0].lower().strip("[]")
+	if hostname in {"localhost", "127.0.0.1", "::1", "backend", "testserver"}:
+		return ""
+	proto = request.headers.get("X-Forwarded-Proto") or request.scheme
+	proto = proto.split(",")[0].strip() or "https"
+	return f"{proto}://{host}".rstrip("/")
+
+
+def _frontend_url(request, path: str, payment_result: str, include_session_id: bool = False) -> str:
+	configured_base = settings.FRONTEND_URL.rstrip("/")
+	request_base = _request_public_base_url(request)
+	base = request_base or configured_base
 	separator = "&" if "?" in path else "?"
 	url = f"{base}{path}{separator}payment={payment_result}"
 	if include_session_id:
@@ -160,8 +173,8 @@ class StripeCreateCheckoutView(APIView):
 				mode="payment",
 				submit_type="pay",
 				customer_email=data["email"],
-				success_url=_frontend_url(return_path, "success"),
-				cancel_url=_frontend_url(return_path, "cancelled"),
+				success_url=_frontend_url(request, return_path, "success"),
+				cancel_url=_frontend_url(request, return_path, "cancelled"),
 				metadata=metadata,
 				payment_intent_data={"metadata": metadata},
 			)
@@ -233,8 +246,8 @@ class StripeConsultationCheckoutView(APIView):
 				submit_type="book",
 				customer_email=booking.email,
 				client_reference_id=f"consultation:{booking.id}",
-				success_url=_frontend_url(return_path, "success", include_session_id=True),
-				cancel_url=_frontend_url(return_path, "cancelled", include_session_id=True),
+				success_url=_frontend_url(request, return_path, "success", include_session_id=True),
+				cancel_url=_frontend_url(request, return_path, "cancelled", include_session_id=True),
 				expires_at=_checkout_expiration_timestamp(),
 				metadata=metadata,
 				payment_intent_data={"metadata": metadata},

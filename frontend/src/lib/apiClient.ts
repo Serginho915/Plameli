@@ -1,4 +1,4 @@
-const DEFAULT_API_URL = 'http://localhost:8000/api';
+const DEFAULT_BROWSER_API_URL = '/api';
 
 function resolveApiBaseUrl(): string {
   const isServer = typeof window === 'undefined';
@@ -9,7 +9,7 @@ function resolveApiBaseUrl(): string {
     return serverApiUrl.replace(/\/$/, '');
   }
 
-  return (publicApiUrl || DEFAULT_API_URL).replace(/\/$/, '');
+  return (publicApiUrl || DEFAULT_BROWSER_API_URL).replace(/\/$/, '');
 }
 
 const API_BASE_URL = resolveApiBaseUrl();

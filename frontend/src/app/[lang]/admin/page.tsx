@@ -471,11 +471,13 @@ const emptyEducation = (): EducationItem => ({
 });
 
 function resolveApiAdminBase(): string {
-  const fallback = "http://localhost:8000";
-  const raw = process.env.NEXT_PUBLIC_API_URL || `${fallback}/api`;
+  const raw = process.env.NEXT_PUBLIC_API_URL || "/api";
 
   try {
-    const url = new URL(raw);
+    const url = new URL(raw, "https://ledgerlab.tech");
+    if (raw.startsWith("/")) {
+      return "/api/admin";
+    }
     return `${url.origin}/api/admin`;
   } catch {
     const withoutApi = raw.replace(/\/api\/?$/, "");

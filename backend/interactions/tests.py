@@ -176,6 +176,34 @@ class ConsultationApiTests(TestCase):
         checkout_args = create_session_mock.call_args.kwargs
         self.assertIn("{CHECKOUT_SESSION_ID}", checkout_args["cancel_url"])
 
+    @patch("interactions.stripe_views.stripe.checkout.Session.create")
+    @patch("interactions.stripe_views.is_slot_free", return_value=True)
+    def test_booking_checkout_urls_use_forwarded_public_host(self, _, create_session_mock):
+        create_session_mock.return_value = SimpleNamespace(
+            id="cs_test_consultation",
+            url="https://checkout.stripe.com/test",
+            expires_at=int(time.time()) + 1800,
+        )
+
+        response = self.client.post(
+            "/api/consultation/book",
+            self.payload,
+            format="json",
+            HTTP_X_FORWARDED_HOST="ledgerlab.tech",
+            HTTP_X_FORWARDED_PROTO="https",
+        )
+
+        self.assertEqual(response.status_code, 200)
+        checkout_args = create_session_mock.call_args.kwargs
+        self.assertEqual(
+            checkout_args["success_url"],
+            "https://ledgerlab.tech/bg/consultation?payment=success&session_id={CHECKOUT_SESSION_ID}",
+        )
+        self.assertEqual(
+            checkout_args["cancel_url"],
+            "https://ledgerlab.tech/bg/consultation?payment=cancelled&session_id={CHECKOUT_SESSION_ID}",
+        )
+
     @patch("interactions.stripe_views.is_slot_free", return_value=False)
     def test_booking_returns_conflict_when_slot_is_busy(self, _):
         response = self.client.post("/api/consultation/book", self.payload, format="json")
