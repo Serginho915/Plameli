@@ -7,7 +7,7 @@ from zoneinfo import ZoneInfo
 
 import stripe
 from django.conf import settings
-from django.db import IntegrityError, transaction
+from django.db import IntegrityError, OperationalError, transaction
 from django.http import HttpResponse
 from django.utils import timezone
 from django.utils.decorators import method_decorator
@@ -24,6 +24,7 @@ from .google_calendar import (
 	CalendarUnavailableError,
 	ConsultationSlot,
 	create_event,
+	delete_event,
 	is_slot_free,
 )
 from .models import ConsultationBooking, EducationRegistration
@@ -369,7 +370,7 @@ class StripeConsultationConfirmView(APIView):
 			)
 
 		try:
-			StripeWebhookView()._complete_consultation(session, metadata)
+			booking = StripeWebhookView()._complete_consultation(session, metadata)
 		except CalendarConfigurationError as exc:
 			logger.exception("Calendar configuration error while confirming session %s.", safe_session_id)
 			return Response(
@@ -388,6 +389,12 @@ class StripeConsultationConfirmView(APIView):
 				{"code": "booking_invalid", "detail": "Consultation booking data is incomplete."},
 				status=status.HTTP_422_UNPROCESSABLE_ENTITY,
 			)
+		except OperationalError:
+			logger.exception("Database unavailable while confirming paid consultation session %s.", safe_session_id)
+			return Response(
+				{"code": "database_unavailable", "detail": "Consultation booking could not be updated right now."},
+				status=status.HTTP_503_SERVICE_UNAVAILABLE,
+			)
 		except Exception:
 			logger.exception("Paid consultation confirmation failed unexpectedly.")
 			return Response(
@@ -395,7 +402,8 @@ class StripeConsultationConfirmView(APIView):
 				status=status.HTTP_503_SERVICE_UNAVAILABLE,
 			)
 
-		booking = ConsultationBooking.objects.filter(stripe_session_id=session_id).first()
+		if booking is None:
+			booking = ConsultationBooking.objects.filter(stripe_session_id=session_id).first()
 		if booking is None:
 			logger.warning("No consultation booking found for paid Stripe session %s.", safe_session_id)
 			return Response(
@@ -502,53 +510,92 @@ class StripeWebhookView(APIView):
 		except IntegrityError:
 			return
 
-	def _complete_consultation(self, session: dict, metadata: dict) -> None:
+	def _find_consultation_booking(self, bookings, booking_id: str, session_id: str) -> ConsultationBooking | None:
+		booking = None
+		if booking_id:
+			booking = bookings.filter(id=booking_id).first()
+			if booking is None and session_id:
+				booking = bookings.filter(stripe_session_id=session_id).first()
+		elif session_id:
+			booking = bookings.filter(stripe_session_id=session_id).first()
+		return booking
+
+	def _consultation_slot_for_booking(self, booking: ConsultationBooking) -> ConsultationSlot:
+		slot_start_raw = (booking.payload or {}).get("slotStart")
+		if slot_start_raw:
+			slot_start = datetime.fromisoformat(slot_start_raw.replace("Z", "+00:00"))
+		else:
+			slot_start = datetime.combine(
+				booking.selected_date,
+				datetime.strptime(booking.selected_time, "%H:%M").time(),
+				ZoneInfo(settings.CONSULTATION_TIMEZONE),
+			)
+		local_start = slot_start.astimezone(ZoneInfo(settings.CONSULTATION_TIMEZONE))
+		return ConsultationSlot(
+			start=local_start,
+			end=local_start + timedelta(minutes=int(settings.CONSULTATION_DURATION_MINUTES)),
+		)
+
+	def _consultation_event_data(self, booking: ConsultationBooking) -> dict:
+		return {
+			"language": booking.language,
+			"name": booking.name,
+			"email": booking.email,
+			"phone": booking.phone,
+			"consultationFormat": booking.consultation_format,
+			"meetingType": booking.meeting_type,
+			"message": booking.message,
+		}
+
+	def _delete_duplicate_consultation_event(self, event_id: str, session_id: str) -> None:
+		if not event_id:
+			return
+		try:
+			delete_event(event_id)
+		except CalendarUnavailableError:
+			logger.warning(
+				"Could not delete duplicate Google Calendar event %s for Stripe session %s.",
+				event_id,
+				_safe_session_id(session_id),
+				exc_info=True,
+			)
+
+	def _complete_consultation(self, session: dict, metadata: dict) -> ConsultationBooking | None:
 		booking_id = metadata.get("booking_id")
 		session_id = session.get("id", "")
 		if not booking_id and not session_id:
-			return
+			return None
 		with transaction.atomic():
 			bookings = ConsultationBooking.objects.select_for_update()
-			if booking_id:
-				booking = bookings.filter(id=booking_id).first()
-				if booking is None and session_id:
-					booking = bookings.filter(stripe_session_id=session_id).first()
-			else:
-				booking = bookings.filter(stripe_session_id=session_id).first()
+			booking = self._find_consultation_booking(bookings, booking_id, session_id)
 			if booking is None or booking.status == ConsultationBooking.STATUS_CANCELLED:
-				return
+				return booking
 			if booking.status == ConsultationBooking.STATUS_PAID and booking.google_event_id:
-				return
+				return booking
+			slot = self._consultation_slot_for_booking(booking)
+			booking_data = self._consultation_event_data(booking)
 
-			slot_start_raw = (booking.payload or {}).get("slotStart")
-			if slot_start_raw:
-				slot_start = datetime.fromisoformat(slot_start_raw.replace("Z", "+00:00"))
-			else:
-				slot_start = datetime.combine(
-					booking.selected_date,
-					datetime.strptime(booking.selected_time, "%H:%M").time(),
-					ZoneInfo(settings.CONSULTATION_TIMEZONE),
-				)
-			local_start = slot_start.astimezone(ZoneInfo(settings.CONSULTATION_TIMEZONE))
-			slot = ConsultationSlot(
-				start=local_start,
-				end=local_start + timedelta(minutes=int(settings.CONSULTATION_DURATION_MINUTES)),
-			)
-			event = create_event(slot, {
-				"language": booking.language,
-				"name": booking.name,
-				"email": booking.email,
-				"phone": booking.phone,
-				"consultationFormat": booking.consultation_format,
-				"meetingType": booking.meeting_type,
-				"message": booking.message,
-			})
+		event = create_event(slot, booking_data)
+		event_id = event.get("id", "")
+
+		with transaction.atomic():
+			bookings = ConsultationBooking.objects.select_for_update()
+			booking = self._find_consultation_booking(bookings, booking_id, session_id)
+			if booking is None:
+				self._delete_duplicate_consultation_event(event_id, session_id)
+				return None
+			if booking.status == ConsultationBooking.STATUS_CANCELLED:
+				self._delete_duplicate_consultation_event(event_id, session_id)
+				return booking
+			if booking.status == ConsultationBooking.STATUS_PAID and booking.google_event_id:
+				self._delete_duplicate_consultation_event(event_id, session_id)
+				return booking
 			booking.status = ConsultationBooking.STATUS_PAID
 			booking.stripe_payment_intent = session.get("payment_intent", "") or ""
-			booking.google_event_id = event.get("id", "")
+			booking.google_event_id = event_id
 			booking.google_event_url = event.get("htmlLink", "")
 			booking.payload = {
-				**booking.payload,
+				**(booking.payload or {}),
 				"source": "stripe_checkout",
 				"stripe_session_id": session.get("id", ""),
 				"payment_intent": booking.stripe_payment_intent,
@@ -564,6 +611,7 @@ class StripeWebhookView(APIView):
 				"payload",
 				"updated_at",
 			])
+			return booking
 
 	def _handle_failed_session(self, session: dict) -> None:
 		metadata = session.get("metadata") or {}

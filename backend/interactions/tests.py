@@ -371,6 +371,50 @@ class ConsultationApiTests(TestCase):
         self.assertEqual(booking.status, ConsultationBooking.STATUS_PAID)
         self.assertEqual(booking.google_event_id, "google-event-id")
 
+    @patch("interactions.stripe_views.delete_event")
+    @patch("interactions.stripe_views.create_event")
+    def test_complete_consultation_deletes_duplicate_event_if_webhook_wins_race(self, create_event_mock, delete_event_mock):
+        booking = ConsultationBooking.objects.create(
+            language="bg",
+            consultation_format="standard",
+            meeting_type="zoom",
+            selected_date=self.slot.start.date(),
+            selected_time=self.slot.start.strftime("%H:%M"),
+            name="Client Name",
+            phone="+359888123456",
+            email="client@example.com",
+            total_amount_eur="150.00",
+            stripe_session_id="cs_test_consultation",
+            payload={"slotStart": self.slot.start.isoformat()},
+        )
+
+        def mark_paid_before_returning_event(*args, **kwargs):
+            ConsultationBooking.objects.filter(id=booking.id).update(
+                status=ConsultationBooking.STATUS_PAID,
+                google_event_id="existing-google-event",
+                google_event_url="https://calendar.google.com/existing",
+            )
+            return {
+                "id": "duplicate-google-event",
+                "htmlLink": "https://calendar.google.com/duplicate",
+            }
+
+        create_event_mock.side_effect = mark_paid_before_returning_event
+
+        result = StripeWebhookView()._complete_consultation(
+            {
+                "id": "cs_test_consultation",
+                "payment_intent": "pi_test",
+                "amount_total": 15000,
+                "currency": "eur",
+            },
+            {"booking_id": str(booking.id)},
+        )
+
+        delete_event_mock.assert_called_once_with("duplicate-google-event")
+        result.refresh_from_db()
+        self.assertEqual(result.google_event_id, "existing-google-event")
+
     @patch("interactions.stripe_views.StripeWebhookView._complete_consultation", side_effect=RuntimeError("boom"))
     @patch("interactions.stripe_views.stripe.checkout.Session.retrieve")
     def test_confirm_paid_checkout_returns_handled_error_on_unexpected_failure(self, retrieve_session_mock, _):
