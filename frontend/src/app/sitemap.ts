@@ -3,12 +3,39 @@ import { i18n } from "@/i18n-config";
 import { getBlogPosts, getEducationItems } from "@/lib/services/contentService";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://ledgerlab.tech";
+const DYNAMIC_SITEMAP_TIMEOUT_MS = 5000;
+
+async function withTimeout<T>(promise: Promise<T>): Promise<T> {
+  let timeoutId: ReturnType<typeof setTimeout> | undefined;
+  const timeout = new Promise<never>((_, reject) => {
+    timeoutId = setTimeout(
+      () => reject(new Error("Dynamic sitemap source timed out.")),
+      DYNAMIC_SITEMAP_TIMEOUT_MS,
+    );
+  });
+
+  try {
+    return await Promise.race([promise, timeout]);
+  } finally {
+    if (timeoutId) {
+      clearTimeout(timeoutId);
+    }
+  }
+}
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const entries: MetadataRoute.Sitemap = [];
 
   // Static pages per locale
-  const staticPages = ["", "/consultation", "/education", "/privacy-policy", "/cookies"];
+  const staticPages = [
+    "",
+    "/consultation",
+    "/education",
+    "/privacy-policy",
+    "/cookies",
+    "/payments-refunds",
+    "/terms-of-service",
+  ];
 
   for (const locale of i18n.locales) {
     for (const page of staticPages) {
@@ -29,7 +56,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // Blog posts per locale
   for (const locale of i18n.locales) {
     try {
-      const posts = await getBlogPosts(locale);
+      const posts = await withTimeout(getBlogPosts(locale));
       for (const post of posts) {
         entries.push({
           url: `${BASE_URL}/${locale}/blog/${post.slug}`,
@@ -54,7 +81,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // Education pages per locale (courses + webinars)
   for (const locale of i18n.locales) {
     try {
-      const allEducation = await getEducationItems(locale);
+      const allEducation = await withTimeout(getEducationItems(locale));
 
       for (const item of allEducation) {
         entries.push({

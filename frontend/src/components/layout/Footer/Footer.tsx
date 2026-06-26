@@ -49,7 +49,16 @@ export const Footer = () => {
                     {t.cookies}
                   </Link>
                 </li>
-                <li className={styles.linkItem}><a href="#" className={styles.link}>{t.paymentsRefunds}</a></li>
+                <li className={styles.linkItem}>
+                  <Link href={`/${language}/payments-refunds`} className={styles.link}>
+                    {t.paymentsRefunds}
+                  </Link>
+                </li>
+                <li className={styles.linkItem}>
+                  <Link href={`/${language}/terms-of-service`} className={styles.link}>
+                    {t.termsOfService}
+                  </Link>
+                </li>
               </ul>
             </div>
             
