@@ -1,3 +1,4 @@
+import logging
 import re
 import time
 from datetime import datetime, timedelta, timezone as datetime_timezone
@@ -28,6 +29,8 @@ from .google_calendar import (
 from .models import ConsultationBooking, EducationRegistration
 from .serializers import ConsultationBookingCreateSerializer, EducationRegistrationCreateSerializer
 
+
+logger = logging.getLogger(__name__)
 
 ZERO_DECIMAL_CURRENCIES = {
 	"bif", "clp", "djf", "gnf", "jpy", "kmf", "krw", "mga", "pyg", "rwf",
@@ -347,6 +350,18 @@ class StripeConsultationConfirmView(APIView):
 				{"code": "calendar_unavailable", "detail": str(exc)},
 				status=status.HTTP_503_SERVICE_UNAVAILABLE,
 			)
+		except (KeyError, TypeError, ValueError) as exc:
+			logger.exception("Paid consultation confirmation failed because booking data is invalid.")
+			return Response(
+				{"code": "booking_invalid", "detail": "Consultation booking data is incomplete."},
+				status=status.HTTP_422_UNPROCESSABLE_ENTITY,
+			)
+		except Exception:
+			logger.exception("Paid consultation confirmation failed unexpectedly.")
+			return Response(
+				{"code": "confirmation_failed", "detail": "Paid consultation could not be confirmed."},
+				status=status.HTTP_503_SERVICE_UNAVAILABLE,
+			)
 
 		booking = ConsultationBooking.objects.filter(stripe_session_id=session_id).first()
 		if booking is None:
@@ -433,16 +448,31 @@ class StripeWebhookView(APIView):
 
 	def _complete_consultation(self, session: dict, metadata: dict) -> None:
 		booking_id = metadata.get("booking_id")
-		if not booking_id:
+		session_id = session.get("id", "")
+		if not booking_id and not session_id:
 			return
 		with transaction.atomic():
-			booking = ConsultationBooking.objects.select_for_update().filter(id=booking_id).first()
+			bookings = ConsultationBooking.objects.select_for_update()
+			if booking_id:
+				booking = bookings.filter(id=booking_id).first()
+				if booking is None and session_id:
+					booking = bookings.filter(stripe_session_id=session_id).first()
+			else:
+				booking = bookings.filter(stripe_session_id=session_id).first()
 			if booking is None or booking.status == ConsultationBooking.STATUS_CANCELLED:
 				return
 			if booking.status == ConsultationBooking.STATUS_PAID and booking.google_event_id:
 				return
 
-			slot_start = datetime.fromisoformat(booking.payload["slotStart"].replace("Z", "+00:00"))
+			slot_start_raw = (booking.payload or {}).get("slotStart")
+			if slot_start_raw:
+				slot_start = datetime.fromisoformat(slot_start_raw.replace("Z", "+00:00"))
+			else:
+				slot_start = datetime.combine(
+					booking.selected_date,
+					datetime.strptime(booking.selected_time, "%H:%M").time(),
+					ZoneInfo(settings.CONSULTATION_TIMEZONE),
+				)
 			local_start = slot_start.astimezone(ZoneInfo(settings.CONSULTATION_TIMEZONE))
 			slot = ConsultationSlot(
 				start=local_start,
