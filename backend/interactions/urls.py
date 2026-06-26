@@ -3,6 +3,7 @@ from django.urls import path
 from .stripe_views import (
     StripeConsultationCancelView,
     StripeConsultationCheckoutView,
+    StripeConsultationConfirmView,
     StripeCreateCheckoutView,
     StripeWebhookView,
 )
@@ -21,5 +22,6 @@ urlpatterns = [
     path("stripe/create-checkout/", StripeCreateCheckoutView.as_view(), name="stripe-create-checkout"),
     path("stripe/consultation-checkout/", StripeConsultationCheckoutView.as_view(), name="stripe-consultation-checkout"),
     path("stripe/consultation-cancel/", StripeConsultationCancelView.as_view(), name="stripe-consultation-cancel"),
+    path("stripe/consultation-confirm/", StripeConsultationConfirmView.as_view(), name="stripe-consultation-confirm"),
     path("stripe/webhook/", StripeWebhookView.as_view(), name="stripe-webhook"),
 ]

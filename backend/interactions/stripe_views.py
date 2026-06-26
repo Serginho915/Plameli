@@ -18,7 +18,13 @@ from rest_framework.views import APIView
 from content.models import EducationItem
 
 from .booking_cancellation import cancel_consultation_booking
-from .google_calendar import ConsultationSlot, create_event, is_slot_free
+from .google_calendar import (
+	CalendarConfigurationError,
+	CalendarUnavailableError,
+	ConsultationSlot,
+	create_event,
+	is_slot_free,
+)
 from .models import ConsultationBooking, EducationRegistration
 from .serializers import ConsultationBookingCreateSerializer, EducationRegistrationCreateSerializer
 
@@ -293,6 +299,68 @@ class StripeConsultationCancelView(APIView):
 			except stripe.error.StripeError:
 				pass
 		return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class StripeConsultationConfirmView(APIView):
+	"""Confirm a paid Checkout Session and create the calendar event if needed."""
+
+	def post(self, request):
+		session_id = str(request.data.get("sessionId", "")).strip()
+		if not session_id:
+			return Response(
+				{"code": "session_id_required", "detail": "sessionId is required."},
+				status=status.HTTP_400_BAD_REQUEST,
+			)
+		if not _is_configured_secret(settings.STRIPE_SECRET_KEY):
+			return Response(
+				{"code": "payment_not_configured", "detail": "Payment service is not configured."},
+				status=status.HTTP_503_SERVICE_UNAVAILABLE,
+			)
+
+		stripe.api_key = settings.STRIPE_SECRET_KEY
+		try:
+			session = stripe.checkout.Session.retrieve(session_id)
+		except stripe.error.StripeError as exc:
+			return _stripe_error_response(exc)
+
+		if session.get("payment_status") != "paid":
+			return Response(
+				{"code": "payment_not_completed", "detail": "Checkout Session is not paid yet."},
+				status=status.HTTP_409_CONFLICT,
+			)
+		metadata = session.get("metadata") or {}
+		if metadata.get("purchase_type") != "consultation":
+			return Response(
+				{"code": "invalid_session", "detail": "Checkout Session is not for a consultation."},
+				status=status.HTTP_400_BAD_REQUEST,
+			)
+
+		try:
+			StripeWebhookView()._complete_consultation(session, metadata)
+		except CalendarConfigurationError as exc:
+			return Response(
+				{"code": "calendar_not_configured", "detail": str(exc)},
+				status=status.HTTP_503_SERVICE_UNAVAILABLE,
+			)
+		except CalendarUnavailableError as exc:
+			return Response(
+				{"code": "calendar_unavailable", "detail": str(exc)},
+				status=status.HTTP_503_SERVICE_UNAVAILABLE,
+			)
+
+		booking = ConsultationBooking.objects.filter(stripe_session_id=session_id).first()
+		if booking is None:
+			return Response(
+				{"code": "booking_not_found", "detail": "Consultation booking was not found."},
+				status=status.HTTP_404_NOT_FOUND,
+			)
+		return Response(
+			{
+				"status": booking.status,
+				"eventId": booking.google_event_id,
+				"eventUrl": booking.google_event_url,
+			}
+		)
 
 
 @method_decorator(csrf_exempt, name="dispatch")

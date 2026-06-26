@@ -1,8 +1,9 @@
 from rest_framework import viewsets
-from rest_framework.authentication import BasicAuthentication
 from rest_framework.permissions import IsAdminUser
 from rest_framework.response import Response
 from rest_framework.views import APIView
+
+from config.admin_auth import SilentBasicAuthentication
 
 from .admin_serializers import (
     BlogPostAdminSerializer,
@@ -13,7 +14,7 @@ from .models import BlogPost, EducationItem
 
 
 class AdminMeAPIView(APIView):
-    authentication_classes = [BasicAuthentication]
+    authentication_classes = [SilentBasicAuthentication]
     permission_classes = [IsAdminUser]
 
     def get(self, request):
@@ -28,7 +29,7 @@ class AdminMeAPIView(APIView):
 
 
 class BlogAssetUploadAPIView(APIView):
-    authentication_classes = [BasicAuthentication]
+    authentication_classes = [SilentBasicAuthentication]
     permission_classes = [IsAdminUser]
 
     def post(self, request):
@@ -43,7 +44,7 @@ class BlogAssetUploadAPIView(APIView):
 
 
 class BlogPostAdminViewSet(viewsets.ModelViewSet):
-    authentication_classes = [BasicAuthentication]
+    authentication_classes = [SilentBasicAuthentication]
     permission_classes = [IsAdminUser]
     queryset = BlogPost.objects.all().order_by("created_at")
     serializer_class = BlogPostAdminSerializer
@@ -51,7 +52,7 @@ class BlogPostAdminViewSet(viewsets.ModelViewSet):
 
 
 class EducationItemAdminViewSet(viewsets.ModelViewSet):
-    authentication_classes = [BasicAuthentication]
+    authentication_classes = [SilentBasicAuthentication]
     permission_classes = [IsAdminUser]
     queryset = EducationItem.objects.all().prefetch_related("program").order_by("created_at")
     serializer_class = EducationItemAdminSerializer

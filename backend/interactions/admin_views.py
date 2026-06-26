@@ -1,6 +1,7 @@
 from rest_framework import viewsets
-from rest_framework.authentication import BasicAuthentication
 from rest_framework.permissions import IsAdminUser
+
+from config.admin_auth import SilentBasicAuthentication
 
 from .admin_serializers import (
     ConsultationBookingAdminSerializer,
@@ -11,7 +12,7 @@ from .models import ConsultationBooking, EducationRegistration, FeedbackRequest
 
 
 class FeedbackRequestAdminViewSet(viewsets.ReadOnlyModelViewSet):
-    authentication_classes = [BasicAuthentication]
+    authentication_classes = [SilentBasicAuthentication]
     permission_classes = [IsAdminUser]
     queryset = FeedbackRequest.objects.all().order_by("-created_at")
     serializer_class = FeedbackRequestAdminSerializer
@@ -19,7 +20,7 @@ class FeedbackRequestAdminViewSet(viewsets.ReadOnlyModelViewSet):
 
 
 class EducationRegistrationAdminViewSet(viewsets.ReadOnlyModelViewSet):
-    authentication_classes = [BasicAuthentication]
+    authentication_classes = [SilentBasicAuthentication]
     permission_classes = [IsAdminUser]
     queryset = EducationRegistration.objects.select_related("education_item").all().order_by("-created_at")
     serializer_class = EducationRegistrationAdminSerializer
@@ -27,7 +28,7 @@ class EducationRegistrationAdminViewSet(viewsets.ReadOnlyModelViewSet):
 
 
 class ConsultationBookingAdminViewSet(viewsets.ReadOnlyModelViewSet):
-    authentication_classes = [BasicAuthentication]
+    authentication_classes = [SilentBasicAuthentication]
     permission_classes = [IsAdminUser]
     queryset = ConsultationBooking.objects.all().order_by("-created_at")
     serializer_class = ConsultationBookingAdminSerializer

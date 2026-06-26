@@ -50,3 +50,13 @@ export const cancelConsultationCheckout = (sessionId: string): Promise<null> =>
     method: "POST",
     body: JSON.stringify({ sessionId }),
   });
+
+export const confirmConsultationCheckout = (sessionId: string): Promise<{
+  status: string;
+  eventId: string;
+  eventUrl: string;
+}> =>
+  apiClient("/stripe/consultation-confirm/", {
+    method: "POST",
+    body: JSON.stringify({ sessionId }),
+  });

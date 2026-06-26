@@ -283,6 +283,51 @@ class ConsultationApiTests(TestCase):
         self.assertEqual(booking.google_event_id, "google-event-id")
         self.assertEqual(booking.stripe_payment_intent, "pi_test")
 
+    @patch("interactions.stripe_views.create_event")
+    @patch("interactions.stripe_views.stripe.checkout.Session.retrieve")
+    def test_confirm_paid_checkout_creates_calendar_event(self, retrieve_session_mock, create_event_mock):
+        booking = ConsultationBooking.objects.create(
+            language="bg",
+            consultation_format="standard",
+            meeting_type="zoom",
+            selected_date=self.slot.start.date(),
+            selected_time=self.slot.start.strftime("%H:%M"),
+            name="Client Name",
+            phone="+359888123456",
+            email="client@example.com",
+            message="Question",
+            total_amount_eur="150.00",
+            stripe_session_id="cs_test_consultation",
+            payload={"slotStart": self.slot.start.isoformat()},
+        )
+        retrieve_session_mock.return_value = {
+            "id": "cs_test_consultation",
+            "payment_status": "paid",
+            "payment_intent": "pi_test",
+            "amount_total": 15000,
+            "currency": "eur",
+            "metadata": {
+                "purchase_type": "consultation",
+                "booking_id": str(booking.id),
+            },
+        }
+        create_event_mock.return_value = {
+            "id": "google-event-id",
+            "htmlLink": "https://calendar.google.com/event",
+        }
+
+        response = self.client.post(
+            "/api/stripe/consultation-confirm/",
+            {"sessionId": "cs_test_consultation"},
+            format="json",
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["eventId"], "google-event-id")
+        booking.refresh_from_db()
+        self.assertEqual(booking.status, ConsultationBooking.STATUS_PAID)
+        self.assertEqual(booking.google_event_id, "google-event-id")
+
     @patch("interactions.stripe_views.stripe.checkout.Session.expire")
     def test_cancelled_checkout_releases_slot(self, expire_session_mock):
         booking = ConsultationBooking.objects.create(

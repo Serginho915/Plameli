@@ -14,6 +14,7 @@ import { ApiError } from "@/lib/apiClient";
 import {
   bookConsultation,
   cancelConsultationCheckout,
+  confirmConsultationCheckout,
   fetchAvailableSlots,
   AvailableSlots,
 } from "./bookingApi";
@@ -64,6 +65,7 @@ export const BookingWidget = () => {
   const [isLoadingSlots, setIsLoadingSlots] = useState(false);
   const [availabilityError, setAvailabilityError] = useState("");
   const [bookingError, setBookingError] = useState("");
+  const [paymentConfirmationError, setPaymentConfirmationError] = useState("");
   const [isBooking, setIsBooking] = useState(false);
   const [paymentResult, setPaymentResult] = useState<"success" | "cancelled" | null>(() => {
     const value = searchParams.get("payment");
@@ -105,6 +107,17 @@ export const BookingWidget = () => {
   useEffect(() => {
     if (!paymentResult) return;
     const sessionId = searchParams.get("session_id");
+    if (paymentResult === "success" && sessionId) {
+      void confirmConsultationCheckout(sessionId)
+        .then(async () => {
+          setPaymentConfirmationError("");
+          setAvailableSlots(await fetchAvailableSlots());
+        })
+        .catch((error) => {
+          console.error("Failed to confirm paid consultation:", error);
+          setPaymentConfirmationError(t.bookingWidget.bookingError);
+        });
+    }
     if (paymentResult === "cancelled" && sessionId) {
       void cancelConsultationCheckout(sessionId).catch(() => undefined);
     }
@@ -112,7 +125,7 @@ export const BookingWidget = () => {
     url.searchParams.delete("payment");
     url.searchParams.delete("session_id");
     window.history.replaceState(null, "", url.toString());
-  }, [paymentResult, searchParams]);
+  }, [paymentResult, searchParams, t.bookingWidget.bookingError]);
 
   // Update the calendar's view month when format changes to ensure the user sees valid slots
   useEffect(() => {
@@ -773,6 +786,11 @@ export const BookingWidget = () => {
           <CheckIcon pure />
           <p>{t.bookingWidget.bookingSuccess}</p>
         </div>
+        {paymentConfirmationError ? (
+          <div className={styles.errorMessage} role="alert">
+            {paymentConfirmationError}
+          </div>
+        ) : null}
       </div>
     );
   }
