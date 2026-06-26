@@ -58,6 +58,14 @@ def _safe_session_id(session_id: str) -> str:
 	return f"{session_id[:10]}...{session_id[-6:]}"
 
 
+def _stripe_to_dict(value):
+	if hasattr(value, "to_dict_recursive"):
+		return value.to_dict_recursive()
+	if hasattr(value, "to_dict"):
+		return value.to_dict()
+	return value
+
+
 def _payment_method_types() -> list[str]:
 	return [
 		value.strip()
@@ -342,7 +350,7 @@ class StripeConsultationConfirmView(APIView):
 		logger.info("Confirming paid consultation checkout session %s.", safe_session_id)
 		stripe.api_key = settings.STRIPE_SECRET_KEY
 		try:
-			session = stripe.checkout.Session.retrieve(session_id)
+			session = _stripe_to_dict(stripe.checkout.Session.retrieve(session_id))
 		except stripe.error.StripeError as exc:
 			logger.warning("Stripe session retrieve failed for %s: %s", safe_session_id, exc)
 			return _stripe_error_response(exc)
@@ -441,17 +449,17 @@ class StripeWebhookView(APIView):
 
 		stripe.api_key = settings.STRIPE_SECRET_KEY
 		try:
-			event = stripe.Webhook.construct_event(
+			event = _stripe_to_dict(stripe.Webhook.construct_event(
 				request.body,
 				request.META.get("HTTP_STRIPE_SIGNATURE", ""),
 				settings.STRIPE_WEBHOOK_SECRET,
-			)
+			))
 		except (ValueError, stripe.error.SignatureVerificationError):
 			logger.warning("Rejected Stripe webhook with invalid payload or signature.")
 			return HttpResponse(status=400)
 
 		event_type = event["type"]
-		session = event["data"]["object"]
+		session = _stripe_to_dict(event["data"]["object"])
 		logger.info(
 			"Received Stripe webhook event type=%s session=%s payment_status=%s.",
 			event_type,
