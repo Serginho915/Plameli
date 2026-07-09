@@ -179,18 +179,18 @@
 }
 
 .fab {
-  min-width: 128px;
-  height: 50px;
+  width: 56px;
+  height: 56px;
   border: 0;
   border-radius: 999px;
-  padding: 0 18px;
   color: $color-neutrals-100;
-  font: 500 18px/20px $font-primary;
-  letter-spacing: 0.2px;
   background: linear-gradient(145deg, $color-brand-500 0%, #d64d23 100%);
   box-shadow: 0 14px 26px rgba(241, 89, 42, 0.34);
   cursor: pointer;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 
   &:hover {
     transform: translateY(-2px);
@@ -198,11 +198,14 @@
   }
 
   @include down("mobile-large") {
-    min-width: 116px;
-    height: 46px;
-    font-size: 16px;
-    line-height: 18px;
+    width: 50px;
+    height: 50px;
   }
+}
+
+.fabIcon {
+  width: 24px;
+  height: 24px;
 }
 
 @keyframes reveal {

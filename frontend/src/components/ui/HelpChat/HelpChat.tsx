@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { useTranslation } from "@/hooks/useTranslation";
 import { translations } from "./HelpChat.translations";
 import styles from "./HelpChat.module.scss";
@@ -25,10 +25,6 @@ export const HelpChat = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [inputValue, setInputValue] = useState("");
   const [messages, setMessages] = useState<ChatMessage[]>(initialMessages);
-
-  useEffect(() => {
-    setMessages(initialMessages);
-  }, [initialMessages]);
 
   const canSend = useMemo(() => inputValue.trim().length > 0, [inputValue]);
 
@@ -123,7 +119,25 @@ export const HelpChat = () => {
         onClick={() => setIsOpen((prev) => !prev)}
         aria-label={isOpen ? t.closeChatAriaLabel : t.openChatAriaLabel}
       >
-        {isOpen ? t.close : t.open}
+        {isOpen ? (
+          <svg viewBox="0 0 24 24" className={styles.fabIcon} aria-hidden="true">
+            <path d="M6 6l12 12M18 6L6 18" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" />
+          </svg>
+        ) : (
+          <svg viewBox="0 0 24 24" className={styles.fabIcon} aria-hidden="true">
+            <path
+              d="M4.5 12a7.5 7.5 0 0 1 7.5-7.5h0A7.5 7.5 0 0 1 19.5 12v0A7.5 7.5 0 0 1 12 19.5H9l-3.5 2 1.2-3.2A7.47 7.47 0 0 1 4.5 12Z"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+            <circle cx="9" cy="12" r="1.1" fill="currentColor" />
+            <circle cx="12" cy="12" r="1.1" fill="currentColor" />
+            <circle cx="15" cy="12" r="1.1" fill="currentColor" />
+          </svg>
+        )}
       </button>
     </div>
   );
