@@ -14,13 +14,25 @@ type ChatMessage = {
 
 type HelpChatResponse = {
   answer: string;
+  sessionId?: string;
 };
 
+const CHAT_SESSION_KEY = "helpChat.sessionId";
+
+function readChatSessionId(): string | null {
+  if (typeof window === "undefined") {
+    return null;
+  }
+
+  return window.sessionStorage.getItem(CHAT_SESSION_KEY);
+}
+
 export const HelpChat = () => {
-  const { t } = useTranslation(translations);
+  const { t, language } = useTranslation(translations);
 
   const [isOpen, setIsOpen] = useState(false);
   const [inputValue, setInputValue] = useState("");
+  const [sessionId, setSessionId] = useState<string | null>(() => readChatSessionId());
   const [messages, setMessages] = useState<ChatMessage[]>(() => [
     { id: "initial-message", role: "bot", text: t.initialMessage },
   ]);
@@ -55,12 +67,19 @@ export const HelpChat = () => {
       const response = await apiClient<HelpChatResponse>("/help-chat/", {
         method: "POST",
         body: JSON.stringify({
+          sessionId,
+          language,
           messages: nextMessages.map((message) => ({
             role: message.role === "bot" ? "assistant" : "user",
             content: message.text,
           })),
         }),
       });
+
+      if (response.sessionId) {
+        setSessionId(response.sessionId);
+        window.sessionStorage.setItem(CHAT_SESSION_KEY, response.sessionId);
+      }
 
       setMessages((prev) => [
         ...prev,

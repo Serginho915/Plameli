@@ -6,7 +6,7 @@ import { Logo } from "@/components/layout/Header/Logo/Logo";
 import { RichTextEditor } from "./RichTextEditor";
 import styles from "./AdminPage.module.scss";
 
-type PanelTab = "blog" | "education" | "requests";
+type PanelTab = "blog" | "education" | "requests" | "chat";
 type RequestTab = "feedback" | "educationRegistrations" | "consultationBookings";
 
 interface AdminUser {
@@ -98,6 +98,31 @@ interface ConsultationBooking {
   created_at: string;
 }
 
+interface ChatMessage {
+  id: number;
+  role: "assistant" | "user";
+  content: string;
+  created_at: string;
+}
+
+interface ChatConversationSummary {
+  id: number;
+  session_id: string;
+  language: string;
+  title: string;
+  last_user_message: string;
+  last_message_at: string | null;
+  message_count: number;
+  user_agent: string;
+  ip_address: string;
+  created_at: string;
+  updated_at: string;
+}
+
+interface ChatConversationDetail extends ChatConversationSummary {
+  messages: ChatMessage[];
+}
+
 interface AdminTranslations {
   loginTitle: string;
   usernameLabel: string;
@@ -113,6 +138,7 @@ interface AdminTranslations {
     blog: string;
     education: string;
     requests: string;
+    chat: string;
   };
   status: {
     savingBlogPost: string;
@@ -206,6 +232,29 @@ interface AdminTranslations {
     consultations: string;
     noRecordsYet: string;
   };
+  chat: {
+    title: string;
+    refresh: string;
+    search: string;
+    searchPlaceholder: string;
+    noRecordsYet: string;
+    lastMessageAt: string;
+    language: string;
+    conversationTitle: string;
+    messageCount: string;
+    lastUserMessage: string;
+    actions: string;
+    view: string;
+    close: string;
+    sessionId: string;
+    createdAt: string;
+    userAgent: string;
+    ipAddress: string;
+    messages: string;
+    visitor: string;
+    assistant: string;
+    selectPrompt: string;
+  };
 }
 
 const translations: Record<"ru" | "bg", AdminTranslations> = {
@@ -224,6 +273,7 @@ const translations: Record<"ru" | "bg", AdminTranslations> = {
       blog: "Блог",
       education: "Обучение",
       requests: "Запросы",
+      chat: "Чат",
     },
     status: {
       savingBlogPost: "Сохранение статьи...",
@@ -317,6 +367,29 @@ const translations: Record<"ru" | "bg", AdminTranslations> = {
       consultations: "Консультации",
       noRecordsYet: "Записей пока нет",
     },
+    chat: {
+      title: "История чата",
+      refresh: "Обновить",
+      search: "Поиск",
+      searchPlaceholder: "Поиск по сообщениям, IP или session ID",
+      noRecordsYet: "Диалогов пока нет",
+      lastMessageAt: "Последнее сообщение",
+      language: "Язык",
+      conversationTitle: "Тема",
+      messageCount: "Сообщений",
+      lastUserMessage: "Последнее сообщение посетителя",
+      actions: "Действия",
+      view: "Просмотр",
+      close: "Закрыть",
+      sessionId: "Session ID",
+      createdAt: "Создано",
+      userAgent: "User agent",
+      ipAddress: "IP address",
+      messages: "Сообщения",
+      visitor: "Посетитель",
+      assistant: "Ассистент",
+      selectPrompt: "Выберите диалог из списка, чтобы посмотреть историю.",
+    },
   },
   bg: {
     loginTitle: "Админ панел",
@@ -333,6 +406,7 @@ const translations: Record<"ru" | "bg", AdminTranslations> = {
       blog: "Блог",
       education: "Обучение",
       requests: "Заявки",
+      chat: "Чат",
     },
     status: {
       savingBlogPost: "Запазване на статията...",
@@ -425,6 +499,29 @@ const translations: Record<"ru" | "bg", AdminTranslations> = {
       education: "Обучение",
       consultations: "Консултации",
       noRecordsYet: "Все още няма записи",
+    },
+    chat: {
+      title: "История на чата",
+      refresh: "Обнови",
+      search: "Търсене",
+      searchPlaceholder: "Търсене по съобщения, IP или session ID",
+      noRecordsYet: "Все още няма разговори",
+      lastMessageAt: "Последно съобщение",
+      language: "Език",
+      conversationTitle: "Тема",
+      messageCount: "Съобщения",
+      lastUserMessage: "Последно съобщение от посетител",
+      actions: "Действия",
+      view: "Преглед",
+      close: "Затвори",
+      sessionId: "Session ID",
+      createdAt: "Създадено",
+      userAgent: "User agent",
+      ipAddress: "IP address",
+      messages: "Съобщения",
+      visitor: "Посетител",
+      assistant: "Асистент",
+      selectPrompt: "Изберете разговор от списъка, за да видите историята.",
     },
   },
 };
@@ -574,6 +671,10 @@ function formatRequestCell(
   }
 
   return JSON.stringify(value);
+}
+
+function formatDateTime(value: string | null | undefined, locale: string): string {
+  return value ? new Date(value).toLocaleString(locale) : "-";
 }
 
 function flattenApiError(value: unknown): string[] {
@@ -740,6 +841,7 @@ function toReadableApiError(rawMessage: string, fallback: string, lang: UiLang):
 export default function AdminPage() {
   const { t, language } = useTranslation(translations);
   const uiLang: UiLang = language === "bg" ? "bg" : "ru";
+  const dateLocale = language === "bg" ? "bg-BG" : "ru-RU";
   const [tab, setTab] = useState<PanelTab>("blog");
   const [requestTab, setRequestTab] = useState<RequestTab>("feedback");
   const [username, setUsername] = useState(() => readSessionValue(USERNAME_KEY) || "");
@@ -762,6 +864,10 @@ export default function AdminPage() {
   const [feedbackRequests, setFeedbackRequests] = useState<FeedbackRequest[]>([]);
   const [educationRegistrations, setEducationRegistrations] = useState<EducationRegistration[]>([]);
   const [consultationBookings, setConsultationBookings] = useState<ConsultationBooking[]>([]);
+  const [chatConversations, setChatConversations] = useState<ChatConversationSummary[]>([]);
+  const [selectedChat, setSelectedChat] = useState<ChatConversationDetail | null>(null);
+  const [chatSearch, setChatSearch] = useState("");
+  const [chatLoading, setChatLoading] = useState(false);
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -820,7 +926,7 @@ export default function AdminPage() {
 
       const user = await adminFetch<AdminUser>("/me/", token);
       setAdminUser(user);
-      await Promise.all([loadBlogPosts(token), loadEducationItems(token), loadRequests(token)]);
+      await Promise.all([loadBlogPosts(token), loadEducationItems(token), loadRequests(token), loadChatConversations(token)]);
     } catch (err) {
       handleAuthError(err);
     } finally {
@@ -895,6 +1001,51 @@ export default function AdminPage() {
     setFeedbackRequests(feedback);
     setEducationRegistrations(registrations);
     setConsultationBookings(bookings);
+  }
+
+  async function loadChatConversations(token: string, search = chatSearch) {
+    const query = search.trim() ? `?search=${encodeURIComponent(search.trim())}` : "";
+    const data = await adminFetch<ChatConversationSummary[]>(`/chat/conversations/${query}`, token);
+    setChatConversations(data);
+
+    if (selectedChat && !data.some((item) => item.session_id === selectedChat.session_id)) {
+      setSelectedChat(null);
+    }
+  }
+
+  async function selectChatConversation(sessionId: string) {
+    if (!authHeader) {
+      return;
+    }
+
+    try {
+      setChatLoading(true);
+      setError(null);
+      const data = await adminFetch<ChatConversationDetail>(`/chat/conversations/${sessionId}/`, authHeader);
+      setSelectedChat(data);
+    } catch (err) {
+      setError(err instanceof Error ? toReadableApiError(err.message, t.status.authorizationFailed, uiLang) : t.status.authorizationFailed);
+    } finally {
+      setChatLoading(false);
+    }
+  }
+
+  async function onChatSearchSubmit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+
+    if (!authHeader) {
+      return;
+    }
+
+    try {
+      setChatLoading(true);
+      setError(null);
+      await loadChatConversations(authHeader, chatSearch);
+    } catch (err) {
+      setError(err instanceof Error ? toReadableApiError(err.message, t.status.authorizationFailed, uiLang) : t.status.authorizationFailed);
+    } finally {
+      setChatLoading(false);
+    }
   }
 
   function selectBlog(id: number | "new") {
@@ -1219,6 +1370,9 @@ export default function AdminPage() {
         </button>
         <button className={tab === "requests" ? styles.activeTab : ""} onClick={() => setTab("requests")} type="button">
           {t.tabs.requests}
+        </button>
+        <button className={tab === "chat" ? styles.activeTab : ""} onClick={() => setTab("chat")} type="button">
+          {t.tabs.chat}
         </button>
       </nav>
 
@@ -1734,13 +1888,150 @@ export default function AdminPage() {
                           key={`${item.id}-${column.key}`}
                           className={column.key === "message" ? styles.multilineCell : ""}
                         >
-                          {formatRequestCell(item, column.key, language === "bg" ? "bg-BG" : "ru-RU")}
+                          {formatRequestCell(item, column.key, dateLocale)}
                         </td>
                       ))}
                     </tr>
                   ))}
                 </tbody>
               </table>
+            </div>
+          )}
+        </div>
+      ) : null}
+
+      {tab === "chat" ? (
+        <div className={styles.chatAdmin}>
+          <div className={styles.requestsCard}>
+            <div className={styles.sectionHeader}>
+              <h2>{t.chat.title}</h2>
+              <button
+                type="button"
+                className={styles.secondaryButton}
+                onClick={() => authHeader && void loadChatConversations(authHeader)}
+                disabled={chatLoading}
+              >
+                {t.chat.refresh}
+              </button>
+            </div>
+
+            <form className={styles.chatSearch} onSubmit={onChatSearchSubmit}>
+              <label>
+                {t.chat.search}
+                <input
+                  value={chatSearch}
+                  placeholder={t.chat.searchPlaceholder}
+                  onChange={(event) => setChatSearch(event.target.value)}
+                />
+              </label>
+              <button type="submit" className={styles.secondaryButton} disabled={chatLoading}>
+                {t.chat.search}
+              </button>
+            </form>
+
+            {chatConversations.length === 0 ? (
+              <p>{t.chat.noRecordsYet}</p>
+            ) : (
+              <div className={styles.requestsTableWrap}>
+                <table className={styles.requestsTable}>
+                  <thead>
+                    <tr>
+                      <th>{t.chat.lastMessageAt}</th>
+                      <th>{t.chat.language}</th>
+                      <th>{t.chat.conversationTitle}</th>
+                      <th>{t.chat.messageCount}</th>
+                      <th>{t.chat.lastUserMessage}</th>
+                      <th>{t.chat.actions}</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {chatConversations.map((conversation) => (
+                      <tr key={conversation.session_id}>
+                        <td>{formatDateTime(conversation.last_message_at || conversation.created_at, dateLocale)}</td>
+                        <td>{conversation.language || "-"}</td>
+                        <td className={styles.multilineCell}>{conversation.title || "-"}</td>
+                        <td>{conversation.message_count}</td>
+                        <td className={styles.multilineCell}>{conversation.last_user_message || "-"}</td>
+                        <td>
+                          <button
+                            type="button"
+                            className={styles.tableActionButton}
+                            onClick={() => void selectChatConversation(conversation.session_id)}
+                            disabled={chatLoading}
+                          >
+                            {t.chat.view}
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </div>
+
+          {selectedChat ? (
+            <div className={styles.chatDetailCard}>
+              <div className={styles.sectionHeader}>
+                <div>
+                  <span className={styles.detailEyebrow}>{t.chat.view}</span>
+                  <h2>{selectedChat.title || selectedChat.session_id}</h2>
+                </div>
+                <button type="button" className={styles.secondaryButton} onClick={() => setSelectedChat(null)}>
+                  {t.chat.close}
+                </button>
+              </div>
+
+              <div className={styles.chatMetaGrid}>
+                <div className={styles.chatMetaItem}>
+                  <span>{t.chat.sessionId}</span>
+                  <strong>{selectedChat.session_id}</strong>
+                </div>
+                <div className={styles.chatMetaItem}>
+                  <span>{t.chat.createdAt}</span>
+                  <strong>{formatDateTime(selectedChat.created_at, dateLocale)}</strong>
+                </div>
+                <div className={styles.chatMetaItem}>
+                  <span>{t.chat.lastMessageAt}</span>
+                  <strong>{formatDateTime(selectedChat.last_message_at, dateLocale)}</strong>
+                </div>
+                <div className={styles.chatMetaItem}>
+                  <span>{t.chat.language}</span>
+                  <strong>{selectedChat.language || "-"}</strong>
+                </div>
+                <div className={styles.chatMetaItem}>
+                  <span>{t.chat.userAgent}</span>
+                  <strong>{selectedChat.user_agent || "-"}</strong>
+                </div>
+                <div className={styles.chatMetaItem}>
+                  <span>{t.chat.ipAddress}</span>
+                  <strong>{selectedChat.ip_address || "-"}</strong>
+                </div>
+              </div>
+
+              <div className={styles.chatMessagesPanel}>
+                <span className={styles.detailEyebrow}>{t.chat.messages}</span>
+                <div className={styles.chatMessages}>
+                  {selectedChat.messages.map((message) => (
+                    <article
+                      key={message.id}
+                      className={`${styles.chatBubble} ${
+                        message.role === "user" ? styles.visitorBubble : styles.assistantBubble
+                      }`}
+                    >
+                      <div className={styles.chatBubbleHeader}>
+                        <strong>{message.role === "user" ? t.chat.visitor : t.chat.assistant}</strong>
+                        <span>{formatDateTime(message.created_at, dateLocale)}</span>
+                      </div>
+                      <p>{message.content}</p>
+                    </article>
+                  ))}
+                </div>
+              </div>
+            </div>
+          ) : (
+            <div className={styles.chatDetailCard}>
+              <p className={styles.emptyHint}>{t.chat.selectPrompt}</p>
             </div>
           )}
         </div>

@@ -1,3 +1,5 @@
+import uuid
+
 from django.db import models
 
 from content.models import EducationItem
@@ -126,5 +128,48 @@ class ConsultationBooking(TimeStampedModel):
 
 	def __str__(self):
 		return f"booking:{self.email}:{self.selected_date}:{self.selected_time}"
+
+
+class ChatConversation(TimeStampedModel):
+	session_id = models.UUIDField(default=uuid.uuid4, unique=True, editable=False)
+	language = models.CharField(max_length=8, default="bg", blank=True)
+	title = models.CharField(max_length=255, blank=True)
+	last_user_message = models.TextField(blank=True)
+	last_message_at = models.DateTimeField(null=True, blank=True, db_index=True)
+	message_count = models.PositiveIntegerField(default=0)
+	user_agent = models.TextField(blank=True)
+	ip_address = models.CharField(max_length=64, blank=True)
+
+	class Meta:
+		ordering = ["-last_message_at", "-created_at"]
+
+	def __str__(self):
+		return f"chat:{self.session_id}"
+
+
+class ChatMessage(TimeStampedModel):
+	ROLE_ASSISTANT = "assistant"
+	ROLE_USER = "user"
+	ROLE_CHOICES = [
+		(ROLE_ASSISTANT, "Assistant"),
+		(ROLE_USER, "User"),
+	]
+
+	conversation = models.ForeignKey(
+		ChatConversation,
+		related_name="messages",
+		on_delete=models.CASCADE,
+	)
+	role = models.CharField(max_length=16, choices=ROLE_CHOICES)
+	content = models.TextField()
+
+	class Meta:
+		ordering = ["created_at", "id"]
+		indexes = [
+			models.Index(fields=["conversation", "created_at"]),
+		]
+
+	def __str__(self):
+		return f"chat-message:{self.conversation_id}:{self.role}"
 
 # Create your models here.

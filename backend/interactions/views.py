@@ -1,4 +1,5 @@
 from django.db import IntegrityError, transaction
+from django.utils import timezone
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -20,6 +21,105 @@ from .openrouter_chat import (
 	OpenRouterRequestError,
 	ask_openrouter,
 )
+from .models import ChatConversation, ChatMessage
+
+
+def _client_ip(request):
+	forwarded_for = request.META.get("HTTP_X_FORWARDED_FOR", "")
+	if forwarded_for:
+		return forwarded_for.split(",", 1)[0].strip()[:64]
+	return request.META.get("REMOTE_ADDR", "")[:64]
+
+
+def _clean_chat_messages(messages):
+	cleaned = []
+	for message in messages:
+		if not isinstance(message, dict):
+			continue
+
+		role = message.get("role")
+		content = str(message.get("content", "")).strip()
+		if role not in {"user", "assistant"} or not content:
+			continue
+
+		cleaned.append({"role": role, "content": content})
+
+	return cleaned
+
+
+def _conversation_title(messages):
+	for message in messages:
+		if message["role"] == ChatMessage.ROLE_USER:
+			content = " ".join(message["content"].split())
+			return content[:120]
+	return ""
+
+
+def _last_user_message(messages):
+	for message in reversed(messages):
+		if message["role"] == ChatMessage.ROLE_USER:
+			return message["content"]
+	return ""
+
+
+def _get_or_create_chat_conversation(request, messages):
+	session_id = request.data.get("sessionId")
+	conversation = None
+
+	if session_id:
+		conversation = ChatConversation.objects.filter(session_id=session_id).first()
+
+	if conversation:
+		return conversation, False
+
+	return (
+		ChatConversation.objects.create(
+			language=str(request.data.get("language") or "").strip()[:8] or "bg",
+			title=_conversation_title(messages),
+			user_agent=request.META.get("HTTP_USER_AGENT", ""),
+			ip_address=_client_ip(request),
+		),
+		True,
+	)
+
+
+def _append_chat_messages(conversation, messages, answer, is_new_conversation):
+	now = timezone.now()
+	to_store = messages if is_new_conversation else messages[-1:]
+	created_messages = [
+		ChatMessage(
+			conversation=conversation,
+			role=message["role"],
+			content=message["content"],
+		)
+		for message in to_store
+	]
+	created_messages.append(
+		ChatMessage(
+			conversation=conversation,
+			role=ChatMessage.ROLE_ASSISTANT,
+			content=answer,
+		)
+	)
+
+	ChatMessage.objects.bulk_create(created_messages)
+
+	if not conversation.title:
+		conversation.title = _conversation_title(messages)
+	conversation.language = str(conversation.language or "bg")[:8]
+	conversation.last_user_message = _last_user_message(messages)
+	conversation.last_message_at = now
+	conversation.message_count = ChatMessage.objects.filter(conversation=conversation).count()
+	conversation.save(
+		update_fields=[
+			"title",
+			"language",
+			"last_user_message",
+			"last_message_at",
+			"message_count",
+			"updated_at",
+		]
+	)
 
 
 class FeedbackRequestCreateAPIView(APIView):
@@ -114,9 +214,14 @@ class HelpChatAPIView(APIView):
 				{"code": "invalid_messages", "detail": "Messages must be a list."},
 				status=status.HTTP_400_BAD_REQUEST,
 			)
-
+		clean_messages = _clean_chat_messages(messages)
+		if not clean_messages:
+			return Response(
+				{"code": "invalid_messages", "detail": "Messages must include at least one valid item."},
+				status=status.HTTP_400_BAD_REQUEST,
+			)
 		try:
-			answer = ask_openrouter(messages)
+			answer = ask_openrouter(clean_messages)
 		except OpenRouterConfigurationError as exc:
 			return Response(
 				{"code": "openrouter_not_configured", "detail": str(exc)},
@@ -131,6 +236,9 @@ class HelpChatAPIView(APIView):
 				status=status.HTTP_503_SERVICE_UNAVAILABLE,
 			)
 
-		return Response({"answer": answer})
+		conversation, is_new_conversation = _get_or_create_chat_conversation(request, clean_messages)
+		_append_chat_messages(conversation, clean_messages, answer, is_new_conversation)
+
+		return Response({"answer": answer, "sessionId": str(conversation.session_id)})
 
 # Create your views here.

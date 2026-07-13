@@ -395,6 +395,162 @@
   min-width: 220px;
 }
 
+.tableActionButton {
+  border: 1px solid $color-grey-300;
+  border-radius: 12px;
+  background: rgba($color-neutrals-100, 0.9);
+  color: $color-grey-700;
+  padding: 8px 12px;
+  font-family: $font-primary;
+  cursor: pointer;
+  transition: 0.2s ease;
+
+  &:hover:not(:disabled) {
+    border-color: $accent;
+    color: $accent;
+  }
+
+  &:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+  }
+}
+
+.chatAdmin {
+  display: grid;
+  gap: 16px;
+}
+
+.chatSearch {
+  display: grid;
+  grid-template-columns: minmax(240px, 520px) auto;
+  align-items: end;
+  gap: 12px;
+
+  @include down("tablet") {
+    grid-template-columns: 1fr;
+  }
+}
+
+.chatDetailCard {
+  border: 1px solid rgba($color-grey-300, 0.8);
+  border-radius: 24px;
+  background: linear-gradient(160deg, rgba($color-neutrals-100, 0.95), rgba($color-grey-50, 0.95));
+  box-shadow: 0 18px 46px rgba($color-grey-600, 0.14);
+  padding: 20px;
+  display: grid;
+  gap: 18px;
+}
+
+.detailEyebrow {
+  display: block;
+  color: $color-grey-500;
+  font-family: $font-primary;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+
+.chatMetaGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+
+  @include down("tablet") {
+    grid-template-columns: 1fr;
+  }
+}
+
+.chatMetaItem {
+  border: 1px solid rgba($color-grey-300, 0.75);
+  border-radius: 14px;
+  background: rgba($color-neutrals-100, 0.78);
+  padding: 12px 14px;
+  display: grid;
+  gap: 6px;
+
+  span {
+    color: $color-grey-500;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+  }
+
+  strong {
+    color: $color-grey-800;
+    font-size: 14px;
+    line-height: 1.45;
+    overflow-wrap: anywhere;
+  }
+}
+
+.chatMessagesPanel {
+  border: 1px solid rgba($color-grey-300, 0.75);
+  border-radius: 18px;
+  background: rgba($color-neutrals-100, 0.62);
+  padding: 16px;
+  display: grid;
+  gap: 12px;
+}
+
+.chatMessages {
+  display: grid;
+  gap: 12px;
+}
+
+.chatBubble {
+  width: min(720px, 100%);
+  border: 1px solid rgba($color-grey-300, 0.9);
+  border-radius: 14px;
+  background: rgba($color-neutrals-100, 0.9);
+  padding: 14px;
+  color: $color-grey-800;
+
+  p {
+    margin: 8px 0 0;
+    color: $color-grey-800;
+    line-height: 1.55;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+  }
+}
+
+.visitorBubble {
+  justify-self: end;
+  background: rgba($color-brand-100, 0.38);
+}
+
+.assistantBubble {
+  justify-self: start;
+}
+
+.chatBubbleHeader {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  color: $color-grey-500;
+  font-size: 13px;
+
+  strong {
+    color: $color-grey-800;
+  }
+
+  span {
+    white-space: nowrap;
+  }
+
+  @include down("mobile-large") {
+    flex-direction: column;
+    gap: 4px;
+
+    span {
+      white-space: normal;
+    }
+  }
+}
+
 .error,
 .success {
   border-radius: 12px;

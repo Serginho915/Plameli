@@ -8,6 +8,7 @@ from content.admin_views import (
     EducationItemAdminViewSet,
 )
 from interactions.admin_views import (
+    ChatConversationAdminViewSet,
     ConsultationBookingAdminViewSet,
     EducationRegistrationAdminViewSet,
     FeedbackRequestAdminViewSet,
@@ -30,9 +31,13 @@ requests_router.register(
     basename="admin-requests-consultation-bookings",
 )
 
+chat_router = DefaultRouter()
+chat_router.register("conversations", ChatConversationAdminViewSet, basename="admin-chat-conversations")
+
 urlpatterns = [
     path("me/", AdminMeAPIView.as_view(), name="admin-me"),
     path("content/blog-assets/", BlogAssetUploadAPIView.as_view(), name="admin-content-blog-assets"),
     path("content/", include(content_router.urls)),
     path("requests/", include(requests_router.urls)),
+    path("chat/", include(chat_router.urls)),
 ]

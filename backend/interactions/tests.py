@@ -1,9 +1,11 @@
+import base64
 from datetime import datetime, timedelta
 import time
 from types import SimpleNamespace
 from unittest.mock import patch
 from zoneinfo import ZoneInfo
 
+from django.contrib.auth import get_user_model
 from django.test import TestCase, override_settings
 from django.utils import timezone
 from rest_framework.test import APIClient
@@ -12,7 +14,7 @@ from .google_calendar import ConsultationSlot, available_slots, candidate_slots
 from content.models import EducationItem
 
 from .booking_cancellation import cancel_consultation_booking
-from .models import ConsultationBooking, EducationRegistration
+from .models import ChatConversation, ConsultationBooking, EducationRegistration
 from .openrouter_chat import OpenRouterConfigurationError
 from .stripe_views import StripeWebhookView
 
@@ -596,7 +598,70 @@ class HelpChatApiTests(TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data["answer"], "Здравейте! Мога да помогна.")
+        self.assertIn("sessionId", response.data)
         ask_openrouter_mock.assert_called_once_with(payload["messages"])
+
+    @patch("interactions.views.ask_openrouter", return_value="Hello, I can help.")
+    def test_help_chat_persists_conversation_history(self, _):
+        payload = {
+            "language": "en",
+            "messages": [
+                {"role": "assistant", "content": "Hi! How can I help?"},
+                {"role": "user", "content": "What services do you offer?"},
+            ],
+        }
+
+        response = self.client.post(
+            "/api/help-chat/",
+            payload,
+            format="json",
+            HTTP_USER_AGENT="Mozilla/Test",
+            REMOTE_ADDR="127.0.0.1",
+        )
+
+        self.assertEqual(response.status_code, 200)
+        conversation = ChatConversation.objects.get()
+        self.assertEqual(str(conversation.session_id), response.data["sessionId"])
+        self.assertEqual(conversation.language, "en")
+        self.assertEqual(conversation.title, "What services do you offer?")
+        self.assertEqual(conversation.last_user_message, "What services do you offer?")
+        self.assertEqual(conversation.message_count, 3)
+        self.assertEqual(conversation.user_agent, "Mozilla/Test")
+        self.assertEqual(conversation.ip_address, "127.0.0.1")
+        self.assertEqual(
+            list(conversation.messages.values_list("role", flat=True)),
+            ["assistant", "user", "assistant"],
+        )
+
+    @patch("interactions.views.ask_openrouter", side_effect=["First answer", "Second answer"])
+    def test_help_chat_continues_existing_conversation_without_duplicating_history(self, _):
+        first_response = self.client.post(
+            "/api/help-chat/",
+            {"messages": [{"role": "user", "content": "First question"}]},
+            format="json",
+        )
+        session_id = first_response.data["sessionId"]
+
+        response = self.client.post(
+            "/api/help-chat/",
+            {
+                "sessionId": session_id,
+                "messages": [
+                    {"role": "user", "content": "First question"},
+                    {"role": "assistant", "content": "First answer"},
+                    {"role": "user", "content": "Second question"},
+                ],
+            },
+            format="json",
+        )
+
+        self.assertEqual(response.status_code, 200)
+        conversation = ChatConversation.objects.get()
+        self.assertEqual(conversation.message_count, 4)
+        self.assertEqual(
+            list(conversation.messages.values_list("content", flat=True)),
+            ["First question", "First answer", "Second question", "Second answer"],
+        )
 
     @patch(
         "interactions.views.ask_openrouter",
@@ -611,3 +676,43 @@ class HelpChatApiTests(TestCase):
 
         self.assertEqual(response.status_code, 503)
         self.assertEqual(response.data["code"], "openrouter_not_configured")
+        self.assertFalse(ChatConversation.objects.exists())
+
+
+class ChatConversationAdminTests(TestCase):
+    def setUp(self):
+        self.client = APIClient()
+        get_user_model().objects.create_user(
+            username="admin",
+            password="secret",
+            is_staff=True,
+        )
+        self.token = base64.b64encode(b"admin:secret").decode("ascii")
+
+    def test_admin_lists_and_retrieves_chat_conversation(self):
+        conversation = ChatConversation.objects.create(
+            language="en",
+            title="Hi! How can you help me?",
+            last_user_message="Hi! How can you help me?",
+            last_message_at=timezone.now(),
+            message_count=2,
+            user_agent="Mozilla/Test",
+            ip_address="127.0.0.1",
+        )
+        conversation.messages.create(role="user", content="Hi! How can you help me?")
+        conversation.messages.create(role="assistant", content="Hello! I can help.")
+
+        list_response = self.client.get(
+            "/api/admin/chat/conversations/",
+            HTTP_AUTHORIZATION=f"Basic {self.token}",
+        )
+        detail_response = self.client.get(
+            f"/api/admin/chat/conversations/{conversation.session_id}/",
+            HTTP_AUTHORIZATION=f"Basic {self.token}",
+        )
+
+        self.assertEqual(list_response.status_code, 200)
+        self.assertEqual(list_response.data[0]["session_id"], str(conversation.session_id))
+        self.assertNotIn("messages", list_response.data[0])
+        self.assertEqual(detail_response.status_code, 200)
+        self.assertEqual(len(detail_response.data["messages"]), 2)
