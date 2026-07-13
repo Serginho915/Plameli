@@ -15,29 +15,26 @@
 
 .chatWindow {
   width: min(390px, calc(100vw - 24px));
-  max-height: min(72vh, 640px);
-  margin-bottom: 14px;
   border: 1px solid $color-stroke-primary;
-  border-radius: 20px;
-  background: linear-gradient(180deg, #ffffff 0%, #f5f7fa 100%);
-  box-shadow: 0 24px 44px rgba(47, 57, 69, 0.2);
+  border-radius: 16px;
+  background: $color-neutrals-100;
+  box-shadow: 0 18px 40px rgba(47, 57, 69, 0.18);
   overflow: hidden;
-  animation: reveal 220ms ease-out;
+  animation: reveal 180ms ease-out;
   display: grid;
-  grid-template-rows: auto 1fr auto auto;
+  grid-template-rows: auto minmax(0, auto) auto;
 
   @include down("mobile-large") {
     width: calc(100vw - 24px);
-    max-height: min(76vh, 560px);
-    margin-bottom: 10px;
-    border-radius: 16px;
+    border-radius: 14px;
   }
 }
 
 .header {
   @include flex-between;
-  padding: 12px 14px;
-  background: linear-gradient(145deg, $color-brand-500 0%, #d64d23 100%);
+  gap: 16px;
+  padding: 14px 16px;
+  background: $color-brand-500;
   color: $color-neutrals-100;
 }
 
@@ -52,18 +49,32 @@
 }
 
 .closeBtn {
-  width: 30px;
-  height: 30px;
-  border: 1px solid rgba(255, 255, 255, 0.4);
-  border-radius: 10px;
-  background: rgba(255, 255, 255, 0.16);
+  width: 34px;
+  height: 34px;
+  border: 1px solid rgba(255, 255, 255, 0.42);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.14);
   color: $color-neutrals-100;
-  font: 500 16px/1 $font-secondary;
   cursor: pointer;
   transition: background-color 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 
   &:hover {
-    background: rgba(255, 255, 255, 0.3);
+    background: rgba(255, 255, 255, 0.24);
+  }
+}
+
+.closeIcon {
+  width: 18px;
+  height: 18px;
+
+  path {
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2.2;
+    stroke-linecap: round;
   }
 }
 
@@ -72,10 +83,8 @@
   flex-direction: column;
   gap: 10px;
   padding: 14px;
-  overflow: auto;
-  background:
-    radial-gradient(circle at 96% 3%, rgba(241, 89, 42, 0.16) 0%, rgba(241, 89, 42, 0) 28%),
-    #f7f8fb;
+  overflow: hidden;
+  background: #f7f8fb;
 }
 
 .messageBubble {
@@ -89,40 +98,15 @@
 .botBubble {
   align-self: flex-start;
   color: $color-neutrals-900;
-  background: #ffffff;
+  background: $color-neutrals-100;
   border: 1px solid #e0e5ec;
 }
 
 .userBubble {
   align-self: flex-end;
   color: $color-neutrals-100;
-  background: linear-gradient(145deg, $color-grey-800 0%, $color-grey-700 100%);
-  border: 1px solid $color-grey-700;
-}
-
-.quickReplies {
-  display: flex;
-  gap: 8px;
-  padding: 0 14px 10px;
-  overflow-x: auto;
-}
-
-.quickReplyBtn {
-  flex: 0 0 auto;
-  border: 1px solid $color-grey-300;
-  border-radius: 999px;
-  background: $color-neutrals-100;
-  color: $color-grey-800;
-  padding: 7px 12px;
-  font: 500 13px/16px $font-secondary;
-  cursor: pointer;
-  transition: all 0.2s ease;
-
-  &:hover {
-    border-color: $color-brand-500;
-    color: $color-brand-500;
-    background: $color-brand-100;
-  }
+  background: $color-grey-800;
+  border: 1px solid $color-grey-800;
 }
 
 .composer {
@@ -156,6 +140,7 @@
 
 .sendBtn {
   flex: 0 0 auto;
+  min-width: 96px;
   height: 42px;
   border-radius: 12px;
   border: 1px solid $color-brand-500;
@@ -184,8 +169,8 @@
   border: 0;
   border-radius: 999px;
   color: $color-neutrals-100;
-  background: linear-gradient(145deg, $color-brand-500 0%, #d64d23 100%);
-  box-shadow: 0 14px 26px rgba(241, 89, 42, 0.34);
+  background: $color-brand-500;
+  box-shadow: 0 14px 26px rgba(241, 89, 42, 0.28);
   cursor: pointer;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
   display: inline-flex;
@@ -194,7 +179,7 @@
 
   &:hover {
     transform: translateY(-2px);
-    box-shadow: 0 18px 28px rgba(241, 89, 42, 0.4);
+    box-shadow: 0 18px 28px rgba(241, 89, 42, 0.34);
   }
 
   @include down("mobile-large") {

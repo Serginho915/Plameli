@@ -1,50 +1,87 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { FormEvent, useMemo, useState } from "react";
+import { apiClient } from "@/lib/apiClient";
 import { useTranslation } from "@/hooks/useTranslation";
 import { translations } from "./HelpChat.translations";
 import styles from "./HelpChat.module.scss";
 
 type ChatMessage = {
-  id: number;
+  id: string;
   role: "bot" | "user";
   text: string;
+};
+
+type HelpChatResponse = {
+  answer: string;
 };
 
 export const HelpChat = () => {
   const { t } = useTranslation(translations);
 
-  const initialMessages = useMemo<ChatMessage[]>(
-    () => [
-      { id: 1, role: "bot", text: t.initialMessages[0] },
-      { id: 2, role: "bot", text: t.initialMessages[1] },
-    ],
-    [t]
-  );
-
   const [isOpen, setIsOpen] = useState(false);
   const [inputValue, setInputValue] = useState("");
-  const [messages, setMessages] = useState<ChatMessage[]>(initialMessages);
+  const [messages, setMessages] = useState<ChatMessage[]>(() => [
+    { id: "initial-message", role: "bot", text: t.initialMessage },
+  ]);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const canSend = useMemo(() => inputValue.trim().length > 0, [inputValue]);
+  const canSend = useMemo(
+    () => inputValue.trim().length > 0 && !isLoading,
+    [inputValue, isLoading]
+  );
+  const visibleMessages = useMemo(() => messages.slice(-7), [messages]);
 
-  const sendMessage = (text: string) => {
-    const clean = text.trim();
-    if (!clean) {
+  const sendMessage = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    const clean = inputValue.trim();
+    if (!clean || isLoading) {
       return;
     }
 
-    setMessages((prev) => [
-      ...prev,
-      { id: prev.length + 1, role: "user", text: clean },
-      {
-        id: prev.length + 2,
-        role: "bot",
-        text: t.demoReply,
-      },
-    ]);
+    const userMessage: ChatMessage = {
+      id: `${Date.now()}-user`,
+      role: "user",
+      text: clean,
+    };
+    const nextMessages = [...messages, userMessage];
 
+    setMessages(nextMessages);
     setInputValue("");
+    setIsLoading(true);
+
+    try {
+      const response = await apiClient<HelpChatResponse>("/help-chat/", {
+        method: "POST",
+        body: JSON.stringify({
+          messages: nextMessages.map((message) => ({
+            role: message.role === "bot" ? "assistant" : "user",
+            content: message.text,
+          })),
+        }),
+      });
+
+      setMessages((prev) => [
+        ...prev,
+        {
+          id: `${Date.now()}-bot`,
+          role: "bot",
+          text: response.answer,
+        },
+      ]);
+    } catch {
+      setMessages((prev) => [
+        ...prev,
+        {
+          id: `${Date.now()}-error`,
+          role: "bot",
+          text: t.errorMessage,
+        },
+      ]);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -62,12 +99,14 @@ export const HelpChat = () => {
               aria-label={t.closeChatAriaLabel}
               onClick={() => setIsOpen(false)}
             >
-              ✕
+              <svg viewBox="0 0 24 24" className={styles.closeIcon} aria-hidden="true">
+                <path d="M6 6l12 12M18 6 6 18" />
+              </svg>
             </button>
           </header>
 
-          <div className={styles.messages}>
-            {messages.map((message) => (
+          <div className={styles.messages} aria-live="polite">
+            {visibleMessages.map((message) => (
               <div
                 key={message.id}
                 className={`${styles.messageBubble} ${
@@ -77,28 +116,14 @@ export const HelpChat = () => {
                 {message.text}
               </div>
             ))}
+            {isLoading && (
+              <div className={`${styles.messageBubble} ${styles.botBubble}`}>
+                {t.loadingMessage}
+              </div>
+            )}
           </div>
 
-          <div className={styles.quickReplies}>
-            {t.quickReplies.map((reply) => (
-              <button
-                key={reply}
-                type="button"
-                className={styles.quickReplyBtn}
-                onClick={() => sendMessage(reply)}
-              >
-                {reply}
-              </button>
-            ))}
-          </div>
-
-          <form
-            className={styles.composer}
-            onSubmit={(event) => {
-              event.preventDefault();
-              sendMessage(inputValue);
-            }}
-          >
+          <form className={styles.composer} onSubmit={sendMessage}>
             <input
               className={styles.input}
               type="text"
@@ -113,17 +138,13 @@ export const HelpChat = () => {
         </section>
       )}
 
-      <button
-        type="button"
-        className={styles.fab}
-        onClick={() => setIsOpen((prev) => !prev)}
-        aria-label={isOpen ? t.closeChatAriaLabel : t.openChatAriaLabel}
-      >
-        {isOpen ? (
-          <svg viewBox="0 0 24 24" className={styles.fabIcon} aria-hidden="true">
-            <path d="M6 6l12 12M18 6L6 18" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" />
-          </svg>
-        ) : (
+      {!isOpen && (
+        <button
+          type="button"
+          className={styles.fab}
+          onClick={() => setIsOpen(true)}
+          aria-label={t.openChatAriaLabel}
+        >
           <svg viewBox="0 0 24 24" className={styles.fabIcon} aria-hidden="true">
             <path
               d="M4.5 12a7.5 7.5 0 0 1 7.5-7.5h0A7.5 7.5 0 0 1 19.5 12v0A7.5 7.5 0 0 1 12 19.5H9l-3.5 2 1.2-3.2A7.47 7.47 0 0 1 4.5 12Z"
@@ -137,8 +158,8 @@ export const HelpChat = () => {
             <circle cx="12" cy="12" r="1.1" fill="currentColor" />
             <circle cx="15" cy="12" r="1.1" fill="currentColor" />
           </svg>
-        )}
-      </button>
+        </button>
+      )}
     </div>
   );
 };

@@ -15,6 +15,11 @@ from .serializers import (
 	EducationRegistrationCreateSerializer,
 	FeedbackRequestCreateSerializer,
 )
+from .openrouter_chat import (
+	OpenRouterConfigurationError,
+	OpenRouterRequestError,
+	ask_openrouter,
+)
 
 
 class FeedbackRequestCreateAPIView(APIView):
@@ -99,5 +104,33 @@ class AvailableSlotsAPIView(APIView):
 				status=status.HTTP_503_SERVICE_UNAVAILABLE,
 			)
 		return Response({"slots": [slot.as_dict() for slot in slots]})
+
+
+class HelpChatAPIView(APIView):
+	def post(self, request):
+		messages = request.data.get("messages")
+		if not isinstance(messages, list):
+			return Response(
+				{"code": "invalid_messages", "detail": "Messages must be a list."},
+				status=status.HTTP_400_BAD_REQUEST,
+			)
+
+		try:
+			answer = ask_openrouter(messages)
+		except OpenRouterConfigurationError as exc:
+			return Response(
+				{"code": "openrouter_not_configured", "detail": str(exc)},
+				status=status.HTTP_503_SERVICE_UNAVAILABLE,
+			)
+		except OpenRouterRequestError:
+			return Response(
+				{
+					"code": "openrouter_unavailable",
+					"detail": "The assistant is temporarily unavailable.",
+				},
+				status=status.HTTP_503_SERVICE_UNAVAILABLE,
+			)
+
+		return Response({"answer": answer})
 
 # Create your views here.

@@ -6,13 +6,11 @@ export interface HelpChatTranslations {
   openChatAriaLabel: string;
   title: string;
   subtitle: string;
-  close: string;
-  open: string;
   send: string;
   inputPlaceholder: string;
-  initialMessages: string[];
-  quickReplies: string[];
-  demoReply: string;
+  initialMessage: string;
+  loadingMessage: string;
+  errorMessage: string;
 }
 
 export const translations: ComponentTranslations<HelpChatTranslations> = {
@@ -20,44 +18,24 @@ export const translations: ComponentTranslations<HelpChatTranslations> = {
     chatWindowAriaLabel: "Окно чата поддержки",
     closeChatAriaLabel: "Закрыть чат поддержки",
     openChatAriaLabel: "Открыть чат поддержки",
-    title: "Plameli Support",
-    subtitle: "Онлайн помощь",
-    close: "Закрыть",
-    open: "Помощь",
+    title: "Plameli",
+    subtitle: "Онлайн ассистент",
     send: "Отправить",
     inputPlaceholder: "Напишите сообщение...",
-    initialMessages: [
-      "Привет. Я бот поддержки Plameli. Помогу с консультациями, записью и обучением.",
-      "Напишите вопрос или выберите одну из подсказок ниже.",
-    ],
-    quickReplies: [
-      "Как записаться на консультацию?",
-      "Какая стоимость услуг?",
-      "Нужна помощь с выбором формата",
-    ],
-    demoReply:
-      "Спасибо. Это демо-окно поддержки, здесь пока реализованы только стили. Логику можно подключить отдельно.",
+    initialMessage: "Здравей! Аз съм асистентът. С какво да помогна днес? ",
+    loadingMessage: "Пишу ответ...",
+    errorMessage: "Сейчас ассистент недоступен. Проверьте ключ OpenRouter или попробуйте позже.",
   },
   bg: {
     chatWindowAriaLabel: "Прозорец за чат с поддръжка",
-    closeChatAriaLabel: "Затвори чата за поддръжка",
-    openChatAriaLabel: "Отвори чата за поддръжка",
-    title: "Plameli Support",
-    subtitle: "Онлайн помощ",
-    close: "Затвори",
-    open: "Помощ",
+    closeChatAriaLabel: "Затвори чата",
+    openChatAriaLabel: "Отвори чата",
+    title: "Plameli",
+    subtitle: "Онлайн асистент",
     send: "Изпрати",
     inputPlaceholder: "Напишете съобщение...",
-    initialMessages: [
-      "Здравейте. Аз съм ботът за поддръжка на Plameli. Ще помогна с консултации, записване и обучения.",
-      "Напишете въпрос или изберете една от подсказките по-долу.",
-    ],
-    quickReplies: [
-      "Как да се запиша за консултация?",
-      "Каква е цената на услугите?",
-      "Нужна ми е помощ за избор на формат",
-    ],
-    demoReply:
-      "Благодаря. Това е демо прозорец за поддръжка и тук засега са реализирани само стиловете. Логиката може да се добави отделно.",
+    initialMessage: "Здравей! Аз съм асистентът. С какво да помогна днес? ",
+    loadingMessage: "Пиша отговор...",
+    errorMessage: "В момента асистентът не е достъпен. Проверете OpenRouter ключа или опитайте по-късно.",
   },
 };

@@ -13,6 +13,7 @@ from content.models import EducationItem
 
 from .booking_cancellation import cancel_consultation_booking
 from .models import ConsultationBooking, EducationRegistration
+from .openrouter_chat import OpenRouterConfigurationError
 from .stripe_views import StripeWebhookView
 
 
@@ -581,3 +582,32 @@ class EducationCheckoutTests(TestCase):
         view._complete_education(session, metadata)
 
         self.assertEqual(EducationRegistration.objects.count(), 1)
+
+
+class HelpChatApiTests(TestCase):
+    def setUp(self):
+        self.client = APIClient()
+
+    @patch("interactions.views.ask_openrouter", return_value="Здравейте! Мога да помогна.")
+    def test_help_chat_returns_assistant_answer(self, ask_openrouter_mock):
+        payload = {"messages": [{"role": "user", "content": "Каква е цената?"}]}
+
+        response = self.client.post("/api/help-chat/", payload, format="json")
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["answer"], "Здравейте! Мога да помогна.")
+        ask_openrouter_mock.assert_called_once_with(payload["messages"])
+
+    @patch(
+        "interactions.views.ask_openrouter",
+        side_effect=OpenRouterConfigurationError("OPENROUTER_API_KEY is not configured."),
+    )
+    def test_help_chat_reports_missing_openrouter_key(self, _):
+        response = self.client.post(
+            "/api/help-chat/",
+            {"messages": [{"role": "user", "content": "Hello"}]},
+            format="json",
+        )
+
+        self.assertEqual(response.status_code, 503)
+        self.assertEqual(response.data["code"], "openrouter_not_configured")

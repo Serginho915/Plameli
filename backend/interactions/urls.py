@@ -10,10 +10,12 @@ from .stripe_views import (
 from .views import (
     AvailableSlotsAPIView,
     FeedbackRequestCreateAPIView,
+    HelpChatAPIView,
 )
 
 urlpatterns = [
     path("feedback/", FeedbackRequestCreateAPIView.as_view(), name="feedback-create"),
+    path("help-chat/", HelpChatAPIView.as_view(), name="help-chat"),
     path("education/registrations/", StripeCreateCheckoutView.as_view(), name="education-registration-create"),
     path("consultations/bookings/", StripeConsultationCheckoutView.as_view(), name="consultation-booking-create"),
     path("consultations/available-slots/", AvailableSlotsAPIView.as_view(), name="consultation-available-slots"),

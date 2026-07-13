@@ -42,6 +42,13 @@ STRIPE_CONSULTATION_PRIORITY_PRICE_EUR = os.environ.get(
 )
 FRONTEND_URL = os.environ.get("FRONTEND_URL", "http://localhost:3000")
 
+# OpenRouter help chat
+OPENROUTER_API_KEY = os.environ.get("OPENROUTER_API_KEY", "")
+OPENROUTER_MODEL = os.environ.get("OPENROUTER_MODEL", "~openai/gpt-latest")
+OPENROUTER_SITE_URL = os.environ.get("OPENROUTER_SITE_URL", FRONTEND_URL)
+OPENROUTER_SITE_NAME = os.environ.get("OPENROUTER_SITE_NAME", "Plameli")
+OPENROUTER_TIMEOUT_SECONDS = int(os.environ.get("OPENROUTER_TIMEOUT_SECONDS", "20"))
+
 # Google Calendar consultation booking
 GOOGLE_CALENDAR_ID = os.environ.get("GOOGLE_CALENDAR_ID", "")
 GOOGLE_CLIENT_ID = os.environ.get("GOOGLE_CLIENT_ID", "")
