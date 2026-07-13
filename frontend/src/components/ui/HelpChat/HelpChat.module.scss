@@ -16,7 +16,7 @@
 .chatWindow {
   width: min(390px, calc(100vw - 24px));
   height: min(560px, calc(100vh - 96px));
-  border: 1px solid $color-stroke-primary;
+  border: 0;
   border-radius: 16px;
   background: $color-neutrals-100;
   box-shadow: 0 18px 40px rgba(47, 57, 69, 0.18);

@@ -83,6 +83,16 @@ def _get_or_create_chat_conversation(request, messages):
 	)
 
 
+def _messages_for_openrouter(conversation, messages):
+	if not conversation:
+		return messages
+
+	stored_messages = list(
+		conversation.messages.values("role", "content").order_by("created_at", "id")
+	)
+	return [*stored_messages, *messages[-1:]]
+
+
 def _append_chat_messages(conversation, messages, answer, is_new_conversation):
 	now = timezone.now()
 	to_store = messages if is_new_conversation else messages[-1:]
@@ -220,8 +230,14 @@ class HelpChatAPIView(APIView):
 				{"code": "invalid_messages", "detail": "Messages must include at least one valid item."},
 				status=status.HTTP_400_BAD_REQUEST,
 			)
+		session_id = request.data.get("sessionId")
+		existing_conversation = (
+			ChatConversation.objects.prefetch_related("messages").filter(session_id=session_id).first()
+			if session_id
+			else None
+		)
 		try:
-			answer = ask_openrouter(clean_messages)
+			answer = ask_openrouter(_messages_for_openrouter(existing_conversation, clean_messages))
 		except OpenRouterConfigurationError as exc:
 			return Response(
 				{"code": "openrouter_not_configured", "detail": str(exc)},
@@ -236,7 +252,11 @@ class HelpChatAPIView(APIView):
 				status=status.HTTP_503_SERVICE_UNAVAILABLE,
 			)
 
-		conversation, is_new_conversation = _get_or_create_chat_conversation(request, clean_messages)
+		if existing_conversation:
+			conversation = existing_conversation
+			is_new_conversation = False
+		else:
+			conversation, is_new_conversation = _get_or_create_chat_conversation(request, clean_messages)
 		_append_chat_messages(conversation, clean_messages, answer, is_new_conversation)
 
 		return Response({"answer": answer, "sessionId": str(conversation.session_id)})

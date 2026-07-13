@@ -106,7 +106,7 @@ export const Stages = () => {
             >
               <div className={styles.cardIcon}>
                 <Image
-                  src={`/icons/steps/icon${index + 1}.svg`}
+                  src={`/icons/Steps/icon${index + 1}.svg`}
                   alt="Result"
                   width={24}
                   height={24}

@@ -58,6 +58,6 @@ class Migration(migrations.Migration):
         ),
         migrations.AddIndex(
             model_name="chatmessage",
-            index=models.Index(fields=["conversation", "created_at"], name="interactio_convers_8c2bde_idx"),
+            index=models.Index(fields=["conversation", "created_at"], name="interaction_convers_a58152_idx"),
         ),
     ]

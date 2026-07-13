@@ -1902,80 +1902,85 @@ export default function AdminPage() {
 
       {tab === "chat" ? (
         <div className={styles.chatAdmin}>
-          <div className={styles.requestsCard}>
-            <div className={styles.sectionHeader}>
-              <h2>{t.chat.title}</h2>
-              <button
-                type="button"
-                className={styles.secondaryButton}
-                onClick={() => authHeader && void loadChatConversations(authHeader)}
-                disabled={chatLoading}
-              >
-                {t.chat.refresh}
-              </button>
-            </div>
-
-            <form className={styles.chatSearch} onSubmit={onChatSearchSubmit}>
-              <label>
-                {t.chat.search}
-                <input
-                  value={chatSearch}
-                  placeholder={t.chat.searchPlaceholder}
-                  onChange={(event) => setChatSearch(event.target.value)}
-                />
-              </label>
-              <button type="submit" className={styles.secondaryButton} disabled={chatLoading}>
-                {t.chat.search}
-              </button>
-            </form>
-
-            {chatConversations.length === 0 ? (
-              <p>{t.chat.noRecordsYet}</p>
-            ) : (
-              <div className={styles.requestsTableWrap}>
-                <table className={styles.requestsTable}>
-                  <thead>
-                    <tr>
-                      <th>{t.chat.lastMessageAt}</th>
-                      <th>{t.chat.language}</th>
-                      <th>{t.chat.conversationTitle}</th>
-                      <th>{t.chat.messageCount}</th>
-                      <th>{t.chat.lastUserMessage}</th>
-                      <th>{t.chat.actions}</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {chatConversations.map((conversation) => (
-                      <tr key={conversation.session_id}>
-                        <td>{formatDateTime(conversation.last_message_at || conversation.created_at, dateLocale)}</td>
-                        <td>{conversation.language || "-"}</td>
-                        <td className={styles.multilineCell}>{conversation.title || "-"}</td>
-                        <td>{conversation.message_count}</td>
-                        <td className={styles.multilineCell}>{conversation.last_user_message || "-"}</td>
-                        <td>
-                          <button
-                            type="button"
-                            className={styles.tableActionButton}
-                            onClick={() => void selectChatConversation(conversation.session_id)}
-                            disabled={chatLoading}
-                          >
-                            {t.chat.view}
-                          </button>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+          {!selectedChat ? (
+            <div className={`${styles.requestsCard} ${styles.chatListCard}`}>
+              <div className={styles.sectionHeader}>
+                <h2>{t.chat.title}</h2>
+                <button
+                  type="button"
+                  className={styles.secondaryButton}
+                  onClick={() => authHeader && void loadChatConversations(authHeader)}
+                  disabled={chatLoading}
+                >
+                  {t.chat.refresh}
+                </button>
               </div>
-            )}
-          </div>
 
-          {selectedChat ? (
+              <form className={styles.chatSearch} onSubmit={onChatSearchSubmit}>
+                <label>
+                  {t.chat.search}
+                  <input
+                    value={chatSearch}
+                    placeholder={t.chat.searchPlaceholder}
+                    onChange={(event) => setChatSearch(event.target.value)}
+                  />
+                </label>
+                <button type="submit" className={styles.secondaryButton} disabled={chatLoading}>
+                  {t.chat.search}
+                </button>
+              </form>
+
+              {chatConversations.length === 0 ? (
+                <p>{t.chat.noRecordsYet}</p>
+              ) : (
+                <div className={styles.requestsTableWrap}>
+                  <table className={styles.requestsTable}>
+                    <thead>
+                      <tr>
+                        <th>{t.chat.lastMessageAt}</th>
+                        <th>{t.chat.language}</th>
+                        <th>{t.chat.conversationTitle}</th>
+                        <th>{t.chat.messageCount}</th>
+                        <th>{t.chat.lastUserMessage}</th>
+                        <th>{t.chat.actions}</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {chatConversations.map((conversation) => (
+                        <tr key={conversation.session_id}>
+                          <td>{formatDateTime(conversation.last_message_at || conversation.created_at, dateLocale)}</td>
+                          <td>{conversation.language || "-"}</td>
+                          <td className={styles.multilineCell}>{conversation.title || "-"}</td>
+                          <td>{conversation.message_count}</td>
+                          <td className={styles.multilineCell}>{conversation.last_user_message || "-"}</td>
+                          <td>
+                            <button
+                              type="button"
+                              className={styles.iconActionButton}
+                              onClick={() => void selectChatConversation(conversation.session_id)}
+                              disabled={chatLoading}
+                              aria-label={t.chat.view}
+                              title={t.chat.view}
+                            >
+                              <svg viewBox="0 0 24 24" aria-hidden="true">
+                                <path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6Z" />
+                                <circle cx="12" cy="12" r="3" />
+                              </svg>
+                            </button>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+            </div>
+          ) : (
             <div className={styles.chatDetailCard}>
               <div className={styles.sectionHeader}>
                 <div>
                   <span className={styles.detailEyebrow}>{t.chat.view}</span>
-                  <h2>{selectedChat.title || selectedChat.session_id}</h2>
+                  <h2 className={styles.chatDetailTitle}>{selectedChat.title || selectedChat.session_id}</h2>
                 </div>
                 <button type="button" className={styles.secondaryButton} onClick={() => setSelectedChat(null)}>
                   {t.chat.close}
@@ -2028,10 +2033,6 @@ export default function AdminPage() {
                   ))}
                 </div>
               </div>
-            </div>
-          ) : (
-            <div className={styles.chatDetailCard}>
-              <p className={styles.emptyHint}>{t.chat.selectPrompt}</p>
             </div>
           )}
         </div>

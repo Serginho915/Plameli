@@ -166,7 +166,7 @@ class ChatMessage(TimeStampedModel):
 	class Meta:
 		ordering = ["created_at", "id"]
 		indexes = [
-			models.Index(fields=["conversation", "created_at"]),
+			models.Index(fields=["conversation", "created_at"], name="interaction_convers_a58152_idx"),
 		]
 
 	def __str__(self):

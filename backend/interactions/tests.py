@@ -634,7 +634,7 @@ class HelpChatApiTests(TestCase):
         )
 
     @patch("interactions.views.ask_openrouter", side_effect=["First answer", "Second answer"])
-    def test_help_chat_continues_existing_conversation_without_duplicating_history(self, _):
+    def test_help_chat_continues_existing_conversation_without_duplicating_history(self, ask_openrouter_mock):
         first_response = self.client.post(
             "/api/help-chat/",
             {"messages": [{"role": "user", "content": "First question"}]},
@@ -661,6 +661,14 @@ class HelpChatApiTests(TestCase):
         self.assertEqual(
             list(conversation.messages.values_list("content", flat=True)),
             ["First question", "First answer", "Second question", "Second answer"],
+        )
+        self.assertEqual(
+            ask_openrouter_mock.call_args_list[1].args[0],
+            [
+                {"role": "user", "content": "First question"},
+                {"role": "assistant", "content": "First answer"},
+                {"role": "user", "content": "Second question"},
+            ],
         )
 
     @patch(
