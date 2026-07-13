@@ -416,9 +416,61 @@
   }
 }
 
+.iconActionButton {
+  width: 40px;
+  height: 40px;
+  display: inline-grid;
+  place-items: center;
+  border: 1px solid $color-grey-300;
+  border-radius: 12px;
+  background: rgba($color-neutrals-100, 0.9);
+  color: $color-grey-700;
+  cursor: pointer;
+  transition: 0.2s ease;
+
+  svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  path,
+  circle {
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  &:hover:not(:disabled) {
+    border-color: $accent;
+    color: $accent;
+    transform: translateY(-1px);
+  }
+
+  &:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+  }
+}
+
 .chatAdmin {
   display: grid;
   gap: 16px;
+}
+
+.chatListCard {
+  min-height: 420px;
+
+  .requestsTable {
+    min-width: 980px;
+  }
+
+  .requestsTable th:last-child,
+  .requestsTable td:last-child {
+    width: 92px;
+    text-align: center;
+  }
 }
 
 .chatSearch {
@@ -440,6 +492,18 @@
   padding: 20px;
   display: grid;
   gap: 18px;
+}
+
+.chatDetailTitle {
+  max-width: 100%;
+  color: $color-grey-800;
+  font-size: 42px;
+  line-height: 1.08;
+  overflow-wrap: anywhere;
+
+  @include down("mobile-large") {
+    font-size: 30px;
+  }
 }
 
 .detailEyebrow {
