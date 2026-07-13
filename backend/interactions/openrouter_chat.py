@@ -1,5 +1,6 @@
 import json
 import logging
+import re
 from typing import Any
 from urllib.error import HTTPError, URLError
 from urllib.request import Request, urlopen
@@ -32,10 +33,22 @@ Use only this site information when answering:
 Behavior rules:
 - Reply in the same language as the user's latest message. If the user mixes languages, choose the dominant language.
 - Keep answers concise, friendly, and practical.
+- When using a list, put each item on its own line. Do not write bullet lists inline after a colon.
 - If exact availability, legal outcome, or individual tax advice is requested, explain that this needs a booked consultation or the booking widget.
 - If the question is unrelated to Plameli, accounting, taxes, consultations, education, booking, payment, or site navigation, politely say you can help with Plameli services and ask what they want to know.
 - Do not invent prices, schedules, guarantees, addresses, phone numbers, or policies not listed above.
 """.strip()
+
+INLINE_BULLET_RE = re.compile(r"([:;])\s+-\s+")
+FOLLOW_UP_RE = re.compile(
+    r"([.!?])\s+"
+    r"("
+    r"(?:What|Which|How|Would|Tell|If|"
+    r"Что|Как|Какой|Какая|Какое|Какую|Хотите|Напишите|Если|"
+    r"Какво|Кой|Коя|Кое|Искате|Напишете|Ако)"
+    r"\b[^\n]*)$",
+    re.IGNORECASE,
+)
 
 
 class OpenRouterConfigurationError(Exception):
@@ -58,6 +71,20 @@ def _normalize_messages(messages: list[dict[str, Any]]) -> list[dict[str, str]]:
         normalized.append({"role": role, "content": content[:1200]})
 
     return normalized
+
+
+def format_chat_answer(answer: str) -> str:
+    formatted = str(answer).strip()
+    if not formatted:
+        return ""
+
+    formatted = INLINE_BULLET_RE.sub(r"\1\n- ", formatted)
+    if "\n- " in formatted:
+        formatted = FOLLOW_UP_RE.sub(r"\1\n\n\2", formatted)
+
+    formatted = re.sub(r"[ \t]+\n", "\n", formatted)
+    formatted = re.sub(r"\n{3,}", "\n\n", formatted)
+    return formatted
 
 
 def ask_openrouter(messages: list[dict[str, Any]]) -> str:
@@ -110,7 +137,7 @@ def ask_openrouter(messages: list[dict[str, Any]]) -> str:
             item.get("text", "") for item in content if isinstance(item, dict)
         )
 
-    answer = str(content).strip()
+    answer = format_chat_answer(str(content))
     if not answer:
         raise OpenRouterRequestError("OpenRouter response was empty.")
 

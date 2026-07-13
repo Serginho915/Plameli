@@ -15,7 +15,7 @@ from content.models import EducationItem
 
 from .booking_cancellation import cancel_consultation_booking
 from .models import ChatConversation, ConsultationBooking, EducationRegistration
-from .openrouter_chat import OpenRouterConfigurationError
+from .openrouter_chat import OpenRouterConfigurationError, format_chat_answer
 from .stripe_views import StripeWebhookView
 
 
@@ -631,6 +631,29 @@ class HelpChatApiTests(TestCase):
         self.assertEqual(
             list(conversation.messages.values_list("role", flat=True)),
             ["assistant", "user", "assistant"],
+        )
+
+    @patch(
+        "interactions.views.ask_openrouter",
+        return_value="Hi! I can help with: - consultations; - courses. What do you need?",
+    )
+    def test_help_chat_formats_inline_bullets(self, _):
+        response = self.client.post(
+            "/api/help-chat/",
+            {"messages": [{"role": "user", "content": "What can you help with?"}]},
+            format="json",
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.data["answer"],
+            "Hi! I can help with:\n- consultations;\n- courses.\n\nWhat do you need?",
+        )
+
+    def test_format_chat_answer_moves_inline_bullets_to_lines(self):
+        self.assertEqual(
+            format_chat_answer("Hi! I can help with: - consultations; - courses. What do you need?"),
+            "Hi! I can help with:\n- consultations;\n- courses.\n\nWhat do you need?",
         )
 
     @patch("interactions.views.ask_openrouter", side_effect=["First answer", "Second answer"])

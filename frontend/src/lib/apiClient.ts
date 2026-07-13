@@ -1,4 +1,5 @@
-const DEFAULT_BROWSER_API_URL = '/api';
+const DEFAULT_BROWSER_API_URL =
+  process.env.NODE_ENV === 'development' ? 'http://localhost:8000/api' : '/api';
 
 function resolveApiBaseUrl(): string {
   const isServer = typeof window === 'undefined';

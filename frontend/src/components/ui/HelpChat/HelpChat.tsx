@@ -18,6 +18,23 @@ type HelpChatResponse = {
 };
 
 const CHAT_SESSION_KEY = "helpChat.sessionId";
+const FOLLOW_UP_PATTERN =
+  /([.!?])\s+((?:What|Which|How|Would|Tell|If|Что|Как|Какой|Какая|Какое|Какую|Хотите|Напишите|Если|Какво|Кой|Коя|Кое|Искате|Напишете|Ако)\b[^\n]*)$/i;
+
+function formatChatText(text: string): string {
+  const formatted = text
+    .trim()
+    .replace(/([:;])\s+-\s+/g, "$1\n- ")
+    .replace(/[ \t]+\n/g, "\n");
+
+  if (!formatted.includes("\n- ")) {
+    return formatted;
+  }
+
+  return formatted
+    .replace(FOLLOW_UP_PATTERN, "$1\n\n$2")
+    .replace(/\n{3,}/g, "\n\n");
+}
 
 function readChatSessionId(): string | null {
   if (typeof window === "undefined") {
@@ -86,7 +103,7 @@ export const HelpChat = () => {
         {
           id: `${Date.now()}-bot`,
           role: "bot",
-          text: response.answer,
+          text: formatChatText(response.answer),
         },
       ]);
     } catch {

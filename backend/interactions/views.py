@@ -20,6 +20,7 @@ from .openrouter_chat import (
 	OpenRouterConfigurationError,
 	OpenRouterRequestError,
 	ask_openrouter,
+	format_chat_answer,
 )
 from .models import ChatConversation, ChatMessage
 
@@ -237,7 +238,9 @@ class HelpChatAPIView(APIView):
 			else None
 		)
 		try:
-			answer = ask_openrouter(_messages_for_openrouter(existing_conversation, clean_messages))
+			answer = format_chat_answer(
+				ask_openrouter(_messages_for_openrouter(existing_conversation, clean_messages))
+			)
 		except OpenRouterConfigurationError as exc:
 			return Response(
 				{"code": "openrouter_not_configured", "detail": str(exc)},
