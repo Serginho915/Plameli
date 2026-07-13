@@ -4,6 +4,7 @@ import { Header } from '@/components/layout/Header/Header';
 import { Footer } from '@/components/layout/Footer/Footer';
 import { BookingModal } from '@/components/ui/BookingModal/BookingModal';
 import { HelpChat } from '@/components/ui/HelpChat/HelpChat';
+import { CookieConsent } from '@/components/ui/CookieConsent/CookieConsent';
 import { i18n } from '@/i18n-config';
 import { Language } from '@/types/language';
 
@@ -32,6 +33,7 @@ export default async function RootLayout({
         <Footer />
         <BookingModal />
         <HelpChat />
+        <CookieConsent />
       </UIProvider>
     </LanguageProvider>
   );
