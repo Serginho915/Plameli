@@ -8,6 +8,9 @@ build/
 .next/
 out/
 
+# Runtime data
+backend/prod-data/
+
 # Environment
 .env
 .env.local

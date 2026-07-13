@@ -10,10 +10,15 @@ services:
     environment:
       DJANGO_DEBUG: "false"
       DJANGO_SECRET_KEY: ${DJANGO_SECRET_KEY}
+      DJANGO_DATABASE_NAME: ${DJANGO_DATABASE_NAME:-/data/db.sqlite3}
+      DJANGO_MEDIA_ROOT: ${DJANGO_MEDIA_ROOT:-/data/media}
       DJANGO_ALLOWED_HOSTS: ${DJANGO_ALLOWED_HOSTS:-ledgerlab.tech,www.ledgerlab.tech}
       DJANGO_CORS_ALLOWED_ORIGINS: ${DJANGO_CORS_ALLOWED_ORIGINS:-https://ledgerlab.tech,https://www.ledgerlab.tech}
       DJANGO_CSRF_TRUSTED_ORIGINS: ${DJANGO_CSRF_TRUSTED_ORIGINS:-https://ledgerlab.tech,https://www.ledgerlab.tech}
       DJANGO_INTERACTIONS_LOG_LEVEL: ${DJANGO_INTERACTIONS_LOG_LEVEL:-INFO}
+      DJANGO_ADMIN_USERNAME: ${DJANGO_ADMIN_USERNAME:-}
+      DJANGO_ADMIN_PASSWORD: ${DJANGO_ADMIN_PASSWORD:-}
+      DJANGO_ADMIN_EMAIL: ${DJANGO_ADMIN_EMAIL:-}
       STRIPE_SECRET_KEY: ${STRIPE_SECRET_KEY}
       STRIPE_WEBHOOK_SECRET: ${STRIPE_WEBHOOK_SECRET}
       STRIPE_CURRENCY: ${STRIPE_CURRENCY:-eur}
@@ -36,7 +41,9 @@ services:
       CONSULTATION_SLOT_TIMES: ${CONSULTATION_SLOT_TIMES:-13:00,14:30}
       CONSULTATION_DURATION_MINUTES: ${CONSULTATION_DURATION_MINUTES:-60}
       CONSULTATION_LOOKAHEAD_DAYS: ${CONSULTATION_LOOKAHEAD_DAYS:-30}
-    command: sh -c "python manage.py migrate && gunicorn config.wsgi:application --bind 0.0.0.0:8000 --workers 3"
+    volumes:
+      - ./backend/prod-data:/data
+    command: /app/entrypoint.prod.sh
     restart: unless-stopped
 
   frontend:
