@@ -96,10 +96,18 @@
 }
 
 .linksGroup {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
   width: auto;
 
   @include down("tablet") {
     width: 100%;
+  }
+
+  @include down("mobile") {
+    align-items: center;
   }
 }
 
@@ -119,6 +127,14 @@
     justify-content: center;
     gap: 12px 16px;
     width: 100%;
+  }
+}
+
+.legalLinks {
+  justify-content: flex-start;
+
+  @include down("mobile") {
+    justify-content: center;
   }
 }
 

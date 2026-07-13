@@ -15,6 +15,7 @@
 
 .chatWindow {
   width: min(390px, calc(100vw - 24px));
+  height: min(560px, calc(100vh - 96px));
   border: 1px solid $color-stroke-primary;
   border-radius: 16px;
   background: $color-neutrals-100;
@@ -22,10 +23,15 @@
   overflow: hidden;
   animation: reveal 180ms ease-out;
   display: grid;
-  grid-template-rows: auto minmax(0, auto) auto;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+
+  @supports (height: 100dvh) {
+    height: min(560px, calc(100dvh - 96px));
+  }
 
   @include down("mobile-large") {
     width: calc(100vw - 24px);
+    height: min(620px, calc(100dvh - 24px - env(safe-area-inset-bottom)));
     border-radius: 14px;
   }
 }
@@ -82,8 +88,9 @@
   display: flex;
   flex-direction: column;
   gap: 10px;
-  padding: 14px;
-  overflow: hidden;
+  min-height: 0;
+  padding: 16px 14px;
+  overflow-y: auto;
   background: #f7f8fb;
 }
 
