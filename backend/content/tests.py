@@ -32,6 +32,16 @@ class AdminAuthenticationTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data["username"], "admin")
 
+    def test_admin_auth_accepts_forwarded_authorization_header(self):
+        token = base64.b64encode(b"admin:secret").decode("ascii")
+        response = self.client.get(
+            "/api/admin/me/",
+            HTTP_X_FORWARDED_AUTHORIZATION=f"Basic {token}",
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["username"], "admin")
+
 
 class EnsureAdminCommandTests(TestCase):
     def test_command_creates_staff_superuser_from_environment(self):
