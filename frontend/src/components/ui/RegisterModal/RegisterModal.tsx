@@ -235,6 +235,7 @@ export const RegisterModal: React.FC<RegisterModalProps> = ({
                         src={item.mediaSrc}
                         alt={item.title}
                         fill
+                        unoptimized={item.mediaSrc.startsWith("/media/")}
                         className={styles.courseImage}
                         style={{ objectFit: "cover" }}
                       />

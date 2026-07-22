@@ -263,6 +263,7 @@ export const EducationDetail = () => {
                   src={item.mediaSrc}
                   alt={item.title}
                   fill
+                  unoptimized={item.mediaSrc.startsWith("/media/")}
                   sizes="(max-width: 768px) 100vw, 50vw"
                   className={styles.mediaImage}
                   priority

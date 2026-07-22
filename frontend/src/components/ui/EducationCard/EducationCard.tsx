@@ -43,6 +43,7 @@ export const EducationCard: React.FC<EducationCardProps> = ({
             src={mediaSrc}
             alt={title}
             fill
+            unoptimized={mediaSrc.startsWith("/media/")}
             style={{ objectFit: "cover" }}
           />
         </div>

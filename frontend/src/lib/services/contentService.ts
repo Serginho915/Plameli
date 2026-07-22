@@ -72,8 +72,8 @@ function normalizeMediaUrl(value: string): string {
   }
 
   return value
-    .replace(/^http:\/\/ledgerlab\.tech\/media\//, "https://ledgerlab.tech/media/")
-    .replace(/^http:\/\/www\.ledgerlab\.tech\/media\//, "https://www.ledgerlab.tech/media/");
+    .replace(/^https?:\/\/ledgerlab\.tech\/media\//, "/media/")
+    .replace(/^https?:\/\/www\.ledgerlab\.tech\/media\//, "/media/");
 }
 
 function isNotFoundError(err: unknown): boolean {
