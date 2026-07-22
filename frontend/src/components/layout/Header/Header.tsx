@@ -16,6 +16,7 @@ export const Header = () => {
   const { language } = useTranslation();
   const { isMenuOpen, setIsMenuOpen } = useUI();
   const headerRef = useRef<HTMLElement>(null);
+  const consultationText = language === 'bg' ? 'Консултация' : 'Консультация';
 
   const isAdminRoute = /^\/(ru|bg)\/admin(\/|$)/.test(pathname);
 
@@ -65,7 +66,7 @@ export const Header = () => {
           <div className={styles.desktopBtn}>
             <Link href={`/${language}/consultation`}>
               <Button
-                text='Консультация'
+                text={consultationText}
                 variant='default'
                 className={styles.headerButton}
               />
@@ -83,7 +84,7 @@ export const Header = () => {
           <div className={styles.mobileActions}>
             <Link href={`/${language}/consultation`} className={styles.mobileLink}>
               <Button
-                text='Консультация'
+                text={consultationText}
                 variant='consultationMobile'
                 className={styles.headerButton}
               />
