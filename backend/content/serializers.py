@@ -23,10 +23,17 @@ def localized_value(obj, base_name: str, lang: str):
 def resolve_media_url(value: str, request) -> str:
     if not value:
         return ""
+    frontend_url = settings.FRONTEND_URL.rstrip("/")
+    if value.startswith("http://ledgerlab.tech/media/"):
+        return value.replace("http://ledgerlab.tech", "https://ledgerlab.tech", 1)
+    if value.startswith("http://www.ledgerlab.tech/media/"):
+        return value.replace("http://www.ledgerlab.tech", "https://www.ledgerlab.tech", 1)
     if value.startswith(("http://", "https://")):
         return value
     if value.startswith(settings.MEDIA_URL) and request is not None:
         return request.build_absolute_uri(value)
+    if value.startswith(settings.MEDIA_URL):
+        return f"{frontend_url}{value}"
     return value
 
 
@@ -109,8 +116,6 @@ class LocalizedEducationItemSerializer(serializers.ModelSerializer):
         return "video" if obj.item_type == EducationItem.TYPE_WEBINAR else "image"
 
     def get_media_src(self, obj):
-        if obj.item_type == EducationItem.TYPE_WEBINAR:
-            return resolve_media_url(obj.video_src, self.context.get("request"))
         return resolve_media_url(obj.image_src, self.context.get("request"))
 
     def get_poster(self, obj):

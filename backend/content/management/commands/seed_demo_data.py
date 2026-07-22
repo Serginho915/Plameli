@@ -76,7 +76,7 @@ class Command(BaseCommand):
                 "item_type": EducationItem.TYPE_WEBINAR,
                 "slug": "nalogovye-deklaracii-2026",
                 "image_src": "/images/Education/webinar.png",
-                "video_src": "https://vjs.zencdn.net/v/oceans.mp4",
+                "video_src": "",
                 "title_ru": "Tax declaration updates 2026",
                 "title_bg": "Tax declaration updates 2026",
                 "description_ru": "Live webinar about upcoming declaration changes.",

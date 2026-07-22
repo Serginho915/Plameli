@@ -11,10 +11,17 @@ from .models import BlogPost, EducationItem, EducationModule
 def resolve_media_url(value: str, request) -> str:
     if not value:
         return ""
+    frontend_url = settings.FRONTEND_URL.rstrip("/")
+    if value.startswith("http://ledgerlab.tech/media/"):
+        return value.replace("http://ledgerlab.tech", "https://ledgerlab.tech", 1)
+    if value.startswith("http://www.ledgerlab.tech/media/"):
+        return value.replace("http://www.ledgerlab.tech", "https://www.ledgerlab.tech", 1)
     if value.startswith(("http://", "https://")):
         return value
     if value.startswith(settings.MEDIA_URL) and request is not None:
         return request.build_absolute_uri(value)
+    if value.startswith(settings.MEDIA_URL):
+        return f"{frontend_url}{value}"
     return value
 
 
@@ -149,17 +156,13 @@ class EducationItemAdminSerializer(serializers.ModelSerializer):
         attrs = super().validate(attrs)
         item_type = attrs.get("item_type", getattr(self.instance, "item_type", None))
         image_file = attrs.get("image_file")
-        video_file = attrs.get("video_file")
         has_image = bool(image_file or getattr(self.instance, "image_src", ""))
-        has_video = bool(video_file or getattr(self.instance, "video_src", ""))
 
         if item_type == EducationItem.TYPE_COURSE and not has_image:
             raise serializers.ValidationError({"image_file": "Course requires an image."})
         if item_type == EducationItem.TYPE_WEBINAR:
             if not has_image:
                 raise serializers.ValidationError({"image_file": "Webinar requires an image."})
-            if not has_video:
-                raise serializers.ValidationError({"video_file": "Webinar requires a video."})
 
         return attrs
 
@@ -167,18 +170,15 @@ class EducationItemAdminSerializer(serializers.ModelSerializer):
         return resolve_media_url(obj.image_src, self.context.get("request"))
 
     def get_video_src(self, obj):
-        return resolve_media_url(obj.video_src, self.context.get("request"))
+        return ""
 
     def create(self, validated_data):
         modules_data = validated_data.pop("program", [])
         image_file = validated_data.pop("image_file", None)
-        video_file = validated_data.pop("video_file", None)
+        validated_data.pop("video_file", None)
         if image_file is not None:
             validated_data["image_src"] = store_uploaded_file(image_file, "education/images")
-        if video_file is not None:
-            validated_data["video_src"] = store_uploaded_file(video_file, "education/videos")
-        if validated_data.get("item_type") == EducationItem.TYPE_COURSE:
-            validated_data["video_src"] = ""
+        validated_data["video_src"] = ""
         education_item = EducationItem.objects.create(**validated_data)
         self._replace_modules(education_item, modules_data)
         return education_item
@@ -186,16 +186,13 @@ class EducationItemAdminSerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data):
         modules_data = validated_data.pop("program", None)
         image_file = validated_data.pop("image_file", None)
-        video_file = validated_data.pop("video_file", None)
+        validated_data.pop("video_file", None)
         for attr, value in validated_data.items():
             setattr(instance, attr, value)
 
         if image_file is not None:
             instance.image_src = store_uploaded_file(image_file, "education/images")
-        if video_file is not None:
-            instance.video_src = store_uploaded_file(video_file, "education/videos")
-        if instance.item_type == EducationItem.TYPE_COURSE:
-            instance.video_src = ""
+        instance.video_src = ""
 
         instance.save()
 

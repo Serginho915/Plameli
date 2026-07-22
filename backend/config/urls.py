@@ -26,5 +26,5 @@ urlpatterns = [
     path("api/", include("interactions.urls")),
 ]
 
-if settings.DEBUG:
+if settings.DEBUG or settings.DJANGO_SERVE_MEDIA:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

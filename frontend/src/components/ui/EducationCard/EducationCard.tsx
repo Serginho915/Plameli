@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useRef, useState } from "react";
+import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/Button/Button";
@@ -27,9 +27,7 @@ interface EducationCardProps {
 
 export const EducationCard: React.FC<EducationCardProps> = ({
   title,
-  type,
   mediaSrc,
-  poster,
   meta,
   learnMoreHref,
   signUpHref,
@@ -37,66 +35,17 @@ export const EducationCard: React.FC<EducationCardProps> = ({
   signUpLabel,
   onSignUpClick,
 }) => {
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [showControls, setShowControls] = useState(false);
-
-  const handlePlay = () => {
-    if (videoRef.current) {
-      if (isPlaying) {
-        videoRef.current.pause();
-      } else {
-        videoRef.current.play();
-      }
-      setIsPlaying(!isPlaying);
-    }
-  };
-
   return (
     <div className={styles.card}>
       <div className={styles.cardMain}>
-        {type === "video" ? (
-          <div
-            className={styles.videoWrapper}
-            onMouseEnter={() => setShowControls(true)}
-            onMouseLeave={() => setShowControls(false)}
-          >
-            <video
-              ref={videoRef}
-              src={mediaSrc}
-              poster={poster}
-              className={styles.video}
-              controls={showControls}
-              onEnded={() => setIsPlaying(false)}
-              onPlay={() => setIsPlaying(true)}
-              onPause={() => setIsPlaying(false)}
-            />
-            {/* Transparent overlay — intercepts clicks so shadow-DOM native controls don't block play/pause */}
-            <div className={styles.clickInterceptor} onClick={handlePlay} />
-            {!isPlaying && (
-              <div
-                className={styles.playButton}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handlePlay();
-                }}
-              >
-                <svg viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M8 5v14l11-7z" />
-                </svg>
-              </div>
-            )}
-          </div>
-        ) : (
-          <div className={styles.imageWrapper}>
-            <Image
-              src={mediaSrc}
-              alt={title}
-              fill
-              style={{ objectFit: "cover" }}
-            />
-          </div>
-        )}
+        <div className={styles.imageWrapper}>
+          <Image
+            src={mediaSrc}
+            alt={title}
+            fill
+            style={{ objectFit: "cover" }}
+          />
+        </div>
 
         <div className={styles.cardContent}>
           <h3 className={styles.cardTitle}>{title}</h3>

@@ -44,7 +44,6 @@ interface EducationItem {
   item_type: "course" | "webinar";
   slug: string;
   image_src: string;
-  video_src: string;
   title_ru: string;
   title_bg: string;
   description_ru: string;
@@ -191,8 +190,6 @@ interface AdminTranslations {
     published: string;
     slug: string;
     image: string;
-    video: string;
-    currentVideo: string;
     titleRu: string;
     titleBg: string;
     descriptionRu: string;
@@ -326,8 +323,6 @@ const translations: Record<"ru" | "bg", AdminTranslations> = {
       published: "Опубликовано",
       slug: "Slug",
       image: "Картинка",
-      video: "Видео",
-      currentVideo: "Текущее видео",
       titleRu: "Заголовок RU",
       titleBg: "Заголовок BG",
       descriptionRu: "Описание RU",
@@ -459,8 +454,6 @@ const translations: Record<"ru" | "bg", AdminTranslations> = {
       published: "Публикувано",
       slug: "Slug",
       image: "Изображение",
-      video: "Видео",
-      currentVideo: "Текущо видео",
       titleRu: "Заглавие RU",
       titleBg: "Заглавие BG",
       descriptionRu: "Описание RU",
@@ -553,7 +546,6 @@ const emptyEducation = (): EducationItem => ({
   item_type: "course",
   slug: "",
   image_src: "",
-  video_src: "",
   title_ru: "",
   title_bg: "",
   description_ru: "",
@@ -632,6 +624,14 @@ const REQUEST_COLUMNS: Record<RequestTab, RequestColumn[]> = {
 function resolveAdminAssetUrl(value: string): string {
   if (!value) {
     return "";
+  }
+
+  if (value.startsWith("http://ledgerlab.tech/media/")) {
+    return value.replace("http://ledgerlab.tech", "https://ledgerlab.tech");
+  }
+
+  if (value.startsWith("http://www.ledgerlab.tech/media/")) {
+    return value.replace("http://www.ledgerlab.tech", "https://www.ledgerlab.tech");
   }
 
   if (value.startsWith("http://") || value.startsWith("https://")) {
@@ -713,7 +713,6 @@ function prettyApiFieldName(field: string, lang: UiLang): string {
     tags: "Теги",
     media_file: "Обложка",
     image_file: "Картинка",
-    video_file: "Видео",
     item_type: "Тип",
     non_field_errors: "Ошибка",
     detail: "Ошибка",
@@ -730,7 +729,6 @@ function prettyApiFieldName(field: string, lang: UiLang): string {
     tags: "Тагове",
     media_file: "Корица",
     image_file: "Изображение",
-    video_file: "Видео",
     item_type: "Тип",
     non_field_errors: "Грешка",
     detail: "Грешка",
@@ -761,7 +759,6 @@ function localizeValidationText(message: string, lang: UiLang): string {
     "Blog post requires a cover image.": "Для статьи требуется обложка.",
     "Course requires an image.": "Для курса требуется изображение.",
     "Webinar requires an image.": "Для вебинара требуется изображение.",
-    "Webinar requires a video.": "Для вебинара требуется видео.",
   };
 
   const bgMap: Record<string, string> = {
@@ -784,7 +781,6 @@ function localizeValidationText(message: string, lang: UiLang): string {
     "Blog post requires a cover image.": "За статията е нужна корица.",
     "Course requires an image.": "За курса е нужно изображение.",
     "Webinar requires an image.": "За уебинара е нужно изображение.",
-    "Webinar requires a video.": "За уебинара е нужно видео.",
   };
 
   const dictionary = lang === "bg" ? bgMap : ruMap;
@@ -800,6 +796,12 @@ function localizeValidationText(message: string, lang: UiLang): string {
 function toReadableApiError(rawMessage: string, fallback: string, lang: UiLang): string {
   if (!rawMessage) {
     return fallback;
+  }
+
+  if (rawMessage.includes("413") || rawMessage.includes("Request Entity Too Large")) {
+    return lang === "bg"
+      ? "Файлът е твърде голям. Увеличете client_max_body_size в nginx и опитайте отново."
+      : "Файл слишком большой. Увеличьте client_max_body_size в nginx и попробуйте снова.";
   }
 
   try {
@@ -859,7 +861,6 @@ export default function AdminPage() {
   const [selectedEducationId, setSelectedEducationId] = useState<number | "new">("new");
   const [educationDraft, setEducationDraft] = useState<EducationItem>(emptyEducation());
   const [educationImageFile, setEducationImageFile] = useState<File | null>(null);
-  const [educationVideoFile, setEducationVideoFile] = useState<File | null>(null);
 
   const [feedbackRequests, setFeedbackRequests] = useState<FeedbackRequest[]>([]);
   const [educationRegistrations, setEducationRegistrations] = useState<EducationRegistration[]>([]);
@@ -909,7 +910,7 @@ export default function AdminPage() {
 
     if (!response.ok) {
       const errorText = await response.text().catch(() => "");
-      throw new Error(errorText || `HTTP ${response.status}`);
+      throw new Error(errorText || `HTTP ${response.status} ${response.statusText}`);
     }
 
     if (response.status === 204) {
@@ -988,7 +989,6 @@ export default function AdminPage() {
     setSelectedEducationId("new");
     setEducationDraft(emptyEducation());
     setEducationImageFile(null);
-    setEducationVideoFile(null);
   }
 
   async function loadRequests(token: string) {
@@ -1110,7 +1110,6 @@ export default function AdminPage() {
   function selectEducation(id: number | "new") {
     setSelectedEducationId(id);
     setEducationImageFile(null);
-    setEducationVideoFile(null);
     if (id === "new") {
       setEducationDraft(emptyEducation());
       return;
@@ -1250,7 +1249,6 @@ export default function AdminPage() {
       formData.append("item_type", payload.item_type);
       formData.append("slug", payload.slug);
       formData.append("image_src", payload.image_src || "");
-      formData.append("video_src", payload.video_src || "");
       formData.append("title_ru", payload.title_ru);
       formData.append("title_bg", payload.title_bg);
       formData.append("description_ru", payload.description_ru);
@@ -1265,10 +1263,6 @@ export default function AdminPage() {
 
       if (educationImageFile) {
         formData.append("image_file", educationImageFile);
-      }
-
-      if (educationVideoFile) {
-        formData.append("video_file", educationVideoFile);
       }
 
       await adminFetch(path, authHeader, {
@@ -1613,25 +1607,7 @@ export default function AdminPage() {
                   onChange={(event) => setEducationImageFile(event.target.files?.[0] || null)}
                 />
               </label>
-              <label>
-                {t.education.video}
-                <input
-                  type="file"
-                  accept="video/*"
-                  onChange={(event) => setEducationVideoFile(event.target.files?.[0] || null)}
-                  disabled={educationDraft.item_type !== "webinar"}
-                />
-              </label>
             </div>
-
-            {educationDraft.item_type === "webinar" && educationDraft.video_src ? (
-              <label>
-                {t.education.currentVideo}
-                <a href={resolveAdminAssetUrl(educationDraft.video_src)} target="_blank" rel="noreferrer">
-                  {resolveAdminAssetUrl(educationDraft.video_src)}
-                </a>
-              </label>
-            ) : null}
 
             <div className={styles.formGrid}>
               <label>

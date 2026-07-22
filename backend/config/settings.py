@@ -25,6 +25,8 @@ SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY", "django-insecure-development-on
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get("DJANGO_DEBUG", "true").lower() in {"1", "true", "yes", "on"}
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+USE_X_FORWARDED_HOST = True
 
 # Stripe
 STRIPE_SECRET_KEY = os.environ.get("STRIPE_SECRET_KEY", "")
@@ -189,6 +191,14 @@ USE_TZ = True
 STATIC_URL = "static/"
 MEDIA_URL = "/media/"
 MEDIA_ROOT = Path(os.environ.get("DJANGO_MEDIA_ROOT", BASE_DIR / "media"))
+DJANGO_SERVE_MEDIA = os.environ.get("DJANGO_SERVE_MEDIA", "false").lower() in {
+    "1",
+    "true",
+    "yes",
+    "on",
+}
+DATA_UPLOAD_MAX_MEMORY_SIZE = int(os.environ.get("DJANGO_DATA_UPLOAD_MAX_MEMORY_SIZE", "1073741824"))
+FILE_UPLOAD_MAX_MEMORY_SIZE = int(os.environ.get("DJANGO_FILE_UPLOAD_MAX_MEMORY_SIZE", "10485760"))
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 

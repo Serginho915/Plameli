@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import Image from "next/image";
@@ -31,13 +31,10 @@ export const EducationDetail = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [showControls, setShowControls] = useState(false);
   const [paymentBanner, setPaymentBanner] = useState<"success" | "cancelled" | null>(() => {
     const paymentParam = searchParams?.get("payment");
     return paymentParam === "success" || paymentParam === "cancelled" ? paymentParam : null;
   });
-  const videoRef = useRef<HTMLVideoElement>(null);
 
   const t = translations[language as "ru" | "bg"] || translations.bg;
 
@@ -125,7 +122,7 @@ export const EducationDetail = () => {
     ];
   }, [language, t, item]);
 
-  // Memoized Static Columns to avoid re-renders when local UI video/modal states toggle
+  // Memoized Static Columns to avoid re-renders when local UI modal state toggles
   const leftColumnContent = useMemo(() => {
     if (!item) return null;
     return (
@@ -207,33 +204,6 @@ export const EducationDetail = () => {
     );
   }
 
-  const handlePlayClick = () => {
-    if (videoRef.current) {
-      if (isPlaying) {
-        videoRef.current.pause();
-      } else {
-        videoRef.current.play();
-      }
-      setIsPlaying(!isPlaying);
-    }
-  };
-
-  const handleWrapperClick = () => {
-    handlePlayClick();
-  };
-
-  const handleVideoClick = (e: React.MouseEvent<HTMLVideoElement>) => {
-    e.stopPropagation();
-    if (videoRef.current) {
-      const rect = videoRef.current.getBoundingClientRect();
-      const clickY = e.clientY - rect.top;
-      if (showControls && clickY > rect.height - 50) {
-        return;
-      }
-    }
-    handlePlayClick();
-  };
-
   return (
     <>
       {paymentBanner === "success" ? (
@@ -288,51 +258,16 @@ export const EducationDetail = () => {
 
             {/* Visual media poster block */}
             <div className={styles.mediaCard}>
-              {isVideo ? (
-                <div
-                  className={styles.videoWrapper}
-                  onMouseEnter={() => setShowControls(true)}
-                  onMouseLeave={() => setShowControls(false)}
-                  onClick={handleWrapperClick}
-                >
-                  <video
-                    ref={videoRef}
-                    src={item.mediaSrc}
-                    poster={item.poster}
-                    className={styles.video}
-                    controls={showControls}
-                    onClick={handleVideoClick}
-                    onEnded={() => setIsPlaying(false)}
-                    onPlay={() => setIsPlaying(true)}
-                    onPause={() => setIsPlaying(false)}
-                  />
-                  {!isPlaying && (
-                    <button
-                      className={styles.playButton}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handlePlayClick();
-                      }}
-                      aria-label={t.detailPlayVideo}
-                    >
-                      <svg viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M8 5v14l11-7z" />
-                      </svg>
-                    </button>
-                  )}
-                </div>
-              ) : (
-                <div className={styles.imageWrapper}>
-                  <Image
-                    src={item.mediaSrc}
-                    alt={item.title}
-                    fill
-                    sizes="(max-width: 768px) 100vw, 50vw"
-                    className={styles.mediaImage}
-                    priority
-                  />
-                </div>
-              )}
+              <div className={styles.imageWrapper}>
+                <Image
+                  src={item.mediaSrc}
+                  alt={item.title}
+                  fill
+                  sizes="(max-width: 768px) 100vw, 50vw"
+                  className={styles.mediaImage}
+                  priority
+                />
+              </div>
 
               {/* Absolute Badge Overlays */}
               <div className={styles.badgeOverlay}>

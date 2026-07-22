@@ -110,8 +110,6 @@ export const RegisterModal: React.FC<RegisterModalProps> = ({
     }
   };
 
-  const posterSrc = item?.type === "video" ? item.poster : undefined;
-
   return (
     <div className={styles.overlay} onClick={onClose}>
       <div className={styles.modalContainer} onClick={(e) => e.stopPropagation()}>
@@ -232,9 +230,9 @@ export const RegisterModal: React.FC<RegisterModalProps> = ({
                 </div>
                 <div className={styles.summaryBody}>
                   <div className={styles.courseImageWrapper}>
-                    {posterSrc || (item.type !== "video" && item.mediaSrc) ? (
+                    {item.mediaSrc ? (
                       <Image
-                        src={posterSrc || item.mediaSrc}
+                        src={item.mediaSrc}
                         alt={item.title}
                         fill
                         className={styles.courseImage}

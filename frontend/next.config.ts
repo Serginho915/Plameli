@@ -12,6 +12,16 @@ const devApiUrl = `${devApiOrigin}/api`;
 const devBrowserApiUrl = "http://localhost:8000/api";
 const prodBaseUrl = "https://ledgerlab.tech";
 
+function resolveInternalOrigin() {
+  const raw = process.env.INTERNAL_API_URL || "http://backend:8000/api";
+
+  try {
+    return new URL(raw).origin;
+  } catch {
+    return "http://backend:8000";
+  }
+}
+
 if (isDev) {
   process.env.NEXT_PUBLIC_API_URL = devBrowserApiUrl;
   process.env.NEXT_PUBLIC_BASE_URL = "http://localhost:3000";
@@ -43,10 +53,19 @@ const nextConfig: NextConfig = {
   },
   async rewrites() {
     if (!isDev) {
-      return [];
+      return [
+        {
+          source: "/media/:path*",
+          destination: `${resolveInternalOrigin()}/media/:path*`,
+        },
+      ];
     }
 
     return [
+      {
+        source: "/media/:path*",
+        destination: `${devApiOrigin}/media/:path*`,
+      },
       {
         source: "/api/:path*",
         destination: `${devApiOrigin}/api/:path*`,

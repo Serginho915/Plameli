@@ -66,6 +66,16 @@ function withLang(endpoint: string, lang: string): string {
   return `${endpoint}${separator}lang=${normalizeLang(lang)}`;
 }
 
+function normalizeMediaUrl(value: string): string {
+  if (!value) {
+    return "";
+  }
+
+  return value
+    .replace(/^http:\/\/ledgerlab\.tech\/media\//, "https://ledgerlab.tech/media/")
+    .replace(/^http:\/\/www\.ledgerlab\.tech\/media\//, "https://www.ledgerlab.tech/media/");
+}
+
 function isNotFoundError(err: unknown): boolean {
   return err instanceof Error && err.message.includes("404");
 }
@@ -78,7 +88,7 @@ function mapBlogPost(item: ApiBlogPost): BlogPost {
     tags: normalizeStringArray(item.tags),
     author: item.author,
     date: item.date,
-    mediaSrc: item.media_src,
+    mediaSrc: normalizeMediaUrl(item.media_src),
     content: normalizeStringArray(item.content),
   };
 }
@@ -90,8 +100,8 @@ function mapEducationItem(item: ApiEducationItem): EducationItem {
     id: item.id,
     slug: item.slug,
     type: item.type,
-    mediaSrc: item.media_src,
-    poster: item.poster || undefined,
+    mediaSrc: normalizeMediaUrl(item.media_src),
+    poster: normalizeMediaUrl(item.poster) || undefined,
     title: item.title,
     startDate: item.startDate,
     format: safeFormat,
