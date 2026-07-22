@@ -1,6 +1,7 @@
 from datetime import date
 
 from django.conf import settings
+from django.core.files.storage import default_storage
 from rest_framework import serializers
 
 from .models import BlogPost, EducationItem
@@ -35,6 +36,14 @@ def resolve_media_url(value: str, request) -> str:
     if value.startswith(settings.MEDIA_URL):
         return f"{frontend_url}{value}"
     return value
+
+
+def stored_media_exists(value: str) -> bool:
+    if not value.startswith(settings.MEDIA_URL):
+        return True
+
+    path = value.removeprefix(settings.MEDIA_URL).lstrip("/")
+    return default_storage.exists(path)
 
 
 class LocalizedBlogPostSerializer(serializers.ModelSerializer):
@@ -116,11 +125,17 @@ class LocalizedEducationItemSerializer(serializers.ModelSerializer):
         return "video" if obj.item_type == EducationItem.TYPE_WEBINAR else "image"
 
     def get_media_src(self, obj):
+        if not stored_media_exists(obj.image_src):
+            if obj.item_type == EducationItem.TYPE_WEBINAR:
+                return "/images/Education/webinar.png"
+            return "/images/Education/course.png"
         return resolve_media_url(obj.image_src, self.context.get("request"))
 
     def get_poster(self, obj):
         if obj.item_type != EducationItem.TYPE_WEBINAR:
             return ""
+        if not stored_media_exists(obj.image_src):
+            return "/images/Education/webinar.png"
         return resolve_media_url(obj.image_src, self.context.get("request"))
 
     def get_title(self, obj):

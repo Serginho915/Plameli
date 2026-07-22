@@ -45,7 +45,7 @@ services:
       CONSULTATION_DURATION_MINUTES: ${CONSULTATION_DURATION_MINUTES:-60}
       CONSULTATION_LOOKAHEAD_DAYS: ${CONSULTATION_LOOKAHEAD_DAYS:-30}
     volumes:
-      - ./backend/prod-data:/data
+      - ${PLAMELI_DATA_DIR:-/var/lib/plameli}:/data
     command: /app/entrypoint.prod.sh
     restart: unless-stopped
 
