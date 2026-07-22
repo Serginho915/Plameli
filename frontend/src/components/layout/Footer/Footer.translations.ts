@@ -11,7 +11,7 @@ export interface FooterTranslations {
 
 export const translations: ComponentTranslations<FooterTranslations> = {
   ru: {
-    euProjectInfo: "Информация о проекте ЕС",
+    euProjectInfo: "BG16RFPR001-1.012-0189-C01",
     privacyPolicy: "Политика конфиденциальности",
     cookies: "Cookies",
     paymentsRefunds: "Оплата и возврат",
@@ -19,7 +19,7 @@ export const translations: ComponentTranslations<FooterTranslations> = {
     copyright: "© 2026 Plameli. Все права защищены.",
   },
   bg: {
-    euProjectInfo: "Информация за проект на ЕС",
+    euProjectInfo: "BG16RFPR001-1.012-0189-C01",
     privacyPolicy: "Политика за поверителност",
     cookies: "Бисквитки",
     paymentsRefunds: "Плащания и възстановявания",
