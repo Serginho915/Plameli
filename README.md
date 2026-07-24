@@ -29,6 +29,16 @@ SQLite uses `backend/prod-data/db.sqlite3`, and uploaded media uses
 mkdir -p backend/prod-data/media
 ```
 
+Production `.env` should explicitly keep Django and Docker pointed at that
+project-local data directory:
+
+```bash
+PLAMELI_DATA_DIR=./backend/prod-data
+DJANGO_DATABASE_NAME=/data/db.sqlite3
+DJANGO_MEDIA_ROOT=/data/media
+DJANGO_SERVE_MEDIA=true
+```
+
 If the old host-level data folder exists, migrate it once from the server:
 
 ```bash
@@ -38,8 +48,8 @@ sudo chown -R $USER:$USER backend/prod-data
 
 Production nginx must allow large uploads, pass the original HTTPS scheme to
 Django, and serve uploaded media from the project `backend/prod-data/media/`
-directory. A ready server
-block is in `deploy/nginx/ledgerlab.tech.conf`; after installing it on the host,
+directory. In `deploy/nginx/ledgerlab.tech.conf`, replace `/path/to/Plameli`
+with the absolute project path on the server. After installing the server block,
 run:
 
 ```bash
