@@ -21,23 +21,24 @@ docker compose up --build
 docker compose -f docker-compose.prod.yml up --build -d
 ```
 
-Production runtime data is stored outside the containers in `/var/lib/plameli/`:
-SQLite uses `/var/lib/plameli/db.sqlite3`, and uploaded media uses
-`/var/lib/plameli/media/`. Create it before the first production start:
+Production runtime data is stored outside the containers in `backend/prod-data/`:
+SQLite uses `backend/prod-data/db.sqlite3`, and uploaded media uses
+`backend/prod-data/media/`. Create it before the first production start:
 
 ```bash
-sudo mkdir -p /var/lib/plameli/media
-sudo chown -R $USER:$USER /var/lib/plameli
+mkdir -p backend/prod-data/media
 ```
 
-If the old project-local data folder exists, migrate it once:
+If the old host-level data folder exists, migrate it once from the server:
 
 ```bash
-sudo cp -a backend/prod-data/. /var/lib/plameli/
+sudo cp -a /var/lib/plameli/. backend/prod-data/
+sudo chown -R $USER:$USER backend/prod-data
 ```
 
 Production nginx must allow large uploads, pass the original HTTPS scheme to
-Django, and serve uploaded media from `/var/lib/plameli/media/`. A ready server
+Django, and serve uploaded media from the project `backend/prod-data/media/`
+directory. A ready server
 block is in `deploy/nginx/ledgerlab.tech.conf`; after installing it on the host,
 run:
 
