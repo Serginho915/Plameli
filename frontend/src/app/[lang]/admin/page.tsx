@@ -6,7 +6,7 @@ import { Logo } from "@/components/layout/Header/Logo/Logo";
 import { RichTextEditor } from "./RichTextEditor";
 import styles from "./AdminPage.module.scss";
 
-type PanelTab = "blog" | "education" | "requests" | "chat";
+type PanelTab = "blog" | "education" | "requests" | "chat" | "afterSales";
 type RequestTab = "feedback" | "educationRegistrations" | "consultationBookings";
 
 interface AdminUser {
@@ -122,6 +122,55 @@ interface ChatConversationDetail extends ChatConversationSummary {
   messages: ChatMessage[];
 }
 
+interface ClientNote {
+  id: number;
+  client: number;
+  case: number | null;
+  author: number | null;
+  author_username: string;
+  text: string;
+  created_at: string;
+  updated_at: string;
+}
+
+interface AfterSalesCase {
+  id: number;
+  client: number;
+  client_name: string;
+  client_email: string;
+  client_phone: string;
+  case_type: string;
+  status: string;
+  priority: string;
+  due_at: string | null;
+  assigned_to: number | null;
+  assigned_to_username: string;
+  summary: string;
+  description: string;
+  source_model: string;
+  source_id: number | null;
+  notes_list: ClientNote[];
+  created_at: string;
+  updated_at: string;
+}
+
+interface ClientProfile {
+  id: number;
+  language: string;
+  name: string;
+  email: string;
+  phone: string;
+  status: string;
+  source: string;
+  notes: string;
+  cases_count: number;
+  open_cases_count: number;
+  cases: AfterSalesCase[];
+  notes_list: ClientNote[];
+  created_at: string;
+  updated_at: string;
+}
+
 interface AdminTranslations {
   loginTitle: string;
   usernameLabel: string;
@@ -138,6 +187,7 @@ interface AdminTranslations {
     education: string;
     requests: string;
     chat: string;
+    afterSales: string;
   };
   status: {
     savingBlogPost: string;
@@ -271,6 +321,7 @@ const translations: Record<"ru" | "bg", AdminTranslations> = {
       education: "Обучение",
       requests: "Запросы",
       chat: "Чат",
+      afterSales: "Обслуживание",
     },
     status: {
       savingBlogPost: "Сохранение статьи...",
@@ -402,6 +453,7 @@ const translations: Record<"ru" | "bg", AdminTranslations> = {
       education: "Обучение",
       requests: "Заявки",
       chat: "Чат",
+      afterSales: "Обслужване",
     },
     status: {
       savingBlogPost: "Запазване на статията...",
@@ -620,6 +672,124 @@ const REQUEST_COLUMNS: Record<RequestTab, RequestColumn[]> = {
     { key: "created_at", label_ru: "Создано", label_bg: "Създадено" },
   ],
 };
+
+const AFTER_SALES_STATUS_OPTIONS = ["new", "active", "waiting", "completed", "lost"];
+const AFTER_SALES_CASE_STATUS_OPTIONS = ["open", "in_progress", "waiting_client", "done", "cancelled"];
+const AFTER_SALES_PRIORITY_OPTIONS = ["low", "normal", "high"];
+
+const AFTER_SALES_LABELS = {
+  ru: {
+    title: "Послепродажное обслуживание",
+    refresh: "Обновить",
+    sync: "Синхронизировать заявки",
+    clients: "Клиенты",
+    empty: "Клиентов пока нет",
+    selectPrompt: "Выберите клиента из списка",
+    search: "Поиск",
+    searchPlaceholder: "Имя, email, телефон или заметки",
+    status: "Статус",
+    allStatuses: "Все статусы",
+    phone: "Телефон",
+    email: "Email",
+    source: "Источник",
+    language: "Язык",
+    notes: "Заметки",
+    saveClient: "Сохранить клиента",
+    cases: "Кейсы",
+    openCases: "Открытых",
+    noCases: "Кейсов пока нет",
+    caseType: "Тип",
+    priority: "Приоритет",
+    dueAt: "Срок",
+    summary: "Задача",
+    description: "Описание",
+    saveCase: "Сохранить кейс",
+    addNote: "Добавить заметку",
+    notePlaceholder: "Что важно помнить по клиенту",
+    noNotes: "Заметок пока нет",
+    saved: "Обслуживание обновлено",
+    synced: "Клиенты и кейсы синхронизированы",
+  },
+  bg: {
+    title: "Следпродажбено обслужване",
+    refresh: "Обнови",
+    sync: "Синхронизирай заявките",
+    clients: "Клиенти",
+    empty: "Все още няма клиенти",
+    selectPrompt: "Изберете клиент от списъка",
+    search: "Търсене",
+    searchPlaceholder: "Име, email, телефон или бележки",
+    status: "Статус",
+    allStatuses: "Всички статуси",
+    phone: "Телефон",
+    email: "Email",
+    source: "Източник",
+    language: "Език",
+    notes: "Бележки",
+    saveClient: "Запази клиента",
+    cases: "Кейсове",
+    openCases: "Отворени",
+    noCases: "Все още няма кейсове",
+    caseType: "Тип",
+    priority: "Приоритет",
+    dueAt: "Срок",
+    summary: "Задача",
+    description: "Описание",
+    saveCase: "Запази кейса",
+    addNote: "Добави бележка",
+    notePlaceholder: "Какво е важно да се помни за клиента",
+    noNotes: "Все още няма бележки",
+    saved: "Обслужването е обновено",
+    synced: "Клиентите и кейсовете са синхронизирани",
+  },
+} as const;
+
+const AFTER_SALES_VALUE_LABELS: Record<UiLang, Record<string, string>> = {
+  ru: {
+    new: "Новый",
+    active: "Активный",
+    waiting: "Ожидание",
+    completed: "Завершен",
+    lost: "Потерян",
+    open: "Открыт",
+    in_progress: "В работе",
+    waiting_client: "Ждем клиента",
+    done: "Готово",
+    cancelled: "Отменен",
+    low: "Низкий",
+    normal: "Обычный",
+    high: "Высокий",
+    consultation_followup: "После консультации",
+    education_support: "Поддержка обучения",
+    feedback_followup: "Обратная связь",
+    documents: "Документы",
+    general: "Общее",
+  },
+  bg: {
+    new: "Нов",
+    active: "Активен",
+    waiting: "Изчакване",
+    completed: "Завършен",
+    lost: "Изгубен",
+    open: "Отворен",
+    in_progress: "В работа",
+    waiting_client: "Чака клиент",
+    done: "Готово",
+    cancelled: "Отменен",
+    low: "Нисък",
+    normal: "Нормален",
+    high: "Висок",
+    consultation_followup: "След консултация",
+    education_support: "Поддръжка обучение",
+    feedback_followup: "Обратна връзка",
+    documents: "Документи",
+    general: "Общо",
+  },
+};
+
+function labelAfterSalesValue(value: string, lang: UiLang): string {
+  return AFTER_SALES_VALUE_LABELS[lang][value] || value || "-";
+}
 
 function resolveAdminAssetUrl(value: string): string {
   if (!value) {
@@ -844,6 +1014,7 @@ export default function AdminPage() {
   const { t, language } = useTranslation(translations);
   const uiLang: UiLang = language === "bg" ? "bg" : "ru";
   const dateLocale = language === "bg" ? "bg-BG" : "ru-RU";
+  const afterSalesText = AFTER_SALES_LABELS[uiLang];
   const [tab, setTab] = useState<PanelTab>("blog");
   const [requestTab, setRequestTab] = useState<RequestTab>("feedback");
   const [username, setUsername] = useState(() => readSessionValue(USERNAME_KEY) || "");
@@ -869,6 +1040,12 @@ export default function AdminPage() {
   const [selectedChat, setSelectedChat] = useState<ChatConversationDetail | null>(null);
   const [chatSearch, setChatSearch] = useState("");
   const [chatLoading, setChatLoading] = useState(false);
+  const [afterSalesClients, setAfterSalesClients] = useState<ClientProfile[]>([]);
+  const [selectedClientId, setSelectedClientId] = useState<number | null>(null);
+  const [afterSalesSearch, setAfterSalesSearch] = useState("");
+  const [afterSalesStatus, setAfterSalesStatus] = useState("");
+  const [afterSalesLoading, setAfterSalesLoading] = useState(false);
+  const [clientNoteDraft, setClientNoteDraft] = useState("");
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -894,6 +1071,13 @@ export default function AdminPage() {
   }, [requestTab, feedbackRequests, educationRegistrations, consultationBookings]);
 
   const requestColumns = useMemo(() => REQUEST_COLUMNS[requestTab], [requestTab]);
+
+  const selectedClient = useMemo(() => {
+    if (selectedClientId === null) {
+      return null;
+    }
+    return afterSalesClients.find((client) => client.id === selectedClientId) || null;
+  }, [afterSalesClients, selectedClientId]);
 
   async function adminFetch<T>(path: string, token: string, init: RequestInit = {}): Promise<T> {
     const isFormData = init.body instanceof FormData;
@@ -927,7 +1111,13 @@ export default function AdminPage() {
 
       const user = await adminFetch<AdminUser>("/me/", token);
       setAdminUser(user);
-      await Promise.all([loadBlogPosts(token), loadEducationItems(token), loadRequests(token), loadChatConversations(token)]);
+      await Promise.all([
+        loadBlogPosts(token),
+        loadEducationItems(token),
+        loadRequests(token),
+        loadChatConversations(token),
+        loadAfterSalesClients(token),
+      ]);
     } catch (err) {
       handleAuthError(err);
     } finally {
@@ -1001,6 +1191,141 @@ export default function AdminPage() {
     setFeedbackRequests(feedback);
     setEducationRegistrations(registrations);
     setConsultationBookings(bookings);
+  }
+
+  async function loadAfterSalesClients(token: string, search = afterSalesSearch, status = afterSalesStatus) {
+    const params = new URLSearchParams();
+    if (search.trim()) {
+      params.set("search", search.trim());
+    }
+    if (status) {
+      params.set("status", status);
+    }
+    const query = params.toString() ? `?${params.toString()}` : "";
+    const data = await adminFetch<ClientProfile[]>(`/after-sales/clients/${query}`, token);
+    setAfterSalesClients(data);
+
+    if (data.length === 0) {
+      setSelectedClientId(null);
+      return;
+    }
+
+    if (selectedClientId === null || !data.some((client) => client.id === selectedClientId)) {
+      setSelectedClientId(data[0].id);
+    }
+  }
+
+  async function refreshAfterSales() {
+    if (!authHeader) {
+      return;
+    }
+
+    try {
+      setAfterSalesLoading(true);
+      setError(null);
+      await loadAfterSalesClients(authHeader);
+    } catch (err) {
+      setError(err instanceof Error ? toReadableApiError(err.message, t.status.authorizationFailed, uiLang) : t.status.authorizationFailed);
+    } finally {
+      setAfterSalesLoading(false);
+    }
+  }
+
+  async function syncAfterSales() {
+    if (!authHeader) {
+      return;
+    }
+
+    try {
+      setAfterSalesLoading(true);
+      setError(null);
+      setSuccess(null);
+      await adminFetch<{ detail: string }>("/after-sales/clients/sync/", authHeader, {
+        method: "POST",
+        body: JSON.stringify({}),
+      });
+      await loadAfterSalesClients(authHeader);
+      setSuccess(afterSalesText.synced);
+    } catch (err) {
+      setError(err instanceof Error ? toReadableApiError(err.message, t.status.authorizationFailed, uiLang) : t.status.authorizationFailed);
+    } finally {
+      setAfterSalesLoading(false);
+    }
+  }
+
+  async function onAfterSalesSearchSubmit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    await refreshAfterSales();
+  }
+
+  async function updateSelectedClient(patch: Partial<ClientProfile>) {
+    if (!authHeader || !selectedClient) {
+      return;
+    }
+
+    try {
+      setAfterSalesLoading(true);
+      setError(null);
+      setSuccess(null);
+      const updated = await adminFetch<ClientProfile>(`/after-sales/clients/${selectedClient.id}/`, authHeader, {
+        method: "PATCH",
+        body: JSON.stringify(patch),
+      });
+      setAfterSalesClients((clients) => clients.map((client) => (client.id === updated.id ? updated : client)));
+      setSuccess(afterSalesText.saved);
+    } catch (err) {
+      setError(err instanceof Error ? toReadableApiError(err.message, t.status.authorizationFailed, uiLang) : t.status.authorizationFailed);
+    } finally {
+      setAfterSalesLoading(false);
+    }
+  }
+
+  async function updateAfterSalesCase(caseItem: AfterSalesCase, patch: Partial<AfterSalesCase>) {
+    if (!authHeader) {
+      return;
+    }
+
+    try {
+      setAfterSalesLoading(true);
+      setError(null);
+      setSuccess(null);
+      await adminFetch<AfterSalesCase>(`/after-sales/cases/${caseItem.id}/`, authHeader, {
+        method: "PATCH",
+        body: JSON.stringify(patch),
+      });
+      await loadAfterSalesClients(authHeader);
+      setSuccess(afterSalesText.saved);
+    } catch (err) {
+      setError(err instanceof Error ? toReadableApiError(err.message, t.status.authorizationFailed, uiLang) : t.status.authorizationFailed);
+    } finally {
+      setAfterSalesLoading(false);
+    }
+  }
+
+  async function addClientNote() {
+    if (!authHeader || !selectedClient || !clientNoteDraft.trim()) {
+      return;
+    }
+
+    try {
+      setAfterSalesLoading(true);
+      setError(null);
+      setSuccess(null);
+      await adminFetch<ClientNote>("/after-sales/notes/", authHeader, {
+        method: "POST",
+        body: JSON.stringify({
+          client: selectedClient.id,
+          text: clientNoteDraft.trim(),
+        }),
+      });
+      setClientNoteDraft("");
+      await loadAfterSalesClients(authHeader);
+      setSuccess(afterSalesText.saved);
+    } catch (err) {
+      setError(err instanceof Error ? toReadableApiError(err.message, t.status.authorizationFailed, uiLang) : t.status.authorizationFailed);
+    } finally {
+      setAfterSalesLoading(false);
+    }
   }
 
   async function loadChatConversations(token: string, search = chatSearch) {
@@ -1367,6 +1692,9 @@ export default function AdminPage() {
         </button>
         <button className={tab === "chat" ? styles.activeTab : ""} onClick={() => setTab("chat")} type="button">
           {t.tabs.chat}
+        </button>
+        <button className={tab === "afterSales" ? styles.activeTab : ""} onClick={() => setTab("afterSales")} type="button">
+          {t.tabs.afterSales}
         </button>
       </nav>
 
@@ -1873,6 +2201,275 @@ export default function AdminPage() {
               </table>
             </div>
           )}
+        </div>
+      ) : null}
+
+      {tab === "afterSales" ? (
+        <div className={styles.afterSalesAdmin}>
+          <aside className={styles.listCard}>
+            <div className={styles.sectionHeader}>
+              <h2>{afterSalesText.clients}</h2>
+              <button
+                type="button"
+                className={styles.secondaryButton}
+                onClick={syncAfterSales}
+                disabled={afterSalesLoading}
+              >
+                {afterSalesText.sync}
+              </button>
+            </div>
+
+            <form className={styles.afterSalesFilters} onSubmit={onAfterSalesSearchSubmit}>
+              <label>
+                {afterSalesText.search}
+                <input
+                  value={afterSalesSearch}
+                  placeholder={afterSalesText.searchPlaceholder}
+                  onChange={(event) => setAfterSalesSearch(event.target.value)}
+                />
+              </label>
+              <label>
+                {afterSalesText.status}
+                <select
+                  value={afterSalesStatus}
+                  onChange={(event) => {
+                    const nextStatus = event.target.value;
+                    setAfterSalesStatus(nextStatus);
+                    if (authHeader) {
+                      void loadAfterSalesClients(authHeader, afterSalesSearch, nextStatus);
+                    }
+                  }}
+                >
+                  <option value="">{afterSalesText.allStatuses}</option>
+                  {AFTER_SALES_STATUS_OPTIONS.map((status) => (
+                    <option key={status} value={status}>
+                      {labelAfterSalesValue(status, uiLang)}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              <button type="submit" className={styles.secondaryButton} disabled={afterSalesLoading}>
+                {afterSalesText.refresh}
+              </button>
+            </form>
+
+            {afterSalesClients.length === 0 ? (
+              <p className={styles.emptyHint}>{afterSalesText.empty}</p>
+            ) : (
+              <ul>
+                {afterSalesClients.map((client) => (
+                  <li key={client.id}>
+                    <button
+                      type="button"
+                      className={selectedClientId === client.id ? styles.selectedListItem : ""}
+                      onClick={() => {
+                        setSelectedClientId(client.id);
+                        setClientNoteDraft("");
+                      }}
+                    >
+                      <strong>{client.name || client.email}</strong>
+                      <span>{client.email}</span>
+                      <small>
+                        {labelAfterSalesValue(client.status, uiLang)} · {afterSalesText.openCases}: {client.open_cases_count}
+                      </small>
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </aside>
+
+          <div className={styles.afterSalesDetail}>
+            {!selectedClient ? (
+              <div className={styles.requestsCard}>
+                <p>{afterSalesText.selectPrompt}</p>
+              </div>
+            ) : (
+              <>
+                <div className={styles.requestsCard}>
+                  <div className={styles.sectionHeader}>
+                    <div>
+                      <span className={styles.detailEyebrow}>{afterSalesText.title}</span>
+                      <h2>{selectedClient.name || selectedClient.email}</h2>
+                    </div>
+                    <button
+                      type="button"
+                      className={styles.primaryButton}
+                      onClick={() =>
+                        updateSelectedClient({
+                          status: selectedClient.status,
+                          notes: selectedClient.notes,
+                        })
+                      }
+                      disabled={afterSalesLoading}
+                    >
+                      {afterSalesText.saveClient}
+                    </button>
+                  </div>
+
+                  <div className={styles.formGridThree}>
+                    <label>
+                      {afterSalesText.status}
+                      <select
+                        value={selectedClient.status}
+                        onChange={(event) => updateSelectedClient({ status: event.target.value })}
+                        disabled={afterSalesLoading}
+                      >
+                        {AFTER_SALES_STATUS_OPTIONS.map((status) => (
+                          <option key={status} value={status}>
+                            {labelAfterSalesValue(status, uiLang)}
+                          </option>
+                        ))}
+                      </select>
+                    </label>
+                    <div className={styles.chatMetaItem}>
+                      <span>{afterSalesText.email}</span>
+                      <strong>{selectedClient.email}</strong>
+                    </div>
+                    <div className={styles.chatMetaItem}>
+                      <span>{afterSalesText.phone}</span>
+                      <strong>{selectedClient.phone || "-"}</strong>
+                    </div>
+                    <div className={styles.chatMetaItem}>
+                      <span>{afterSalesText.source}</span>
+                      <strong>{selectedClient.source || "-"}</strong>
+                    </div>
+                    <div className={styles.chatMetaItem}>
+                      <span>{afterSalesText.language}</span>
+                      <strong>{selectedClient.language || "-"}</strong>
+                    </div>
+                    <div className={styles.chatMetaItem}>
+                      <span>{afterSalesText.cases}</span>
+                      <strong>
+                        {selectedClient.cases_count} / {afterSalesText.openCases}: {selectedClient.open_cases_count}
+                      </strong>
+                    </div>
+                  </div>
+
+                  <label>
+                    {afterSalesText.notes}
+                    <textarea
+                      value={selectedClient.notes}
+                      onChange={(event) => {
+                        const notes = event.target.value;
+                        setAfterSalesClients((clients) =>
+                          clients.map((client) => (client.id === selectedClient.id ? { ...client, notes } : client)),
+                        );
+                      }}
+                    />
+                  </label>
+                </div>
+
+                <div className={styles.requestsCard}>
+                  <div className={styles.sectionHeader}>
+                    <h2>{afterSalesText.cases}</h2>
+                    <button type="button" className={styles.secondaryButton} onClick={refreshAfterSales}>
+                      {afterSalesText.refresh}
+                    </button>
+                  </div>
+
+                  {selectedClient.cases.length === 0 ? (
+                    <p className={styles.emptyHint}>{afterSalesText.noCases}</p>
+                  ) : (
+                    <div className={styles.afterSalesCases}>
+                      {selectedClient.cases.map((caseItem) => (
+                        <article key={caseItem.id} className={styles.afterSalesCase}>
+                          <div className={styles.sectionHeader}>
+                            <div>
+                              <span className={styles.detailEyebrow}>
+                                {labelAfterSalesValue(caseItem.case_type, uiLang)}
+                              </span>
+                              <h3>{caseItem.summary}</h3>
+                            </div>
+                            <span className={styles.statusPill}>
+                              {labelAfterSalesValue(caseItem.priority, uiLang)}
+                            </span>
+                          </div>
+
+                          <div className={styles.formGridThree}>
+                            <label>
+                              {afterSalesText.status}
+                              <select
+                                value={caseItem.status}
+                                onChange={(event) => updateAfterSalesCase(caseItem, { status: event.target.value })}
+                                disabled={afterSalesLoading}
+                              >
+                                {AFTER_SALES_CASE_STATUS_OPTIONS.map((status) => (
+                                  <option key={status} value={status}>
+                                    {labelAfterSalesValue(status, uiLang)}
+                                  </option>
+                                ))}
+                              </select>
+                            </label>
+                            <label>
+                              {afterSalesText.priority}
+                              <select
+                                value={caseItem.priority}
+                                onChange={(event) => updateAfterSalesCase(caseItem, { priority: event.target.value })}
+                                disabled={afterSalesLoading}
+                              >
+                                {AFTER_SALES_PRIORITY_OPTIONS.map((priority) => (
+                                  <option key={priority} value={priority}>
+                                    {labelAfterSalesValue(priority, uiLang)}
+                                  </option>
+                                ))}
+                              </select>
+                            </label>
+                            <div className={styles.chatMetaItem}>
+                              <span>{afterSalesText.dueAt}</span>
+                              <strong>{formatDateTime(caseItem.due_at, dateLocale)}</strong>
+                            </div>
+                          </div>
+
+                          {caseItem.description ? <p className={styles.afterSalesDescription}>{caseItem.description}</p> : null}
+                        </article>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                <div className={styles.requestsCard}>
+                  <div className={styles.sectionHeader}>
+                    <h2>{afterSalesText.notes}</h2>
+                  </div>
+                  <label>
+                    {afterSalesText.addNote}
+                    <textarea
+                      value={clientNoteDraft}
+                      placeholder={afterSalesText.notePlaceholder}
+                      onChange={(event) => setClientNoteDraft(event.target.value)}
+                    />
+                  </label>
+                  <div className={styles.actions}>
+                    <button
+                      type="button"
+                      className={styles.primaryButton}
+                      onClick={addClientNote}
+                      disabled={afterSalesLoading || !clientNoteDraft.trim()}
+                    >
+                      {afterSalesText.addNote}
+                    </button>
+                  </div>
+
+                  {selectedClient.notes_list.length === 0 ? (
+                    <p className={styles.emptyHint}>{afterSalesText.noNotes}</p>
+                  ) : (
+                    <div className={styles.noteList}>
+                      {selectedClient.notes_list.map((note) => (
+                        <article key={note.id} className={styles.noteItem}>
+                          <div className={styles.chatBubbleHeader}>
+                            <strong>{note.author_username || "-"}</strong>
+                            <span>{formatDateTime(note.created_at, dateLocale)}</span>
+                          </div>
+                          <p>{note.text}</p>
+                        </article>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </>
+            )}
+          </div>
         </div>
       ) : null}
 

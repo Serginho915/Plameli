@@ -15,6 +15,14 @@ Website for the accounting company Plameli.
 docker compose up --build
 ```
 
+If port `3000` is already used locally, run the frontend on another host port:
+
+```powershell
+$env:FRONTEND_PORT="3001"; docker compose up --build
+```
+
+Then open `http://localhost:3001`.
+
 ### Prod
 
 ```bash

@@ -459,6 +459,89 @@
   gap: 16px;
 }
 
+.afterSalesAdmin {
+  display: grid;
+  grid-template-columns: 360px minmax(0, 1fr);
+  gap: 16px;
+  align-items: start;
+
+  @include down("laptop") {
+    grid-template-columns: 1fr;
+  }
+
+  .listCard li button {
+    display: grid;
+    gap: 4px;
+
+    strong {
+      color: $color-grey-800;
+      font-size: 15px;
+      line-height: 1.3;
+      overflow-wrap: anywhere;
+    }
+
+    span,
+    small {
+      color: $color-grey-500;
+      font-size: 13px;
+      line-height: 1.35;
+      overflow-wrap: anywhere;
+    }
+  }
+}
+
+.afterSalesFilters {
+  display: grid;
+  gap: 12px;
+  margin-top: 14px;
+}
+
+.afterSalesDetail,
+.afterSalesCases,
+.noteList {
+  display: grid;
+  gap: 16px;
+}
+
+.afterSalesCase,
+.noteItem {
+  border: 1px solid rgba($color-grey-300, 0.75);
+  border-radius: 14px;
+  background: rgba($color-neutrals-100, 0.78);
+  padding: 14px;
+  display: grid;
+  gap: 12px;
+}
+
+.afterSalesCase h3 {
+  color: $color-grey-800;
+  font-size: 20px;
+  line-height: 1.25;
+  overflow-wrap: anywhere;
+}
+
+.afterSalesDescription,
+.noteItem p {
+  margin: 0;
+  color: $color-grey-700;
+  line-height: 1.55;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.statusPill {
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+  border: 1px solid rgba($accent, 0.25);
+  border-radius: 999px;
+  background: rgba($color-brand-100, 0.42);
+  color: $color-grey-800;
+  padding: 7px 10px;
+  font-size: 13px;
+  font-weight: 700;
+}
+
 .chatListCard {
   min-height: 420px;
 

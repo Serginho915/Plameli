@@ -8,7 +8,10 @@ from content.admin_views import (
     EducationItemAdminViewSet,
 )
 from interactions.admin_views import (
+    AfterSalesCaseAdminViewSet,
     ChatConversationAdminViewSet,
+    ClientNoteAdminViewSet,
+    ClientProfileAdminViewSet,
     ConsultationBookingAdminViewSet,
     EducationRegistrationAdminViewSet,
     FeedbackRequestAdminViewSet,
@@ -34,10 +37,16 @@ requests_router.register(
 chat_router = DefaultRouter()
 chat_router.register("conversations", ChatConversationAdminViewSet, basename="admin-chat-conversations")
 
+after_sales_router = DefaultRouter()
+after_sales_router.register("clients", ClientProfileAdminViewSet, basename="admin-after-sales-clients")
+after_sales_router.register("cases", AfterSalesCaseAdminViewSet, basename="admin-after-sales-cases")
+after_sales_router.register("notes", ClientNoteAdminViewSet, basename="admin-after-sales-notes")
+
 urlpatterns = [
     path("me/", AdminMeAPIView.as_view(), name="admin-me"),
     path("content/blog-assets/", BlogAssetUploadAPIView.as_view(), name="admin-content-blog-assets"),
     path("content/", include(content_router.urls)),
     path("requests/", include(requests_router.urls)),
     path("chat/", include(chat_router.urls)),
+    path("after-sales/", include(after_sales_router.urls)),
 ]

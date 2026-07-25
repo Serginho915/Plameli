@@ -7,9 +7,12 @@ loadEnvConfig(rootDir);
 
 const isDev = process.env.NODE_ENV !== "production";
 const isDockerRuntime = process.cwd() === "/app";
-const devApiOrigin = isDockerRuntime ? "http://backend:8000" : "http://localhost:8000";
+const devBackendPort = process.env.BACKEND_PORT || "8000";
+const devFrontendPort = process.env.FRONTEND_PORT || "3000";
+const devApiOrigin = isDockerRuntime ? "http://backend:8000" : `http://localhost:${devBackendPort}`;
 const devApiUrl = `${devApiOrigin}/api`;
-const devBrowserApiUrl = "http://localhost:8000/api";
+const devBrowserApiUrl = `http://localhost:${devBackendPort}/api`;
+const devBaseUrl = `http://localhost:${devFrontendPort}`;
 const prodBaseUrl = "https://ledgerlab.tech";
 
 function resolveInternalOrigin() {
@@ -24,7 +27,7 @@ function resolveInternalOrigin() {
 
 if (isDev) {
   process.env.NEXT_PUBLIC_API_URL = devBrowserApiUrl;
-  process.env.NEXT_PUBLIC_BASE_URL = "http://localhost:3000";
+  process.env.NEXT_PUBLIC_BASE_URL = devBaseUrl;
   process.env.INTERNAL_API_URL = devApiUrl;
 }
 
@@ -36,7 +39,7 @@ const nextConfig: NextConfig = {
       ? devBrowserApiUrl
       : process.env.NEXT_PUBLIC_API_URL || `${prodBaseUrl}/api`,
     NEXT_PUBLIC_BASE_URL: isDev
-      ? "http://localhost:3000"
+      ? devBaseUrl
       : process.env.NEXT_PUBLIC_BASE_URL || prodBaseUrl,
     NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY:
       process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || process.env.STRIPE_PUBLISHABLE_KEY || "",

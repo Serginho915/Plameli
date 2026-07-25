@@ -1,7 +1,16 @@
 from django.contrib import admin
 
 from .google_calendar import delete_event
-from .models import ChatConversation, ChatMessage, ConsultationBooking, EducationRegistration, FeedbackRequest
+from .models import (
+	AfterSalesCase,
+	ChatConversation,
+	ChatMessage,
+	ClientNote,
+	ClientProfile,
+	ConsultationBooking,
+	EducationRegistration,
+	FeedbackRequest,
+)
 
 
 @admin.register(FeedbackRequest)
@@ -45,6 +54,43 @@ class ConsultationBookingAdmin(admin.ModelAdmin):
 					"google_event_deleted": True,
 				}
 		super().save_model(request, obj, form, change)
+
+
+class AfterSalesCaseInline(admin.TabularInline):
+	model = AfterSalesCase
+	extra = 0
+	fields = ("summary", "case_type", "status", "priority", "due_at", "source_model", "source_id")
+	readonly_fields = ("source_model", "source_id")
+
+
+class ClientNoteInline(admin.TabularInline):
+	model = ClientNote
+	extra = 0
+	fields = ("case", "author", "text", "created_at")
+	readonly_fields = ("created_at",)
+
+
+@admin.register(ClientProfile)
+class ClientProfileAdmin(admin.ModelAdmin):
+	list_display = ("name", "email", "phone", "status", "source", "updated_at")
+	search_fields = ("name", "email", "phone", "notes")
+	list_filter = ("status", "language", "source")
+	inlines = [AfterSalesCaseInline, ClientNoteInline]
+
+
+@admin.register(AfterSalesCase)
+class AfterSalesCaseAdmin(admin.ModelAdmin):
+	list_display = ("summary", "client", "case_type", "status", "priority", "due_at", "updated_at")
+	search_fields = ("summary", "description", "client__name", "client__email", "client__phone")
+	list_filter = ("case_type", "status", "priority")
+	readonly_fields = ("source_model", "source_id", "created_at", "updated_at")
+
+
+@admin.register(ClientNote)
+class ClientNoteAdmin(admin.ModelAdmin):
+	list_display = ("client", "case", "author", "created_at")
+	search_fields = ("client__name", "client__email", "text")
+	list_filter = ("created_at",)
 
 
 class ChatMessageInline(admin.TabularInline):
