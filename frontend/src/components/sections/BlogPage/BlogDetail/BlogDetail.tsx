@@ -23,9 +23,24 @@ interface BlogDetailProps {
   language: string;
 }
 
+const htmlPattern = /<\/?[a-z][\s\S]*>/i;
+
+function sanitizeArticleHtml(html: string): string {
+  return html
+    .replace(/<script[\s\S]*?>[\s\S]*?<\/script>/gi, "")
+    .replace(/<style[\s\S]*?>[\s\S]*?<\/style>/gi, "")
+    .replace(/\s(on\w+)=("[^"]*"|'[^']*'|[^\s>]+)/gi, "")
+    .replace(/\s(href|src)=("javascript:[^"]*"|'javascript:[^']*'|javascript:[^\s>]+)/gi, "");
+}
+
 export const BlogDetail: React.FC<BlogDetailProps> = ({ post, allPosts, language }) => {
   const { t } = useTranslation(translations);
   const isRu = language === "ru";
+  const isHtmlContent = post.content.some((block) => htmlPattern.test(block));
+  const articleHtml = useMemo(
+    () => sanitizeArticleHtml(post.content.join("\n\n")),
+    [post.content]
+  );
 
   // Similar posts filtered by shared tags — derived via useMemo from passed allPosts
   const similarBlogs = useMemo(() => {
@@ -99,11 +114,15 @@ export const BlogDetail: React.FC<BlogDetailProps> = ({ post, allPosts, language
           {/* Article content */}
           <div className={styles.contentWrapper}>
             <div className={styles.content}>
-              {post.content.map((paragraph, idx) => (
-                <p key={idx} className={styles.paragraph}>
-                  {paragraph}
-                </p>
-              ))}
+              {isHtmlContent ? (
+                <div dangerouslySetInnerHTML={{ __html: articleHtml }} />
+              ) : (
+                post.content.map((paragraph, idx) => (
+                  <p key={idx} className={styles.paragraph}>
+                    {paragraph}
+                  </p>
+                ))
+              )}
             </div>
           </div>
         </div>

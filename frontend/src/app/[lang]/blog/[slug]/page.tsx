@@ -6,6 +6,15 @@ import { i18n } from "@/i18n-config";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://ledgerlab.tech";
 
+function toPlainText(value: string): string {
+  return value
+    .replace(/<script[\s\S]*?>[\s\S]*?<\/script>/gi, "")
+    .replace(/<style[\s\S]*?>[\s\S]*?<\/style>/gi, "")
+    .replace(/<[^>]+>/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
 export async function generateMetadata({
   params,
 }: {
@@ -18,7 +27,7 @@ export async function generateMetadata({
     return { title: "Not Found" };
   }
 
-  const description = post.content[0]?.slice(0, 160) || post.title;
+  const description = toPlainText(post.content.join(" ")).slice(0, 160) || post.title;
 
   return {
     title: post.title,
