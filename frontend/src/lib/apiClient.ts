@@ -17,27 +17,42 @@ function resolveRelativeServerUrl(value: string): string {
   return `${baseUrl}${value.startsWith('/') ? value : `/${value}`}`;
 }
 
-function resolveApiBaseUrl(): string {
+function normalizeBaseUrl(value: string): string {
+  return value.replace(/\/$/, '');
+}
+
+function resolvePublicServerApiUrl(publicApiUrl?: string): string {
+  if (!publicApiUrl) {
+    return DEFAULT_SERVER_API_URL;
+  }
+
+  return isAbsoluteUrl(publicApiUrl) ? publicApiUrl : resolveRelativeServerUrl(publicApiUrl);
+}
+
+function resolveApiBaseUrls(): string[] {
   const isServer = typeof window === 'undefined';
   const serverApiUrl = process.env.INTERNAL_API_URL;
   const publicApiUrl = process.env.NEXT_PUBLIC_API_URL;
 
+  if (!isServer) {
+    return [normalizeBaseUrl(publicApiUrl || DEFAULT_BROWSER_API_URL)];
+  }
+
+  const urls: string[] = [];
+
   if (isServer && serverApiUrl) {
-    return serverApiUrl.replace(/\/$/, '');
+    urls.push(normalizeBaseUrl(serverApiUrl));
   }
 
-  if (publicApiUrl) {
-    if (isServer && !isAbsoluteUrl(publicApiUrl)) {
-      return resolveRelativeServerUrl(publicApiUrl).replace(/\/$/, '');
-    }
-
-    return publicApiUrl.replace(/\/$/, '');
+  const publicServerApiUrl = normalizeBaseUrl(resolvePublicServerApiUrl(publicApiUrl));
+  if (!urls.includes(publicServerApiUrl)) {
+    urls.push(publicServerApiUrl);
   }
 
-  return (isServer ? DEFAULT_SERVER_API_URL : DEFAULT_BROWSER_API_URL).replace(/\/$/, '');
+  return urls;
 }
 
-const API_BASE_URL = resolveApiBaseUrl();
+const API_BASE_URLS = resolveApiBaseUrls();
 
 export class ApiError extends Error {
   constructor(
@@ -50,10 +65,23 @@ export class ApiError extends Error {
   }
 }
 
-function buildApiUrl(endpoint: string): string {
+function buildApiUrl(baseUrl: string, endpoint: string): string {
   const normalizedEndpoint = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
 
-  return `${API_BASE_URL}${normalizedEndpoint}`;
+  return `${baseUrl}${normalizedEndpoint}`;
+}
+
+async function createApiError(response: Response): Promise<ApiError> {
+  const errorBody = await response.json().catch(() => ({})) as {
+    code?: string;
+    detail?: string;
+  };
+
+  return new ApiError(
+    response.status,
+    errorBody.code || 'api_error',
+    errorBody.detail || `API request failed with ${response.status} ${response.statusText}`,
+  );
 }
 
 export async function apiClient<T>(
@@ -73,31 +101,46 @@ export async function apiClient<T>(
     credentials: options.credentials || 'include',
   };
 
-  const response = await fetch(buildApiUrl(endpoint), {
-    ...requestInit,
-  });
+  const method = requestInit.method?.toUpperCase() || 'GET';
+  const baseUrls = method === 'GET' ? API_BASE_URLS : [API_BASE_URLS[0]];
+  let lastError: unknown;
 
-  if (!response.ok) {
-    const errorBody = await response.json().catch(() => ({})) as {
-      code?: string;
-      detail?: string;
-    };
-    throw new ApiError(
-      response.status,
-      errorBody.code || 'api_error',
-      errorBody.detail || `API request failed with ${response.status} ${response.statusText}`,
-    );
+  for (const [index, baseUrl] of baseUrls.entries()) {
+    try {
+      const response = await fetch(buildApiUrl(baseUrl, endpoint), {
+        ...requestInit,
+      });
+
+      if (!response.ok) {
+        const apiError = await createApiError(response);
+        if (response.status === 404 || index === baseUrls.length - 1) {
+          throw apiError;
+        }
+        lastError = apiError;
+        continue;
+      }
+
+      if (response.status === 204) {
+        return null as T;
+      }
+
+      const contentType = response.headers.get('content-type') || '';
+
+      if (contentType.includes('application/json')) {
+        return (await response.json()) as T;
+      }
+
+      return (await response.text()) as T;
+    } catch (err) {
+      if (err instanceof ApiError && err.status === 404) {
+        throw err;
+      }
+      if (index === baseUrls.length - 1) {
+        throw err;
+      }
+      lastError = err;
+    }
   }
 
-  if (response.status === 204) {
-    return null as T;
-  }
-
-  const contentType = response.headers.get('content-type') || '';
-
-  if (contentType.includes('application/json')) {
-    return (await response.json()) as T;
-  }
-
-  return (await response.text()) as T;
+  throw lastError instanceof Error ? lastError : new Error('API request failed');
 }
