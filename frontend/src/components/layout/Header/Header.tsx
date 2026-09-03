@@ -1,5 +1,6 @@
 'use client';
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect, useState } from 'react';
+import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Logo } from './Logo/Logo';
@@ -10,11 +11,15 @@ import styles from './Header.module.scss';
 import { Button } from '@/components/ui/Button/Button';
 import { Burger } from './Burger/Burger';
 import { useUI } from '@/context/UIContext';
+import { Modal } from '@/components/ui/Modal/Modal';
+
+const EU_PROJECT_INFO = 'BG16RFPR001-1.012-0189-C01';
 
 export const Header = () => {
   const pathname = usePathname();
   const { language } = useTranslation();
   const { isMenuOpen, setIsMenuOpen } = useUI();
+  const [isProjectModalOpen, setIsProjectModalOpen] = useState(false);
   const headerRef = useRef<HTMLElement>(null);
   const consultationText = language === 'bg' ? 'Консултация' : 'Консультация';
 
@@ -60,6 +65,13 @@ export const Header = () => {
             onClick={() => setIsMenuOpen(!isMenuOpen)}
             className={styles.burgerBtn}
           />
+          <button
+            type="button"
+            className={styles.projectButton}
+            onClick={() => setIsProjectModalOpen(true)}
+          >
+            {EU_PROJECT_INFO}
+          </button>
           <div className={styles.langWrapper}>
             <LanguageSwitcher />
           </div>
@@ -82,6 +94,16 @@ export const Header = () => {
           </div>
           <Nav />
           <div className={styles.mobileActions}>
+            <button
+              type="button"
+              className={styles.mobileProjectButton}
+              onClick={() => {
+                setIsMenuOpen(false);
+                setIsProjectModalOpen(true);
+              }}
+            >
+              {EU_PROJECT_INFO}
+            </button>
             <Link href={`/${language}/consultation`} className={styles.mobileLink}>
               <Button
                 text={consultationText}
@@ -92,6 +114,18 @@ export const Header = () => {
           </div>
         </div>
       </div>
+
+      <Modal isOpen={isProjectModalOpen} onClose={() => setIsProjectModalOpen(false)}>
+        <div className={styles.documentWrapper}>
+          <Image
+            src="/Plakat-Plameli-Digi.jpg"
+            alt={EU_PROJECT_INFO}
+            width={3364}
+            height={4735}
+            className={styles.documentImage}
+          />
+        </div>
+      </Modal>
     </header>
   );
 };

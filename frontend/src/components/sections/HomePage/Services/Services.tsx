@@ -11,7 +11,6 @@ import { SectionTitle } from "@/components/ui/SectionTitle/SectionTitle";
 import { translations } from "./Services.translations";
 import { CheckIcon } from "@/components/ui/Icons/CheckIcon/CheckIcon";
 import styles from "./Services.module.scss";
-import { Education } from "../Education/Education";
 
 export const Services = () => {
   const { t } = useTranslation(translations);
@@ -154,8 +153,6 @@ export const Services = () => {
           </Button>
         </div>
       </div>
-
-      <Education />
     </section>
   );
 };

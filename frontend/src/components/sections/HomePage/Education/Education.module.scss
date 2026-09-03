@@ -2,11 +2,10 @@
 @use "@/styles/mixins" as *;
 
 .education {
- 
 }
 
 .container {
- display: flex;
+  display: flex;
   flex-direction: column;
   gap: 36px;
 
@@ -31,6 +30,14 @@
   @include down("tablet") {
     flex-direction: column;
     align-items: center;
+  }
+}
+
+.filterBar {
+  justify-content: flex-start;
+
+  @include down("mobile-large") {
+    width: 100%;
   }
 }
 

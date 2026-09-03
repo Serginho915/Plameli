@@ -60,6 +60,10 @@
   align-items: center;
   gap: $scale-24;
 
+  @include down("laptop") {
+    gap: $scale-12;
+  }
+
   @include down("tablet") {
     gap: $scale-12;
   }
@@ -72,6 +76,40 @@
 }
 
 .desktopBtn {
+  @include down("mobile-large") {
+    display: none;
+  }
+}
+
+.projectButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 38px;
+  padding: $scale-8 $scale-16;
+  border: 1px solid $color-stroke-primary;
+  border-radius: 24px;
+  background: $color-neutrals-100;
+  color: $color-grey-700;
+  cursor: pointer;
+  font-family: $font-secondary;
+  font-size: $font-size-body-caption;
+  font-weight: 600;
+  line-height: $lh-body-caption;
+  white-space: nowrap;
+  transition: color 0.3s ease, border-color 0.3s ease, background-color 0.3s ease;
+
+  &:hover {
+    border-color: $accent;
+    color: $accent;
+    background-color: $color-grey-50;
+  }
+
+  @include down("laptop") {
+    padding: $scale-8 $scale-12;
+    font-size: 14px;
+  }
+
   @include down("mobile-large") {
     display: none;
   }
@@ -160,6 +198,7 @@
   display: flex;
   flex-direction: column;
   align-items: stretch;
+  gap: $scale-12;
 
   @include up("mobile-large") {
     display: none;
@@ -169,6 +208,32 @@
 .mobileLink {
   width: 100%;
   display: block;
+}
+
+.mobileProjectButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 48px;
+  padding: $scale-12 $scale-16;
+  border: 1px solid $color-stroke-primary;
+  border-radius: 24px;
+  background: $color-neutrals-100;
+  color: $color-grey-700;
+  cursor: pointer;
+  font-family: $font-secondary;
+  font-size: $font-size-body-caption;
+  font-weight: 600;
+  line-height: $lh-body-caption;
+  white-space: nowrap;
+  transition: color 0.3s ease, border-color 0.3s ease;
+
+  &:hover,
+  &:active {
+    border-color: $accent;
+    color: $accent;
+  }
 }
 
 .headerButton {
@@ -181,4 +246,24 @@
   @include down("tablet") {
     font-size: 24px;
   }
+}
+
+.documentWrapper {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: #fff;
+}
+
+.documentImage {
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  border-radius: 8px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
 }
