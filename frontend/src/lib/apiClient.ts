@@ -1,5 +1,21 @@
 const DEFAULT_BROWSER_API_URL =
   process.env.NODE_ENV === 'development' ? 'http://localhost:8000/api' : '/api';
+const DEFAULT_SERVER_API_URL =
+  process.env.NODE_ENV === 'development' ? 'http://localhost:8000/api' : 'https://ledgerlab.tech/api';
+
+function isAbsoluteUrl(value: string): boolean {
+  return /^https?:\/\//i.test(value);
+}
+
+function resolveRelativeServerUrl(value: string): string {
+  const baseUrl = (
+    process.env.NEXT_PUBLIC_BASE_URL ||
+    process.env.FRONTEND_URL ||
+    'https://ledgerlab.tech'
+  ).replace(/\/$/, '');
+
+  return `${baseUrl}${value.startsWith('/') ? value : `/${value}`}`;
+}
 
 function resolveApiBaseUrl(): string {
   const isServer = typeof window === 'undefined';
@@ -10,7 +26,15 @@ function resolveApiBaseUrl(): string {
     return serverApiUrl.replace(/\/$/, '');
   }
 
-  return (publicApiUrl || DEFAULT_BROWSER_API_URL).replace(/\/$/, '');
+  if (publicApiUrl) {
+    if (isServer && !isAbsoluteUrl(publicApiUrl)) {
+      return resolveRelativeServerUrl(publicApiUrl).replace(/\/$/, '');
+    }
+
+    return publicApiUrl.replace(/\/$/, '');
+  }
+
+  return (isServer ? DEFAULT_SERVER_API_URL : DEFAULT_BROWSER_API_URL).replace(/\/$/, '');
 }
 
 const API_BASE_URL = resolveApiBaseUrl();

@@ -1,4 +1,4 @@
-import { apiClient } from "@/lib/apiClient";
+import { ApiError, apiClient } from "@/lib/apiClient";
 import type { BlogPost, ContentPageData, EducationItem } from "@/types/content";
 
 interface ApiBlogPost {
@@ -77,7 +77,7 @@ function normalizeMediaUrl(value: string): string {
 }
 
 function isNotFoundError(err: unknown): boolean {
-  return err instanceof Error && err.message.includes("404");
+  return err instanceof ApiError && err.status === 404;
 }
 
 function mapBlogPost(item: ApiBlogPost): BlogPost {
